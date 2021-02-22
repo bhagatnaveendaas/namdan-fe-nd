@@ -1,25 +1,19 @@
 import React from "react";
-import { View, Button, Text, StyleSheet } from "react-native";
+import { View, Button, Text } from "react-native";
+import styles from '../styles/AshramDashboard'
+import constants from '../constants/AshramDashboard'
 
 const Home = ({ navigation }) => {
   return (
     <View style={styles.center}>
-      <Text>This is the coountry screen</Text>
+      <Text>{constants.screenName}</Text>
       <Button
-        title="Go to About Screen"
+        title={constants.buttonTittle}
         onPress={() => navigation.navigate("CountryDashboard")} // We added an onPress event which would navigate to the About screen
       />
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  center: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    textAlign: "center",
-  },
-});
 
 export default Home;
