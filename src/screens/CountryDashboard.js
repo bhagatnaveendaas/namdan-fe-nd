@@ -1,14 +1,11 @@
-import React from "react";
-import { View, Text } from "react-native";
-import styles from '../styles/countryDashboard'
+import React from 'react';
+import { View, Text } from 'react-native';
+import styles from '../styles/countryDashboard';
 
-const CountryDashboard = () => {
-  return (
-    <View style={styles.center}>
-      <Text>This is the Country screen</Text>
-    </View>
-  );
-};
-
+const CountryDashboard = () => (
+  <View style={styles.center}>
+    <Text>This is the Country screen</Text>
+  </View>
+);
 
 export default CountryDashboard;
