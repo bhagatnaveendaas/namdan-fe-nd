@@ -1,13 +1,28 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { SafeAreaView, Text, View, Image } from 'react-native'
-import { ScrollView, TextInput, TouchableHighlight } from 'react-native-gesture-handler';
+import { ScrollView, TextInput, TouchableHighlight, TouchableOpacity } from 'react-native-gesture-handler';
 import { Feather } from '@expo/vector-icons';
 import theme from '../constants/theme';
 import textConstants from '../constants/text/Login'
 import styles from '../styles/Login'
+import RoundButton from '../components/RoundButton';
 
 
 function Login() {
+    const [userName, setUserName] = useState("")
+    const [password, setPassword] = useState("")
+
+    const handleUserNameChange=(event)=>{
+        setUserName(event.target.value)
+    }
+    const handlePasswordChange = (event)=>{
+        setPassword(event.target.value)
+    }
+
+    const handleLogin = ()=>{
+        console.log("Logged In")
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView style={{}}>
@@ -21,27 +36,28 @@ function Login() {
                     <View style={styles.inputContainer}>
                         <View style={styles.iconContainer}>
                             <Feather style={styles.icons} name="user" size={20} color={theme.colors.primary} />
-                            <TextInput style={styles.inputs} placeholder="UserName" />
+                            <TextInput style={styles.inputs} value={userName} onChange={handleUserNameChange} placeholder="UserName" />
                         </View>
                         <View style={styles.iconContainer}>
                             <Feather style={styles.icons} name="key" size={20} color={theme.colors.primary} />
-                            <TextInput style={styles.inputs} placeholder="UserName" />
+                            <TextInput style={styles.inputs} value={password} onChange={handlePasswordChange} secureTextEntry={true} placeholder="Password" />
                         </View>
                         <View style={styles.buttonContainer}>
-                            <TouchableHighlight style={styles.loginButton}>
+                            {/* <TouchableOpacity style={styles.loginButton} onPress={handleLogin} elevation={5} >
                                 <Text style={[styles.textCenter, styles.textWhite, styles.loginButtonText]}>
                                     {textConstants.login}
                                 </Text>
-                            </TouchableHighlight>
+                            </TouchableOpacity> */}
+                            <RoundButton label={textConstants.login} handlePress={handleLogin} />
                         </View>
-                        <TouchableHighlight>
+                        <TouchableOpacity>
                             <Text style={[styles.textCenter, styles.textWhite]}>Forget Password?</Text>
-                        </TouchableHighlight>
-                        <TouchableHighlight style={styles.signUpContainer}>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.signUpContainer}>
                             <Text style={[styles.textCenter, styles.textWhite]}>
                                 {textConstants.signUpLine}
                             </Text>
-                        </TouchableHighlight>
+                        </TouchableOpacity>
                     </View>
                 </View>
             </ScrollView>

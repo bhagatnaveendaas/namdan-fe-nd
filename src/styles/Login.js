@@ -52,7 +52,12 @@ export default StyleSheet.create({
         backgroundColor: theme.colors.secondary,
         padding: width * .038,
         borderRadius: width * 0.1,
-        alignItems: "center"
+        alignItems: "center",
+        elevation: 4,
+        shadowColor: 'rgba(0,0,0, .4)', // IOS
+        shadowOffset: { height: 1, width: 1 }, // IOS
+        shadowOpacity: 1, // IOS
+        shadowRadius: 1, //IOS
     },
     loginButtonText: {
         textTransform: "uppercase",

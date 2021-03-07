@@ -1,10 +1,9 @@
 import React from 'react'
 import { Text } from 'react-native'
-function HomeHeader(props) {
-    console.log(props)
+function HomeHeader({title}) {
     return (
         <Text>
-            hello
+            {title}
         </Text>
     )
 }
