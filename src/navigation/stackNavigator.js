@@ -14,9 +14,9 @@ const MainStackNavigator = () => (
   <Stack.Navigator
     headerMode="screen"
   >
+    <Stack.Screen name="AshramDashboard" component={AshramDashboard} options={{ headerTitle: props => <HomeHeader {...props} title="Ashram dashboard" /> }} />
     <Stack.Screen name="SignUp" component={SignUp} options={{ headerTitle: props => <HomeHeader {...props} title="Sign up" /> }} />
     <Stack.Screen name="Login" component={Login} options={{ header: ()=>{}}} />
-    <Stack.Screen name="AshramDashboard" component={AshramDashboard} options={{ headerTitle: props => <HomeHeader {...props} title="Ashram dashboard" /> }} />
     <Stack.Screen name="CountryDashboard" component={CountryDashboard} />
   </Stack.Navigator>
 );
