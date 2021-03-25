@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import theme from '../constants/theme';
 
 export default StyleSheet.create({
   center: {
@@ -7,4 +8,13 @@ export default StyleSheet.create({
     alignItems: 'center',
     textAlign: 'center',
   },
+  scoreBoard: {
+    backgroundColor: theme.colors.primary,
+    borderRadius:10
+  },
+  prathamDiv: {
+    alignContent: "center",
+    alignSelf: "center",
+    color: theme.colors.white
+  }
 });
