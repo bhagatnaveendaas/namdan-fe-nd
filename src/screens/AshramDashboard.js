@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Button, Text, StyleSheet, Image } from 'react-native';
 import styles from '../styles/AshramDashboard';
-import constants from '../constants/AshramDashboard';
 import theme from '../constants/theme';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { Dimensions } from 'react-native';
