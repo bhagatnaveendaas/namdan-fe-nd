@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Button, Text } from 'react-native';
+import { View, Button, Text, StyleSheet, Image } from 'react-native';
 import styles from '../styles/AshramDashboard';
 import constants from '../constants/AshramDashboard';
 import theme from '../constants/theme';
