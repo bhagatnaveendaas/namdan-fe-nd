@@ -115,7 +115,7 @@ function NamdanCenter() {
       <View style={inStyles.centeredView}>
         <Modal
           animationType="slide"
-          transparent={true}
+          transparent
           visible={successModalVisible}
           onRequestClose={() => {
             // Alert.alert('Modal has been closed');
@@ -139,7 +139,7 @@ function NamdanCenter() {
       <View style={inStyles.centeredView}>
         <Modal
           animationType="slide"
-          transparent={true}
+          transparent
           visible={errorModalVisible}
           onRequestClose={() => {
             // Alert.alert('Modal has been closed');
