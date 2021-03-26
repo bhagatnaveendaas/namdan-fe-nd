@@ -10,11 +10,11 @@ export default StyleSheet.create({
   },
   scoreBoard: {
     backgroundColor: theme.colors.primary,
-    borderRadius:10
+    borderRadius: 10
   },
   prathamDiv: {
-    alignContent: "center",
-    alignSelf: "center",
+    alignContent: 'center',
+    alignSelf: 'center',
     color: theme.colors.white
   }
 });
