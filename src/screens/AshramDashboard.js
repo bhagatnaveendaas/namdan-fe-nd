@@ -1,14 +1,6 @@
 import React, { useEffect } from "react";
-import {
-    View,
-    Button,
-    Text,
-    StyleSheet,
-    Image,
-    Dimensions,
-} from "react-native";
+import { AsyncStorage, Text, View } from "react-native";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
-import styles from "../styles/AshramDashboard";
 import theme from "../constants/theme";
 
 import RoundIconButton from "../components/RoundIconButton";
@@ -18,9 +10,6 @@ import MasterCreation from "../components/MasterCreation";
 import OtherControls from "../components/OtherControls";
 import ScoreBoard from "../components/ScoreBoard";
 import VerticalIconButton from "../components/VerticalIconButton";
-import { AsyncStorage } from "react-native";
-
-const { height, width } = Dimensions.get("window");
 
 const Home = ({ navigation }) => {
     const temp = async () => {

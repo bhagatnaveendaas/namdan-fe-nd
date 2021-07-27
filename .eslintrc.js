@@ -1,4 +1,8 @@
 module.exports = {
+  extends: [
+    'airbnb',
+    'prettier'
+  ],
   parser: 'babel-eslint',
   env: {
     jest: true,
