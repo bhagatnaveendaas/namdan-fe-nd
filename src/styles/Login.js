@@ -1,4 +1,5 @@
 import { StatusBar, StyleSheet, Dimensions } from 'react-native';
+
 import theme from '../constants/theme';
 
 const { height, width } = Dimensions.get('window');

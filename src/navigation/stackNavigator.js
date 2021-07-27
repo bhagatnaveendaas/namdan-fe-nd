@@ -6,8 +6,8 @@ import CountryDashboard from '../screens/CountryDashboard';
 import Login from '../screens/Login';
 import HomeHeader from '../components/HomeHeader';
 import SignUp from '../screens/SignUp';
-import NamdanCenter from '../screens/NamdanCenter';
 import verifyOtp from '../screens/verifyOtp';
+import Entry from '../screens/Entry';
 
 const Stack = createStackNavigator();
 
@@ -15,12 +15,12 @@ const MainStackNavigator = () => (
   <Stack.Navigator
     headerMode="screen"
   >
+    <Stack.Screen name="Login" component={Login} options={{ header: () => {} }} />
+    <Stack.Screen name="Entry" component={Entry} />
     <Stack.Screen name="verifyOtp" component={verifyOtp} />
     <Stack.Screen name="AshramDashboard" component={AshramDashboard} options={{ headerTitle: (props) => <HomeHeader {...props} title="Ashram dashboard" /> }} />
     <Stack.Screen name="SignUp" component={SignUp} options={{ headerTitle: (props) => <HomeHeader {...props} title="Sign up" /> }} />
-    <Stack.Screen name="Login" component={Login} options={{ header: () => {} }} />
     <Stack.Screen name="CountryDashboard" component={CountryDashboard} />
-    <Stack.Screen name="NamdanCenter" component={NamdanCenter} options={{ headerTitle: (props) => <HomeHeader {...props} title="Add Namdan Center" /> }} />
   </Stack.Navigator>
 );
 

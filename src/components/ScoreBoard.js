@@ -3,7 +3,7 @@ import { View, Text } from 'react-native';
 import styles from '../styles/AshramDashboard';
 import theme from '../constants/theme';
 
-// theme;
+theme;
 const ScoreBoard = () => (
   <View style={styles.scoreBoard}>
     <View style={{ flexDirection: 'column' }}>
@@ -35,13 +35,13 @@ const ScoreBoard = () => (
             }}
             >
               123,456,789
-            </Text>
+</Text>
             <Text style={{
               color: theme.colors.white, textAlign: 'center', fontWeight: 'bold', paddingTop: '1%'
             }}
             >
               SATNAM
-            </Text>
+</Text>
           </View>
           <View style={[styles.prathamDiv, { paddingVertical: '10%' }]}>
             <Text style={{
@@ -49,7 +49,7 @@ const ScoreBoard = () => (
             }}
             >
               123,456,789
-            </Text>
+</Text>
             <Text style={{
               color: theme.colors.white, textAlign: 'center', fontWeight: 'bold', paddingTop: '1%'
             }}
@@ -71,13 +71,13 @@ const ScoreBoard = () => (
             }}
             >
               123,456,789
-            </Text>
+</Text>
             <Text style={{
               color: theme.colors.white, textAlign: 'center', fontWeight: 'bold', paddingTop: '1%'
             }}
             >
               SARNAM
-            </Text>
+</Text>
           </View>
           <View style={[styles.prathamDiv, { paddingVertical: '10%' }]}>
             <Text style={{
@@ -85,7 +85,7 @@ const ScoreBoard = () => (
             }}
             >
               123,456,789
-            </Text>
+</Text>
             <Text style={{
               color: theme.colors.white, textAlign: 'center', fontWeight: 'bold', paddingTop: '1%'
             }}
