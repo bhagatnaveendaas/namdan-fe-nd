@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Text, View } from "react-native";
 import theme from "../constants/theme";
-import { dateInYYYYMMDDFormat } from "../utilities/DateUtils";
+import { dateInDDMMYYFormat } from "../utilities/DateUtils";
 import SemiRoundIconButtons from "./SemiRoundIconButtons";
 
 const DateRangeFilter = ({
@@ -77,8 +77,8 @@ const DateRangeFilter = ({
                     },
                 ]}
             >
-                <Text>Start date: {dateInYYYYMMDDFormat(startDate)}</Text>
-                <Text>End date: {dateInYYYYMMDDFormat(endDate)}</Text>
+                <Text>Start date: {dateInDDMMYYFormat(startDate)}</Text>
+                <Text>End date: {dateInDDMMYYFormat(endDate)}</Text>
             </View>
         </>
     );
