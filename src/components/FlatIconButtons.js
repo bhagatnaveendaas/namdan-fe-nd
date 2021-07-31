@@ -5,11 +5,11 @@ import {
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import theme from '../constants/theme';
 
-const { height, width } = Dimensions.get('window');
+const { height } = Dimensions.get('window');
 
 const FlatIconButtons = ({ label, icon, pressHandler }) => (
-  <View onPress={pressHandler} style={[{ width: '49%', marginTop: '2%', paddingHorizontal: label.length > 20 ? '5%' : '8%', }, theme.card]}>
-    <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: '4%' }}>
+  <View style={[{ width: '49%', marginTop: '2%', paddingHorizontal: label.length > 20 ? '5%' : '8%', }, theme.card]}>
+    <TouchableOpacity onPress={pressHandler} style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: '4%' }}>
       <Text style={{
         alignContent: 'center', alignSelf: 'center', alignItems: 'center', fontSize: 16
       }}
