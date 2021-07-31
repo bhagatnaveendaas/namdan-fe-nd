@@ -139,7 +139,9 @@ const Home = ({ navigation }) => {
                         <FlatIconButtons
                             label={`Naamdan${"\n"}Reports`}
                             icon={require("../../assets/icons/pn.png")}
-                            pressHandler={() => {}}
+                            pressHandler={() =>
+                                navigation.push("NaamdanReport")
+                            }
                         />
                         <FlatIconButtons
                             label={`Naamdan${"\n"}Centre`}
