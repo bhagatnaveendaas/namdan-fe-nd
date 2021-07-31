@@ -9,7 +9,7 @@ const SemiRoundIconButtons = ({ label, icon, pressHandler }) => (
     <View
         style={[
             {
-                width: "49%",
+                width: "44%",
                 marginTop: "2%",
                 paddingHorizontal: label.length > 20 ? "5%" : "8%",
             },
@@ -21,11 +21,10 @@ const SemiRoundIconButtons = ({ label, icon, pressHandler }) => (
             style={{
                 flexDirection: "row",
                 justifyContent: "space-between",
-                paddingVertical: "4%",
             }}
         >
             <Image
-                style={{ height: height * 0.07, width: height * 0.065 }}
+                style={{ height: height * 0.03, width: height * 0.03 }}
                 source={icon}
             />
             <Text
@@ -33,7 +32,7 @@ const SemiRoundIconButtons = ({ label, icon, pressHandler }) => (
                     alignContent: "center",
                     alignSelf: "center",
                     alignItems: "center",
-                    fontSize: 16,
+                    fontSize: 15,
                 }}
             >
                 {label}{" "}
