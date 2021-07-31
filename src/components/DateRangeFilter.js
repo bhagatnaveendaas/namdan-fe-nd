@@ -48,8 +48,9 @@ const DateRangeFilter = ({
                         is24Hour
                         display="default"
                         onChange={(event, updatedTimeStamp) => {
-                            onStartDateChange(new Date(updatedTimeStamp));
                             setShowStartDate(false);
+                            if (updatedTimeStamp)
+                                onStartDateChange(new Date(updatedTimeStamp));
                         }}
                     />
                 )}
@@ -61,8 +62,9 @@ const DateRangeFilter = ({
                         is24Hour
                         display="default"
                         onChange={(event, updatedTimestamp) => {
-                            onEndDateChange(new Date(updatedTimestamp));
                             setShowEndDate(false);
+                            if (updatedTimestamp)
+                                onEndDateChange(new Date(updatedTimestamp));
                         }}
                     />
                 )}
