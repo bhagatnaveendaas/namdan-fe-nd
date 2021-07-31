@@ -92,12 +92,13 @@ function SignUp() {
     const getCountries = async () => {
         console.log("Callled");
         const temp = JSON.parse(await AsyncStorage.getItem("countries"));
-        // console.log({temp});
-        setcountries(temp);
+        console.log({temp});
+        setcountries(temp?temp:[]);
     };
 
     useEffect(() => {
         getCountries();
+        console.log({ countries });
     }, []);
 
     useEffect(() => {
@@ -167,8 +168,8 @@ function SignUp() {
         }
         temp.age = age;
         console.log({ age });
-        setUserData(temp);
         setShow(false);
+        setUserData(temp);
     };
 
     const onMobileChange = (event) => {
