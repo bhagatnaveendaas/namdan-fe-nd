@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import DateRangeFilter from "./DateRangeFilter";
 
 const ReportTemplate = () => {
-    const [startDate, setStartDate] = useState(new Date());
+    const [startDate, setStartDate] = useState(new Date(0));
     const [endDate, setEndDate] = useState(new Date());
 
     return (

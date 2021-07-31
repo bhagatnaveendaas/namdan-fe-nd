@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Text, View } from "react-native";
-import FlatIconButtons from "./FlatIconButtons";
 import theme from "../constants/theme";
 import { dateInYYYYMMDDFormat } from "../utilities/DateUtils";
+import SemiRoundIconButtons from "./SemiRoundIconButtons";
 
 const DateRangeFilter = ({
     startDate,
@@ -25,16 +25,16 @@ const DateRangeFilter = ({
                     },
                 ]}
             >
-                <FlatIconButtons
+                <SemiRoundIconButtons
                     label="Start Date"
-                    icon={require("../../assets/icons/pu.png")}
+                    icon={require("../../assets/icons/calendar.png")}
                     pressHandler={() => {
                         setShowStartDate(true);
                     }}
                 />
-                <FlatIconButtons
+                <SemiRoundIconButtons
                     label="End Date"
-                    icon={require("../../assets/icons/pu.png")}
+                    icon={require("../../assets/icons/calendar.png")}
                     pressHandler={() => {
                         setShowEndDate(true);
                     }}
@@ -69,7 +69,6 @@ const DateRangeFilter = ({
             </View>
             <View
                 style={[
-                    theme.card,
                     {
                         flexDirection: "row",
                         justifyContent: "space-evenly",
