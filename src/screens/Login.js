@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from "react";
-import { SafeAreaView, Text, View, Image, AsyncStorage } from "react-native";
+import { Feather } from "@expo/vector-icons";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { AsyncStorage, Image, SafeAreaView, Text, View } from "react-native";
+import AwesomeAlert from "react-native-awesome-alerts";
 import {
     ScrollView,
     TextInput,
-    TouchableOpacity,
+    TouchableOpacity
 } from "react-native-gesture-handler";
-import { Feather } from "@expo/vector-icons";
-import axios from "axios";
-import AwesomeAlert from "react-native-awesome-alerts";
-import theme from "../constants/theme";
-import textConstants from "../constants/text/Login";
-import styles from "../styles/Login";
 import RoundButton from "../components/RoundButton";
+import textConstants from "../constants/text/Login";
+import theme from "../constants/theme";
+import styles from "../styles/Login";
 
 function Login({ navigation }) {
     const [userName, setUserName] = useState("");
@@ -24,11 +24,11 @@ function Login({ navigation }) {
         confirm: "",
     });
 
-    const handleUserNameChange = (event) => {
-        setUserName(event.target.value);
+    const handleUserNameChange = (value) => {
+        setUserName(value);
     };
-    const handlePasswordChange = (event) => {
-        setPassword(event.target.value);
+    const handlePasswordChange = (value) => {
+        setPassword(value);
     };
     const getCountries = async () => {
         console.log("Called");
@@ -48,8 +48,6 @@ function Login({ navigation }) {
             "countries",
             JSON.stringify(response.data.data.countries)
         );
-        
-
     };
 
     const getStates = async () => {
@@ -126,11 +124,10 @@ function Login({ navigation }) {
         if (checkIfLoggedIn) {
             console.log("Called2");
             if (!checkDataExist()) {
-            getCountries();
-            getStates();
-            getDistricts();
-            getTehsils();
-            //     console.log("Called");
+                getCountries();
+                getStates();
+                getDistricts();
+                getTehsils();
             }
 
             navigation.push("AshramDashboard");
@@ -146,13 +143,13 @@ function Login({ navigation }) {
                 Accept: "application/json",
             },
             data: {
-                username: "9610266767",
-                password: "Speedpe@2020",
-                device_id: "fdsfsf",
-                longitude: "20.000",
-                latitude: "30.555",
-                channel: "web",
-                login_otp: "171030",
+                "username": userName,
+                "password": password,
+                "device_id": "device_id",
+                "longitude": "20.000",
+                "latitude": "30.555",
+                "channel": "mobile",
+                "device_token": Math.random() * 1_00_00_000
             },
         };
 
@@ -181,7 +178,7 @@ function Login({ navigation }) {
                     await getStates();
                     await getDistricts();
                     await getTehsils();
-                    // navigation.push("AshramDashboard");
+                    navigation.push("AshramDashboard");
                 } else {
                     const temp = {
                         ...showAlert,
@@ -248,7 +245,7 @@ function Login({ navigation }) {
                             <TextInput
                                 style={styles.inputs}
                                 value={userName}
-                                onChange={handleUserNameChange}
+                                onChangeText={handleUserNameChange}
                                 placeholder="UserName"
                             />
                         </View>
@@ -262,7 +259,7 @@ function Login({ navigation }) {
                             <TextInput
                                 style={styles.inputs}
                                 value={password}
-                                onChange={handlePasswordChange}
+                                onChangeText={handlePasswordChange}
                                 secureTextEntry
                                 placeholder="Password"
                             />
