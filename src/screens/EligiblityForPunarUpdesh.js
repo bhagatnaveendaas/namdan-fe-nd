@@ -1,20 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { AsyncStorage, Text } from 'react-native';
+import { Text } from 'react-native';
 import ReportTemplate from "../components/ReportTemplate";
+import { useGetAsyncStorageItem } from "../hooks/useGetAsyncStorageItem";
 import { getPendingSatnaamCount } from "../httpClient/report/pendingSatnaamAPI";
 import { eligibilityForPunarUpdeshMetadata } from "../metaData/eligibilityForPunarUpdeshMetadata";
 
 const EligibilityForPunarUpdesh = () => {
   const [eligibilityForPunarUpdeshResponse, setEligiblityForPunarUpdeshResponse] = useState(null);
 
-  const [csrfToken, setCsrfToken] = useState("");
-
-  useEffect(() => {
-    AsyncStorage.getItem("token")
-      .then((token) => {
-        setCsrfToken(token);
-      });
-  }, [csrfToken]);
+  const csrfToken = useGetAsyncStorageItem("token");
 
   const callEligibilityForPunarUpdeshAPI = async (fromDate = "2017-01-03", toDate = "2021-10-03") => {
     const response = await getPendingSatnaamCount(csrfToken, fromDate, toDate);
