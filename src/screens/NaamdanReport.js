@@ -10,7 +10,7 @@ const NaamdanReport = () => {
 
   const csrfToken = useGetAsyncStorageItem("token");
 
-  const callPrathamAndSatnamCountAPI = async (fromDate = "2017-01-03", toDate = "2021-10-03", page) => {
+  const callPrathamAndSatnamCountAPI = async (fromDate = "2017-01-03", toDate = "2021-10-03", page = 1) => {
     const response = await getPrathamAndSatnamCount(csrfToken, fromDate, toDate, page);
     setPrathamAndSatnamResponse(response.data);
   }
