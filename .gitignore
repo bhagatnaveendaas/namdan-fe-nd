@@ -48,5 +48,7 @@ Thumbs.db
 *.mov
 *.wmv
 
+Todo.md
+
 .expo/
 .expo/packager-info.json

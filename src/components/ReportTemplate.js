@@ -36,8 +36,8 @@ const ReportTemplate = ({ metaData, data, onDateChangeCallback }) => {
                         data.map((datum) => (
                             <DataTable.Row>
                                 {
-                                    metaData.map((metaDatum) => (
-                                        <DataTable.Cell>{datum[metaDatum.dataKey]}</DataTable.Cell>
+                                    metaData.map((metaDatum, i) => (
+                                        <DataTable.Cell key={i} numeric={metaDatum.numeric}>{datum[metaDatum.dataKey]}</DataTable.Cell>
                                     ))
                                 }
                             </DataTable.Row>

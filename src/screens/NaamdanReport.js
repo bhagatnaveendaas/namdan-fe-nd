@@ -15,14 +15,14 @@ const NaamdanReport = () => {
       });
   }, [csrfToken]);
 
-  const callNamdaanCountAPI = async (fromDate = "2017-01-03", toDate = "2021-10-03") => {
+  const callPrathamAndSatnamCountAPI = async (fromDate = "2017-01-03", toDate = "2021-10-03") => {
     const response = await getPrathamAndSatnamCount(csrfToken, fromDate, toDate);
     setPrathamAndSatnamResponse(response.data);
   }
 
   useEffect(() => {
     if (prathamAndSatnamCountResponse === null) {
-      callNamdaanCountAPI();
+      callPrathamAndSatnamCountAPI();
     }
   }, [csrfToken]);
 
@@ -58,7 +58,7 @@ const NaamdanReport = () => {
   ];
 
   return <ReportTemplate metaData={metaData} data={prathamAndSatnamCountResponse.data}
-                         onDateChangeCallback={callNamdaanCountAPI}/>;
+                         onDateChangeCallback={callPrathamAndSatnamCountAPI}/>;
 
 };
 
