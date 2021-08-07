@@ -1,12 +1,19 @@
-const dateInDDMMYYFormat = (date) => {
-    const dateMonth = date.getUTCMonth() + 1; // months from 1-12
-    const dateDay = date.getUTCDate();
-    const dateYear = date.getUTCFullYear();
+const getYear = (date) => {
+    return date.getUTCFullYear();
+}
 
-    return `${dateDay}/${dateMonth}/${dateYear}`;
+const getDay = (date) => {
+    return date.getUTCDate();
+}
+
+const getMonth = (date) => {
+    return date.getUTCMonth() + 1; // months from 1-12
+}
+
+export const dateInDDMMYYFormat = (date) => {
+    return `${getDay(date)}/${getMonth(date)}/${getYear(date)}`;
 };
 
-export {
-    // eslint-disable-next-line import/prefer-default-export
-    dateInDDMMYYFormat,
+export const dateInYYMMDDFormat = (date, seperator = "-") => {
+    return `${getYear(date)}${seperator}${getMonth(date)}${seperator}${getDay(date)}`;
 };

@@ -1,16 +1,18 @@
 import { post } from "../namdanAPIClient";
 
-const getNamdaanCount = (csrfToken) => {
+const getNamdaanCount = (csrfToken, f_date, t_date) => {
   const requestBody = {
     "page": 1,
     "country": 2,
     "state": 27,
-    "f_date": "2017-01-03",
-    "t_date": "2021-10-03",
+    f_date,
+    t_date,
     "namdan": 1
   };
+  
+  console.log(requestBody);
 
-  return post("reports/namdaan_counts", requestBody, csrfToken);
+  return post("reports/pratham_vs_satnam", requestBody, csrfToken);
 }
 
 export {

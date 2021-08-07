@@ -135,6 +135,9 @@ function Login({ navigation }) {
     }, []);
 
     const handleLogin = async () => {
+        // TODO: If I uncomment the following line, it's giving No identifiers allowed directly after numeric literal
+        // const deviceToken = Math.random() * 1_00_00_000;
+
         const config = {
             method: "post",
             url: "https://drfapi.jagatgururampalji.org/v1/auth/login",
@@ -149,7 +152,7 @@ function Login({ navigation }) {
                 "longitude": "20.000",
                 "latitude": "30.555",
                 "channel": "mobile",
-                "device_token": Math.random() * 1_00_00_000
+                "device_token": Math.random()
             },
         };
 
