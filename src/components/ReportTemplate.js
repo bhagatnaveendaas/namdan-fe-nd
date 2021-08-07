@@ -10,7 +10,6 @@ const ReportTemplate = ({ metaData, data, callback }) => {
   const [startDate, setStartDate] = useState(new Date(0));
   const [endDate, setEndDate] = useState(new Date());
   const [currentPage, setCurrentPage] = useState(1);
-  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     callback(dateInYYMMDDFormat(startDate), dateInYYMMDDFormat(endDate), currentPage);
@@ -32,7 +31,7 @@ const ReportTemplate = ({ metaData, data, callback }) => {
             </Text>)
         }
       </View>
-      {!refreshing && <View style={reportDashboardStyles.body}>
+      <View style={reportDashboardStyles.body}>
         <FlatList
           data={data}
           renderItem={({ item }) =>
@@ -56,13 +55,10 @@ const ReportTemplate = ({ metaData, data, callback }) => {
             setCurrentPage(currentPage + 1);
             callback(dateInYYMMDDFormat(startDate), dateInYYMMDDFormat(endDate), currentPage);
           }}
-          refreshing={() => setRefreshing(true)}
-          onRefresh={() => setRefreshing(true)}
           showDefaultLoadingIndicators={true}
           onEndReachedThreshold={0}
         />
       </View>
-      }
     </>
   );
 };
