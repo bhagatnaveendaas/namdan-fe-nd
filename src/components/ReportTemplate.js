@@ -45,15 +45,14 @@ const ReportTemplate = ({ metaData, data, callback }) => {
             </View>
           }
           onScroll={({ nativeEvent }) => {
-            if (isCloseToTop(nativeEvent)) {
-              if (currentPage >= 1)
-                setCurrentPage(currentPage - 1);
-              callback(dateInYYMMDDFormat(startDate), dateInYYMMDDFormat(endDate), currentPage);
+            if (isCloseToTop(nativeEvent) && currentPage > 1) {
+              callback(dateInYYMMDDFormat(startDate), dateInYYMMDDFormat(endDate), currentPage - 1);
+              setCurrentPage(currentPage - 1);
             }
           }}
           onEndReached={() => {
+            callback(dateInYYMMDDFormat(startDate), dateInYYMMDDFormat(endDate), currentPage + 1);
             setCurrentPage(currentPage + 1);
-            callback(dateInYYMMDDFormat(startDate), dateInYYMMDDFormat(endDate), currentPage);
           }}
           showDefaultLoadingIndicators={true}
           onEndReachedThreshold={0}
