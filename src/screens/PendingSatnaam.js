@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { AsyncStorage, Text } from 'react-native';
 import ReportTemplate from "../components/ReportTemplate";
 import { getPendingSatnaamCount } from "../httpClient/report/pendingSatnaamAPI";
+import { pendingSatnamMetadata } from "../metaData/pendingSatnaamMetadata";
 
 const PendingSatnaam = () => {
   const [pendingSatnaamResponse, setPendingSatnaamResponse] = useState(null);
@@ -28,31 +29,7 @@ const PendingSatnaam = () => {
 
   if (!pendingSatnaamResponse) return <Text>Loading data...</Text>;
 
-  const metaData = [
-    {
-      title: "Country",
-      dataKey: "country_name"
-    },
-    {
-      title: "State name",
-      dataKey: "state_name"
-    },
-    {
-      title: "District name",
-      dataKey: "district_name"
-    },
-    {
-      title: "Tehsil name",
-      dataKey: "tehsil_name"
-    },
-    {
-      title: "Total",
-      dataKey: "total",
-      numeric: true
-    }
-  ];
-
-  return <ReportTemplate metaData={metaData} data={pendingSatnaamResponse.data}
+  return <ReportTemplate metaData={pendingSatnamMetadata} data={pendingSatnaamResponse.data}
     onDateChangeCallback={callPendingSatnaamAPI} />;
 
 };

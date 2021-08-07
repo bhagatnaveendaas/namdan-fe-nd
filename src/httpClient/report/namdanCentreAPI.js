@@ -1,6 +1,6 @@
 import { post } from "../namdanAPIClient";
 
-const getNamdaanCount = (csrfToken, f_date, t_date) => {
+export const getNamdaanCount = (csrfToken, f_date, t_date) => {
   const requestBody = {
     "page": 1,
     "country": 2,
@@ -10,11 +10,5 @@ const getNamdaanCount = (csrfToken, f_date, t_date) => {
     "namdan": 1
   };
   
-  console.log(requestBody);
-
   return post("reports/namdaan_counts", requestBody, csrfToken);
-}
-
-export {
-  getNamdaanCount
 }

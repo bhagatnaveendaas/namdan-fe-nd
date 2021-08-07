@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { AsyncStorage, Text } from 'react-native';
 import ReportTemplate from "../components/ReportTemplate";
 import { getNamdaanCount } from "../httpClient/report/namdanCentreAPI";
+import { naamdanCentreMetadata } from "../metaData/naamdanCentreMetadata";
 
 const NaamdanCentre = () => {
   const [namdaanCountResponse, setNamdaanCountResponse] = useState(null);
@@ -28,31 +29,7 @@ const NaamdanCentre = () => {
 
   if (!namdaanCountResponse) return <Text>Loading data...</Text>;
 
-  const metaData = [
-    {
-      title: "Country",
-      dataKey: "country_name"
-    },
-    {
-      title: "State name",
-      dataKey: "state_name"
-    },
-    {
-      title: "District name",
-      dataKey: "district_name"
-    },
-    {
-      title: "Tehsil name",
-      dataKey: "tehsil_name"
-    },
-    {
-      title: "Total",
-      dataKey: "total",
-      numeric: true
-    }
-  ];
-
-  return <ReportTemplate metaData={metaData} data={namdaanCountResponse.data}
+  return <ReportTemplate metaData={naamdanCentreMetadata} data={namdaanCountResponse.data}
     onDateChangeCallback={callNamdaanCountAPI} />;
 
 };
