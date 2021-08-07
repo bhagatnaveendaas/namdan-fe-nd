@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import { Text } from 'react-native';
 import { AsyncStorage } from "react-native";
 import ReportTemplate from "../components/ReportTemplate";
-import { getNamdaanCount } from "../httpClient/report/namdanReportAPI";
+import { getPrathamAndSatnamCount } from "../httpClient/report/namdanReportAPI";
 
 const NaamdanReport = () => {
-  const [namdanCountResponse, setNamdanCountResponse] = useState(null);
+  const [prathamAndSatnamCountResponse, setPrathamAndSatnamResponse] = useState(null);
 
   const [csrfToken, setCsrfToken] = useState("");
 
@@ -17,21 +17,21 @@ const NaamdanReport = () => {
   }, [csrfToken]);
 
   const callNamdaanCountAPI = async (fromDate = "2017-01-03", toDate = "2021-10-03") => {
-    const response = await getNamdaanCount(csrfToken, fromDate, toDate);
-    setNamdanCountResponse(response.data);
+    const response = await getPrathamAndSatnamCount(csrfToken, fromDate, toDate);
+    setPrathamAndSatnamResponse(response.data);
   }
 
   useEffect(() => {
-    if (namdanCountResponse === null) {
+    if (prathamAndSatnamCountResponse === null) {
       callNamdaanCountAPI();
     }
   }, [csrfToken]);
 
-  if (!namdanCountResponse) return <Text>Loading data...</Text>;
+  if (!prathamAndSatnamCountResponse) return <Text>Loading data...</Text>;
 
   const headings = [{ title: "Country" }, { title: "State name" }, { title: "District name" }, { title: "Tehsil name" }, { title: "Pratham", numeric: true }, { title: "Satnaam", numeric: true }];
 
-  return <ReportTemplate headings={headings} data={namdanCountResponse.data} onDateChangeCallback={callNamdaanCountAPI} />;
+  return <ReportTemplate headings={headings} data={prathamAndSatnamCountResponse.data} onDateChangeCallback={callNamdaanCountAPI} />;
 
 };
 

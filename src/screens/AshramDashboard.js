@@ -146,17 +146,17 @@ const Home = ({ navigation }) => {
                         <FlatIconButtons
                             label={`Naamdan${"\n"}Centre`}
                             icon={require("../../assets/icons/naamdanCenter.png")}
-                            pressHandler={() => {}}
+                            pressHandler={() => navigation.push("NaamdanCentre")}
                         />
                         <FlatIconButtons
                             label={`Pending${"\n"}Satnaam`}
                             icon={require("../../assets/icons/psn.png")}
-                            pressHandler={() => {}}
+                            pressHandler={() => navigation.push("PendingSatnaam")}
                         />
                         <FlatIconButtons
                             label={`Eligibility for${"\n"}Punar Updesh`}
                             icon={require("../../assets/icons/pu.png")}
-                            pressHandler={() => {}}
+                            pressHandler={() => navigation.push("EligibilityForPunarUpdesh")}
                         />
                     </View>
                 </View>

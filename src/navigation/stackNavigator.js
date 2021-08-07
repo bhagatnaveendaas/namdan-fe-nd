@@ -9,6 +9,9 @@ import SignUp from "../screens/SignUp";
 import verifyOtp from "../screens/verifyOtp";
 import Entry from "../screens/Entry";
 import NaamdanReport from "../screens/NaamdanReport";
+import NaamdanCentre from "../screens/NaamdanCentre";
+import PendingSatnaam from "../screens/PendingSatnaam";
+import EligibilityForPunarUpdesh from "../screens/EligiblityForPunarUpdesh";
 
 const Stack = createStackNavigator();
 
@@ -41,6 +44,9 @@ const MainStackNavigator = () => (
         />
         <Stack.Screen name="CountryDashboard" component={CountryDashboard} />
         <Stack.Screen name="NaamdanReport" component={NaamdanReport} />
+        <Stack.Screen name="NaamdanCentre" component={NaamdanCentre} />
+        <Stack.Screen name="PendingSatnaam" component={PendingSatnaam} />
+        <Stack.Screen name="EligibilityForPunarUpdesh" component={EligibilityForPunarUpdesh} />
     </Stack.Navigator>
 );
 
