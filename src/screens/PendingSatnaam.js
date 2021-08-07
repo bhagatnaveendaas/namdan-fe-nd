@@ -24,7 +24,7 @@ const PendingSatnaam = () => {
   if (!pendingSatnaamResponse) return <Text>Loading data...</Text>;
 
   return <ReportTemplate metaData={pendingSatnamMetadata} data={pendingSatnaamResponse.data}
-    onDateChangeCallback={callPendingSatnaamAPI} />;
+    callback={callPendingSatnaamAPI} />;
 
 };
 

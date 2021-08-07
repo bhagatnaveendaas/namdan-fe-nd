@@ -24,7 +24,7 @@ const EligibilityForPunarUpdesh = () => {
   if (!eligibilityForPunarUpdeshResponse) return <Text>Loading data...</Text>;
 
   return <ReportTemplate metaData={eligibilityForPunarUpdeshMetadata} data={eligibilityForPunarUpdeshResponse.data}
-    onDateChangeCallback={callEligibilityForPunarUpdeshAPI} />;
+    callback={callEligibilityForPunarUpdeshAPI} />;
 
 };
 

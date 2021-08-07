@@ -24,7 +24,7 @@ const NaamdanReport = () => {
   if (!prathamAndSatnamCountResponse) return <Text>Loading data...</Text>;
 
   return <ReportTemplate metaData={naamdanReportMetaData} data={prathamAndSatnamCountResponse.data}
-    onDateChangeCallback={callPrathamAndSatnamCountAPI} />;
+    callback={callPrathamAndSatnamCountAPI} />;
 
 };
 

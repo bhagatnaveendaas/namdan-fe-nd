@@ -23,7 +23,7 @@ const NaamdanCentre = () => {
   if (!namdaanCountResponse) return <Text>Loading data...</Text>;
 
   return <ReportTemplate metaData={naamdanCentreMetadata} data={namdaanCountResponse.data}
-    onDateChangeCallback={callNamdaanCountAPI} />;
+    callback={callNamdaanCountAPI} />;
 
 };
 
