@@ -9,8 +9,8 @@ const NaamdanCentre = () => {
   const [namdaanCountResponse, setNamdaanCountResponse] = useState(null);
   const csrfToken = useGetAsyncStorageItem("token");
 
-  const callNamdaanCountAPI = async (fromDate = "2017-01-03", toDate = "2021-10-03") => {
-    const response = await getNamdaanCount(csrfToken, fromDate, toDate);
+  const callNamdaanCountAPI = async (fromDate = "2017-01-03", toDate = "2021-10-03", page) => {
+    const response = await getNamdaanCount(csrfToken, fromDate, toDate, page);
     setNamdaanCountResponse(response.data);
   }
 

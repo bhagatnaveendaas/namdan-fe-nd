@@ -18,7 +18,7 @@ const DateRangeFilter = ({
         <>
             <View
                 style={[
-                    theme.card,
+                    theme.box,
                     {
                         flexDirection: "row",
                         justifyContent: "space-evenly",

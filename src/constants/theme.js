@@ -9,6 +9,11 @@ export default {
         horizontal: "4%",
         bottom: "4%",
     },
+    box: {
+        backgroundColor: "white",
+        padding: "2%",
+        elevation: 5,
+    },
     card: {
         backgroundColor: "white",
         padding: "2%",

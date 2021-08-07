@@ -3,14 +3,15 @@ import { ScrollView } from "react-native";
 import { DataTable } from 'react-native-paper';
 import { dateInYYMMDDFormat } from "../utilities/DateUtils";
 import DateRangeFilter from "./DateRangeFilter";
-import { isCloseToBottom } from "../utilities/ScrollViewUtils";
+import { isCloseToBottom, isCloseToTop } from "../utilities/ScrollViewUtils";
 
 const ReportTemplate = ({ metaData, data, callback }) => {
   const [startDate, setStartDate] = useState(new Date(0));
   const [endDate, setEndDate] = useState(new Date());
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    callback(dateInYYMMDDFormat(startDate), dateInYYMMDDFormat(endDate));
+    callback(dateInYYMMDDFormat(startDate), dateInYYMMDDFormat(endDate), currentPage);
   }, [startDate, endDate]);
 
   return (
@@ -23,7 +24,14 @@ const ReportTemplate = ({ metaData, data, callback }) => {
       />
       <ScrollView onScroll={({ nativeEvent }) => {
         if (isCloseToBottom(nativeEvent)) {
-          console.log("Scroll end reached");
+          setCurrentPage(currentPage + 1);
+          callback(dateInYYMMDDFormat(startDate), dateInYYMMDDFormat(endDate), currentPage);
+        }
+
+        if (isCloseToTop(nativeEvent)) {
+          if(currentPage >= 1)
+            setCurrentPage(currentPage - 1);
+          callback(dateInYYMMDDFormat(startDate), dateInYYMMDDFormat(endDate), currentPage);
         }
       }}
         scrollEventThrottle={400}>
