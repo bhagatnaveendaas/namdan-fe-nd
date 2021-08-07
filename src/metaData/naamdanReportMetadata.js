@@ -4,15 +4,15 @@ export const naamdanReportMetaData = [
     dataKey: "country_name"
   },
   {
-    title: "State name",
+    title: "State",
     dataKey: "state_name"
   },
   {
-    title: "District name",
+    title: "District",
     dataKey: "district_name"
   },
   {
-    title: "Tehsil name",
+    title: "Tehsil",
     dataKey: "tehsil_name"
   },
   {
