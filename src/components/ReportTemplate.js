@@ -4,7 +4,7 @@ import { DataTable } from 'react-native-paper';
 import { dateInYYMMDDFormat } from "../utilities/DateUtils";
 import DateRangeFilter from "./DateRangeFilter";
 
-const ReportTemplate = ({ headings, data, onDateChangeCallback }) => {
+const ReportTemplate = ({ metaData, data, onDateChangeCallback }) => {
     const [startDate, setStartDate] = useState(new Date(0));
     const [endDate, setEndDate] = useState(new Date());
 
@@ -24,9 +24,9 @@ const ReportTemplate = ({ headings, data, onDateChangeCallback }) => {
                 <DataTable>
                     <DataTable.Header>
                         {
-                            headings.map((heading) => (
+                            metaData.map((metaDatum) => (
                                 <>
-                                    <DataTable.Title numeric={heading.numeric}>{heading.title}</DataTable.Title>
+                                    <DataTable.Title numeric={metaDatum.numeric}>{metaDatum.title}</DataTable.Title>
                                 </>
                             ))
                         }
@@ -35,12 +35,11 @@ const ReportTemplate = ({ headings, data, onDateChangeCallback }) => {
                     {
                         data.map((datum) => (
                             <DataTable.Row>
-                                <DataTable.Cell>{datum.country_name}</DataTable.Cell>
-                                <DataTable.Cell>{datum.state_name}</DataTable.Cell>
-                                <DataTable.Cell>{datum.district_name}</DataTable.Cell>
-                                <DataTable.Cell>{datum.tehsil_name}</DataTable.Cell>
-                                <DataTable.Cell numeric>{datum.prathams}</DataTable.Cell>
-                                <DataTable.Cell numeric>{datum.satnams}</DataTable.Cell>
+                                {
+                                    metaData.map((metaDatum) => (
+                                        <DataTable.Cell>{datum[metaDatum.dataKey]}</DataTable.Cell>
+                                    ))
+                                }
                             </DataTable.Row>
                         ))
                     }

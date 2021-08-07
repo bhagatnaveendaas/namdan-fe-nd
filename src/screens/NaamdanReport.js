@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { Text } from 'react-native';
-import { AsyncStorage } from "react-native";
+import React, {useEffect, useState} from "react";
+import {AsyncStorage, Text} from 'react-native';
 import ReportTemplate from "../components/ReportTemplate";
-import { getPrathamAndSatnamCount } from "../httpClient/report/namdanReportAPI";
+import {getPrathamAndSatnamCount} from "../httpClient/report/namdanReportAPI";
 
 const NaamdanReport = () => {
   const [prathamAndSatnamCountResponse, setPrathamAndSatnamResponse] = useState(null);
@@ -11,8 +10,8 @@ const NaamdanReport = () => {
 
   useEffect(() => {
     AsyncStorage.getItem("token")
-      .then((csrfToken) => {
-        setCsrfToken(csrfToken);
+      .then((token) => {
+        setCsrfToken(token);
       });
   }, [csrfToken]);
 
@@ -29,9 +28,37 @@ const NaamdanReport = () => {
 
   if (!prathamAndSatnamCountResponse) return <Text>Loading data...</Text>;
 
-  const headings = [{ title: "Country" }, { title: "State name" }, { title: "District name" }, { title: "Tehsil name" }, { title: "Pratham", numeric: true }, { title: "Satnaam", numeric: true }];
+  const metaData = [
+    {
+      title: "Country",
+      dataKey: "country_name"
+    },
+    {
+      title: "State name",
+      dataKey: "state_name"
+    },
+    {
+      title: "District name",
+      dataKey: "district_name"
+    },
+    {
+      title: "Tehsil name",
+      dataKey: "tehsil_name"
+    },
+    {
+      title: "Pratham",
+      dataKey: "prathams",
+      numeric: true
+    },
+    {
+      title: "Satnaam",
+      dataKey: "satnams",
+      numeric: true
+    }
+  ];
 
-  return <ReportTemplate headings={headings} data={prathamAndSatnamCountResponse.data} onDateChangeCallback={callNamdaanCountAPI} />;
+  return <ReportTemplate metaData={metaData} data={prathamAndSatnamCountResponse.data}
+                         onDateChangeCallback={callNamdaanCountAPI}/>;
 
 };
 
