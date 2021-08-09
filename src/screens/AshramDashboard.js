@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { AsyncStorage, Text, View } from "react-native";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
+import axios from "axios";
 import theme from "../constants/theme";
-
 import RoundIconButton from "../components/RoundIconButton";
 import FlatIconButtons from "../components/FlatIconButtons";
 import DashboardHeading from "../components/DashboardHeading";
@@ -10,14 +10,59 @@ import MasterCreation from "../components/MasterCreation";
 import OtherControls from "../components/OtherControls";
 import ScoreBoard from "../components/ScoreBoard";
 import VerticalIconButton from "../components/VerticalIconButton";
+import appConfig from '../config';
 
 const Home = ({ navigation }) => {
+    const [kpiCounts, setKpiCounts] = useState({});
+    const [showAlert, setShowAlert] = useState({
+        show: false,
+        title: "",
+        message: "",
+        confirm: "Ok",
+    });
     const temp = async () => {
         const countries = await AsyncStorage.getItem("districts");
-        console.log({ countries });
+        // console.log({ countries });
     };
+    const getKPICounts = async () => {
+        console.log('Getting kpi counts...');
+        const token = await AsyncStorage.getItem("token");
+        console.log(token);
+        const config = {
+            method: "POST",
+            url: `${appConfig.apiUrl}/reports/kpi_counts`,
+            headers: {
+                "key": appConfig.apiKey,
+                "Accept": 'application/json',
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": token
+            },
+        };
+        axios(config)
+            .then(async (response) => {
+                if (response.data.success) {
+                    setKpiCounts(response.data.data);
+                } else {
+                    const temp = {
+                        ...showAlert,
+                        show: true,
+                        title: "Opps",
+                        message: "Error loading KPIs",
+                    };
+                    setShowAlert(temp);
+                }
+            })
+            .catch((error) => {
+                if (error && error.response) {
+                    console.log(`KPI: ${error.response.data}`);
+                } else {
+                    console.log(`KPI: ${error}`);
+                }
+            });
+    }
     useEffect(() => {
         temp();
+        getKPICounts();
     }, []);
     return (
         <ScrollView style={{ paddingHorizontal: "3.5%" }}>
@@ -30,7 +75,7 @@ const Home = ({ navigation }) => {
                             fontWeight: "bold",
                         }}
                     >
-                        Notificaitons
+                        Notifications
                     </Text>
                     <View style={{ paddingVertical: "3%" }}>
                         <Text
@@ -53,7 +98,13 @@ const Home = ({ navigation }) => {
                     </TouchableOpacity>
                 </View>
             </View>
-            <ScoreBoard />
+            <ScoreBoard
+                prathams={kpiCounts.prathams}
+                satnams={kpiCounts.satnams}
+                sarnams={kpiCounts.sarnams}
+                prathamVsSatnam={kpiCounts.pratham_vs_satnam}
+                punarUpdesh={0}
+            />
             <View>
                 <DashboardHeading label="Entries" />
                 <View
