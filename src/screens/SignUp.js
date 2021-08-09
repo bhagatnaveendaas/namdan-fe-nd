@@ -7,18 +7,20 @@ import {
 } from "react-native-gesture-handler";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as ImagePicker from "expo-image-picker";
+import AwesomeAlert from "react-native-awesome-alerts";
+import axios from "axios";
 import DropdownV2 from "../components/DropdownV2";
 import Dropdown from "../components/Dropdown";
 import InputFieldWithLabel from "../components/InputFieldWithLabel";
 import RoundButton from "../components/RoundButton";
 import styles from "../styles/Singup";
 import Constants from "../constants/text/Signup";
-import axios from "axios";
-import AwesomeAlert from "react-native-awesome-alerts";
 import _, { fill } from "lodash";
 import { serialize } from "object-to-formdata";
+import appConfig from '../config';
 
-function SignUp() {
+
+function SignUp({navigation}) {
     const naamdanTakenAt = ["Online", "Naamdan Center"];
     const relations = ["S/O", "D/O"];
     // const countries = ['India', 'Pakistan', 'Nepal'];
@@ -32,17 +34,17 @@ function SignUp() {
 
     const [showAlert, setShowAlert] = useState({
         show: false,
+        showCancelButton: false,
         title: "",
         message: "",
-        cancel: "",
-        confirm: "",
+        confirm: "Ok",
     });
     const createId = (length) => {
-        var chars = "ABCDEFGHIJKLMNOPQRSTUFWXYZ1234567890";
-        var pwd = _.sampleSize(chars, length || 12); // lodash v4: use _.sampleSize
+        const chars = "ABCDEFGHIJKLMNOPQRSTUFWXYZ1234567890";
+        const pwd = _.sampleSize(chars, length || 12); // lodash v4: use _.sampleSize
         return pwd.join("");
     };
-
+    const getRequiredDateFormat = (dateObj) => `${dateObj.getFullYear()}-${dateObj.getMonth() - 1}-${dateObj.getDate()}`;
     const [userData, setUserData] = useState({
         address: "",
         country_id: 2,
@@ -52,20 +54,19 @@ function SignUp() {
         guardian_name: "",
         mobile_no: "",
         name: "",
-        photo: "",
+        avatar: "",
         dob: "",
         pincode: "",
         relation: "",
         state_id: "",
         tehsil_id: "",
         form_no: createId(14),
-        form_date: new Date(),
+        form_date: getRequiredDateFormat(new Date()),
         area_type: "rural",
     });
     const [image, setImage] = useState(null);
     const [mode, setMode] = useState("date");
     const [show, setShow] = useState(false);
-
     const onNaamdanChange = (value) => {
         const temp = { ...userData };
         temp.naamdanTaken = value;
@@ -125,46 +126,42 @@ function SignUp() {
         setUserData(temp);
     }, [tehsils]);
 
-    const getStates = async (country_id) => {
+    const getStates = async (countryId) => {
         const temp = JSON.parse(await AsyncStorage.getItem("states"));
         const reqStates = temp.filter(
-            (state) => state.country_id == countries[country_id].id
+            (state) => state.country_id === countries[countryId].id
         );
         setStates(reqStates);
     };
 
-    const getDistricts = async (state_id) => {
+    const getDistricts = async (stateId) => {
         const temp = JSON.parse(await AsyncStorage.getItem("districts"));
         let reqDistricts = temp.filter(
-            (district) => district.state_id == states[state_id].id
+            (district) => district.state_id === states[stateId].id
         );
-        reqDistricts = reqDistricts.map((item) => {
-            return { ...item, name: item.district_name };
-        });
+        reqDistricts = reqDistricts.map((item) => ({ ...item, name: item.district_name }));
         setDistricts(reqDistricts);
     };
 
-    const getTehsils = async (district_id) => {
+    const getTehsils = async (districtId) => {
         const temp = JSON.parse(await AsyncStorage.getItem("tehsils"));
         let reqTehsils = temp.filter(
-            (tehsil) => tehsil.district_id == districts[district_id].district_id
+            (tehsil) => tehsil.district_id === districts[districtId].district_id
         );
 
-        reqTehsils = reqTehsils.map((item) => {
-            return { ...item, name: item.tehsil_name };
-        });
+        reqTehsils = reqTehsils.map((item) => ({ ...item, name: item.tehsil_name }));
         setTehsils(reqTehsils);
     };
 
     const onDobChange = (event, selectedDate) => {
-        let temp = { ...userData };
-        temp.dob = selectedDate;
+        const temp = { ...userData };
+        temp.dob = new Date(selectedDate);
         const today = new Date();
         const birthDate = new Date(selectedDate);
         let age = today.getFullYear() - birthDate.getFullYear();
         const m = today.getMonth() - birthDate.getMonth();
         if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-            age--;
+            age -= age;
         }
         temp.age = age;
         console.log({ age });
@@ -235,37 +232,44 @@ function SignUp() {
         }
         const temp = { ...userData };
         temp.country_id = countries[userData.country_id].id;
-        temp.state_id = countries[userData.state_id].id;
-        temp.district_id = countries[userData.district_id].district_id;
-        temp.tehsil_id = countries[userData.tehsil_id].tehsil_id;
+        temp.state_id = states[userData.state_id].id;
+        temp.district_id = districts[userData.district_id].district_id;
+        temp.tehsil_id = tehsils[userData.tehsil_id].tehsil_id;
+        temp.avatar = userData.avatar;
+        temp.dob = getRequiredDateFormat(userData.dob);
+        delete temp.naamdanTaken;
+        delete temp.avatar;
         const data = serialize(temp);
-        console.log({ data });
         const config = {
             method: "post",
-            url: "https://drfapi.jagatgururampalji.org/v1/disciple/create",
+            url: `${appConfig.apiUrl}/disciple/create`,
             headers: {
                 key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
                 Accept: "multipart/form-data",
                 "X-CSRF-TOKEN": await AsyncStorage.getItem("token"),
             },
-            data: data,
+            data,
         };
         console.log({ config });
 
         axios(config)
-            .then(function (response) {
+            .then((response) => {
                 console.log(response.data);
                 const temp = {
                     ...showAlert,
                     show: true,
                     title: "Successful",
-                    message: "Entry done successfully",
+                    message: "Disciple created successfully",
                 };
                 setShowAlert(temp);
-                return;
+                navigation.push("AshramDashboard");
             })
-            .catch(function (error) {
-                console.log(error);
+            .catch((error) => {
+                if (error && error.response) {
+                    console.log(`Signup: ${JSON.stringify(error.response.data)}`);
+                } else {
+                    console.log(`Signup: ${error}`);
+                }
             });
     };
 
@@ -306,7 +310,7 @@ function SignUp() {
         if (!result.cancelled) {
             const temp = {
                 ...userData,
-                photo: {
+                avatar: {
                     uri: result.uri,
                     name: result.uri.split("/").pop(),
                     type: "image",
@@ -340,9 +344,9 @@ function SignUp() {
                 }}
             />
             <TouchableOpacity onPress={pickImage}>
-                {userData.photo?.uri ? (
+                {userData.avatar?.uri ? (
                     <Image
-                        source={{ uri: userData.photo?.uri }}
+                        source={{ uri: userData.avatar?.uri }}
                         style={styles.image}
                     />
                 ) : (
