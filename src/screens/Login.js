@@ -12,6 +12,7 @@ import RoundButton from "../components/RoundButton";
 import textConstants from "../constants/text/Login";
 import theme from "../constants/theme";
 import styles from "../styles/Login";
+import appConfig from '../config';
 
 function Login({ navigation }) {
     const [userName, setUserName] = useState("");
@@ -20,8 +21,7 @@ function Login({ navigation }) {
         show: false,
         title: "",
         message: "",
-        cancel: "",
-        confirm: "",
+        confirm: "Ok",
     });
 
     const handleUserNameChange = (value) => {
@@ -34,7 +34,7 @@ function Login({ navigation }) {
         console.log("Called");
         const config = {
             method: "get",
-            url: "https://drfapi.jagatgururampalji.org/v1/country/list?page=1&limit=1000",
+            url: `${appConfig.apiUrl}/country/list?page=1&limit=1000`,
             headers: {
                 key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
                 Accept: "application/json",
@@ -53,7 +53,7 @@ function Login({ navigation }) {
     const getStates = async () => {
         const config = {
             method: "get",
-            url: `https://drfapi.jagatgururampalji.org/v1/state/list?page=1&limit=100000`,
+            url: `${appConfig.apiUrl}/state/list?page=1&limit=100000`,
             headers: {
                 key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
                 Accept: "application/json",
@@ -72,7 +72,7 @@ function Login({ navigation }) {
     const getDistricts = async () => {
         const config = {
             method: "get",
-            url: "https://drfapi.jagatgururampalji.org/v1/district/list?page=1&limit=1000000",
+            url: `${appConfig.apiUrl}/district/list?page=1&limit=1000000`,
             headers: {
                 key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
                 Accept: "application/json",
@@ -91,7 +91,7 @@ function Login({ navigation }) {
     const getTehsils = async () => {
         const config = {
             method: "get",
-            url: "https://drfapi.jagatgururampalji.org/v1/tehsil/list?page=1&limit=100000",
+            url: `${appConfig.apiUrl}/tehsil/list?page=1&limit=100000`,
             headers: {
                 key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
                 Accept: "application/json",
@@ -140,7 +140,7 @@ function Login({ navigation }) {
 
         const config = {
             method: "post",
-            url: "https://drfapi.jagatgururampalji.org/v1/auth/login",
+            url: `${appConfig.apiUrl}/auth/login`,
             headers: {
                 key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
                 Accept: "application/json",
@@ -148,7 +148,7 @@ function Login({ navigation }) {
             data: {
                 "username": userName,
                 "password": password,
-                "device_id": "device_id",
+                "device_id": "fdsfsf",
                 "longitude": "20.000",
                 "latitude": "30.555",
                 "channel": "mobile",
@@ -168,6 +168,7 @@ function Login({ navigation }) {
                     };
                     setShowAlert(temp);
                     let csrfKey = "";
+
                     let cookies = response.headers["set-cookie"];
                     cookies = cookies[0].split(" namdan_csrf_key=");
                     // eslint-disable-next-line prefer-destructuring
