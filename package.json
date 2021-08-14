@@ -33,6 +33,7 @@
     "expo-image-picker": "^9.2.1",
     "expo-status-bar": "~1.0.3",
     "lodash": "^4.17.21",
+    "moment": "^2.29.1",
     "object-to-formdata": "^4.1.0",
     "react": "16.13.1",
     "react-dom": "16.13.1",

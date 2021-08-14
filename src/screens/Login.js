@@ -6,7 +6,7 @@ import AwesomeAlert from "react-native-awesome-alerts";
 import {
     ScrollView,
     TextInput,
-    TouchableOpacity
+    TouchableOpacity,
 } from "react-native-gesture-handler";
 import RoundButton from "../components/RoundButton";
 import textConstants from "../constants/text/Login";
@@ -108,10 +108,10 @@ function Login({ navigation }) {
     };
 
     const checkDataExist = async () => {
-        let countries = await AsyncStorage.getItem("countries");
-        let states = await AsyncStorage.getItem("states");
-        let districts = await AsyncStorage.getItem("districts");
-        let tehsils = await AsyncStorage.getItem("tehsils");
+        const countries = await AsyncStorage.getItem("countries");
+        const states = await AsyncStorage.getItem("states");
+        const districts = await AsyncStorage.getItem("districts");
+        const tehsils = await AsyncStorage.getItem("tehsils");
         return countries && states && districts && tehsils;
     };
 
@@ -146,19 +146,20 @@ function Login({ navigation }) {
                 Accept: "application/json",
             },
             data: {
-                "username": userName,
-                "password": password,
-                "device_id": "device_id",
-                "longitude": "20.000",
-                "latitude": "30.555",
-                "channel": "mobile",
-                "device_token": Math.random()
+                username: userName,
+                password: password,
+                device_id: "device_id",
+                longitude: "20.000",
+                latitude: "30.555",
+                channel: "mobile",
+                login_otp:"123456",
+                device_token: Math.random(),
             },
         };
 
         axios(config)
             .then(async (response) => {
-                // console.log(response);
+                console.log({ response });
                 if (response.data.success) {
                     const temp = {
                         ...showAlert,
@@ -226,6 +227,7 @@ function Login({ navigation }) {
                         style={styles.image}
                         source={require("../../assets/Guruji2.png")}
                     />
+                    
                 </View>
                 <View>
                     <Text

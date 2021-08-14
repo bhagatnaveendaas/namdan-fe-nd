@@ -112,12 +112,12 @@ const Home = ({ navigation }) => {
                         iconName={require("../../assets/icons/keyBg.png")}
                     />
                     <RoundIconButton
-                        handleClick={() => {}}
+                        handleClick={() => {navigation.push('Approvals')}}
                         label={`View${"\n"}Approvals`}
                         iconName={require("../../assets/icons/tickBg.png")}
                     />
                     <RoundIconButton
-                        handleClick={() => {}}
+                        handleClick={() => {navigation.push('AddNaamdanCenter')}}
                         label={`+ Naamdan${"\n"}Center`}
                         iconName={require("../../assets/icons/naamdanCenterBg.png")}
                     />

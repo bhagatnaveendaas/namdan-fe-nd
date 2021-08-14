@@ -7,5 +7,5 @@ export const getPrathamAndSatnamCount = (csrfToken, f_date, t_date, page = 1) =>
     t_date
   };
   
-  return post("reports/pratham_vs_satnam", requestBody, csrfToken);
+  return post("reports/pratham_vs_satnam", requestBody, csrfToken,"post");
 }

@@ -12,6 +12,8 @@ import NaamdanReport from "../screens/NaamdanReport";
 import NaamdanCentre from "../screens/NaamdanCentre";
 import PendingSatnaam from "../screens/PendingSatnaam";
 import EligibilityForPunarUpdesh from "../screens/EligiblityForPunarUpdesh";
+import AddNaamdanCenter from "../screens/AddNaamdanCenter";
+import Approvals from "../screens/Approvals";
 
 const Stack = createStackNavigator();
 
@@ -47,6 +49,8 @@ const MainStackNavigator = () => (
         <Stack.Screen name="NaamdanCentre" component={NaamdanCentre} />
         <Stack.Screen name="PendingSatnaam" component={PendingSatnaam} />
         <Stack.Screen name="EligibilityForPunarUpdesh" component={EligibilityForPunarUpdesh} />
+        <Stack.Screen name="AddNaamdanCenter" component={AddNaamdanCenter} />
+        <Stack.Screen name="Approvals" component={Approvals} />
     </Stack.Navigator>
 );
 

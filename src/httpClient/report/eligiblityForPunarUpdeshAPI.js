@@ -7,5 +7,5 @@ export const getEligibilityForPunarUpdeshCount = (csrfToken, f_date, t_date) => 
     t_date
   };
   
-  return post("reports/satnam_validity_expired", requestBody, csrfToken);
+  return post("reports/satnam_validity_expired", requestBody, csrfToken,"post");
 }

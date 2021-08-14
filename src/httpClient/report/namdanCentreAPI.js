@@ -7,5 +7,5 @@ export const getNamdaanCount = (csrfToken, f_date, t_date) => {
     t_date
   };
   
-  return post("reports/namdaan_counts", requestBody, csrfToken);
+  return post("reports/namdaan_counts", requestBody, csrfToken,"post");
 }

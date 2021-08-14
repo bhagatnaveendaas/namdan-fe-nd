@@ -7,5 +7,5 @@ export const getPendingSatnaamCount = (csrfToken, f_date, t_date) => {
     t_date
   };
   
-  return post("reports/satnam_validity_expiring", requestBody, csrfToken);
+  return post("reports/satnam_validity_expiring", requestBody, csrfToken,"post");
 }
