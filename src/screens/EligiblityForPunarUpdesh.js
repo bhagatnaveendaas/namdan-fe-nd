@@ -10,8 +10,8 @@ const EligibilityForPunarUpdesh = () => {
 
   const csrfToken = useGetAsyncStorageItem("token");
 
-  const callEligibilityForPunarUpdeshAPI = async (fromDate = "2017-01-03", toDate = "2021-10-03", page) => {
-    const response = await getPendingSatnaamCount(csrfToken, fromDate, toDate, page);
+  const callEligibilityForPunarUpdeshAPI = async (fromDate = "2017-01-03", toDate = "2021-10-03") => {
+    const response = await getPendingSatnaamCount(csrfToken, fromDate, toDate);
     setEligiblityForPunarUpdeshResponse(response.data);
   }
 

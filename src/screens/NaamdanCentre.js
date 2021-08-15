@@ -9,8 +9,8 @@ const NaamdanCentre = () => {
   const [namdaanCountResponse, setNamdaanCountResponse] = useState(null);
   const csrfToken = useGetAsyncStorageItem("token");
 
-  const callNamdaanCountAPI = async (fromDate = "2017-01-03", toDate = "2021-10-03", page) => {
-    const response = await getNamdaanCount(csrfToken, fromDate, toDate, page);
+  const callNamdaanCountAPI = async (fromDate = "2017-01-03", toDate = "2021-10-03", data) => {
+    const response = await getNamdaanCount(csrfToken, fromDate, toDate, data);
     setNamdaanCountResponse(response.data);
   }
 
@@ -22,7 +22,7 @@ const NaamdanCentre = () => {
 
   if (!namdaanCountResponse) return <Text>Loading data...</Text>;
 
-  return <ReportTemplate metaData={naamdanCentreMetadata} data={namdaanCountResponse.data}
+  return <ReportTemplate metaData={naamdanCentreMetadata(namdaanCountResponse.data[0])} data={namdaanCountResponse.data}
     callback={callNamdaanCountAPI} />;
 
 };

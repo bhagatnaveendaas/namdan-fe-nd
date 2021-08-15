@@ -1,8 +1,7 @@
 import { post } from "../namdanAPIClient";
 
-export const getPrathamAndSatnamCount = (csrfToken, f_date, t_date, page = 1) => {
+export const getPrathamAndSatnamCount = (csrfToken, f_date, t_date) => {
   const requestBody = {
-    page,
     f_date,
     t_date
   };
