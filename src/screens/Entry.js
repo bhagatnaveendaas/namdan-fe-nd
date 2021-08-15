@@ -8,16 +8,16 @@ import style from '../styles/Entry';
 const Entry = () => {
     const [search, setSearch] = useState("");
     const [personSelected, setPersonSelected] = useState(false)
-    const handleSearchChange=(e)=>{
-        
+    const handleSearchChange=(search)=>{
+        console.log(search);
     }
     return (
         <View>
             <View>
                 <View>
                     <SearchBar
-                        placeholder="Type Here..."
-                        onChangeText={this.updateSearch}
+                        placeholder="Type to search"
+                        onChangeText={handleSearchChange}
                         value={search}
                     />
                 </View>

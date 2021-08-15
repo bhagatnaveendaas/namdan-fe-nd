@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { View, Text } from "react-native";
 import getPendingApprovals from "../httpClient/approvals/getPendingApprovals";
+import approveCentre from "../httpClient/approvals/approveCentre";
+import rejectCentre from "../httpClient/approvals/rejectCentre";
 import { useGetAsyncStorageItem } from "../hooks/useGetAsyncStorageItem";
 import { AsyncStorage } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
@@ -8,15 +10,28 @@ import { SafeAreaView } from "react-native";
 import { Image } from "react-native";
 import { Platform } from "react-native";
 import { Linking } from "react-native";
+import theme from "../constants/theme";
+import { TouchableOpacity } from "react-native";
+import Notice from "../components/notice";
 
 function Approvals() {
-    const [pendingApprovals, setPendingApprovals] = useState({});
+    const [pendingApprovals, setPendingApprovals] = useState([]);
     const [states, setStates] = useState([]);
     const [districts, setDistricts] = useState([]);
     const [countries, setCountries] = useState([]);
     const [tehsils, setTehsils] = useState([]);
+    const [isVisible, setIsVisible] = useState(false);
+    const [message, setMessage] = useState(
+        "Are you sure you want to approve this centre ?"
+    );
+    const [userConsent, setUserConsent] = useState(true);
+    const [icon, setIcon] = useState(
+        require("../../assets/icons/question_mark.png")
+    );
+    const [selectedItem, setSelectedItem] = useState({});
 
     const callPendingApprovals = async () => {
+        const csrfToken = await AsyncStorage.getItem("token");
         const tempCountries = JSON.parse(
             await AsyncStorage.getItem("countries")
         );
@@ -33,12 +48,16 @@ function Approvals() {
         const tempTehsils = JSON.parse(await AsyncStorage.getItem("tehsils"));
         setTehsils(tempTehsils ? tempTehsils : []);
 
-        const csrfToken = await AsyncStorage.getItem("token");
         const response = await getPendingApprovals(csrfToken);
-        setPendingApprovals(response.data.data);
+        setPendingApprovals(
+            response.data.data.filter(
+                (item) => item.status === "Pending for verification"
+            )
+        );
     };
 
     useEffect(() => {
+        setPendingApprovals([]);
         callPendingApprovals();
     }, []);
 
@@ -87,8 +106,53 @@ function Approvals() {
         });
     };
 
+    const consentModal = (id, status) => {
+        if (status === "Approve" || status === "Reject") {
+            setMessage(`Are you sure you want to ${status} this centre?`);
+            setUserConsent(true);
+            setIcon(require("../../assets/icons/question_mark.png"));
+            setSelectedItem({ id, status });
+            setIsVisible(true);
+        }
+    };
+
+    const updateRecord = async (item) => {
+        try {
+            setIsVisible(false);
+            console.log(item);
+            const csrfToken = await AsyncStorage.getItem("token");
+            if (item.status === "Approve") {
+                const response = await approveCentre(csrfToken, item.id);
+                console.log(response.data);
+            } else {
+                const response = await rejectCentre(csrfToken, item.id);
+                console.log(response.data);
+            }
+            const temp = pendingApprovals.filter(
+                (centre) => centre.id !== item.id
+            );
+            setPendingApprovals(temp);
+            setMessage(`Naamdan centre successfully ${item.status}ed `);
+            setIcon(require("../../assets/icons/check-circletick.png"));
+        } catch (error) {
+            setMessage(`Something went wrong`);
+            setIcon(require("../../assets/icons/cross.png"));
+        } finally {
+            setUserConsent(false);
+            setIsVisible(true);
+        }
+    };
+
     const renderItem = ({ item }) => (
         <View style={{ paddingBottom: 10 }}>
+            <Notice
+                requireUserConsent={userConsent}
+                message={message}
+                cancelEntry={() => setIsVisible(false)}
+                confirmEntry={() => updateRecord(selectedItem)}
+                isVisible={isVisible}
+                sourceImage={icon}
+            />
             <View
                 style={{
                     padding: "2%",
@@ -98,22 +162,37 @@ function Approvals() {
             >
                 <View style={{ flexDirection: "row" }}>
                     <View>
-                        <Image
+                        <View
                             style={{
                                 height: 60,
                                 width: 60,
                                 borderRadius: 8,
+                                backgroundColor: theme.colors.primary,
+                                flex: 1,
+                                justifyContent: "center",
+                                alignItems: "center",
                             }}
-                            source={{
-                                uri: "https://media.istockphoto.com/vectors/thumbnail-image-vector-graphic-vector-id1147544807?k=6&m=1147544807&s=612x612&w=0&h=8CXEtGfDlt7oFx7UyEZClHojvDjZR91U-mAU8UlFF4Y=",
-                            }}
-                        />
+                            // source={{
+                            //     uri: "https://media.istockphoto.com/vectors/thumbnail-image-vector-graphic-vector-id1147544807?k=6&m=1147544807&s=612x612&w=0&h=8CXEtGfDlt7oFx7UyEZClHojvDjZR91U-mAU8UlFF4Y=",
+                            // }}
+                        >
+                            <Text
+                                style={{
+                                    textAlignVertical: "center",
+                                    textAlign: "center",
+                                    color: theme.colors.white,
+                                    fontSize: 30,
+                                }}
+                            >
+                                {item.name.slice(0, 2).toUpperCase()}
+                            </Text>
+                        </View>
                     </View>
                     <View
                         style={{
-                            paddingHorizontal: 5,
+                            paddingLeft: 13,
                             flexDirection: "column",
-                            width: "52%",
+                            width: "58%",
                         }}
                     >
                         <Text
@@ -127,7 +206,7 @@ function Approvals() {
                         <Text
                             style={{
                                 textTransform: "capitalize",
-                                color:"#0077cc"
+                                color: "#0077cc",
                             }}
                             onPress={() => {
                                 // openMaps(item.longitude, item.latitude);
@@ -147,8 +226,51 @@ function Approvals() {
                             +91 {item.mobile_no}
                         </Text>
                     </View>
-                    <Text>Approve </Text>
-                    <Text>Reject </Text>
+                    <View style={{ flex: 1 }}>
+                        <TouchableOpacity
+                            style={{
+                                paddingHorizontal: 5,
+                                paddingVertical: 3,
+                                backgroundColor: "#49CF34",
+                                borderRadius: 8,
+                                flex: 1,
+                                marginBottom: 3,
+                                justifyContent: "center",
+                                alignItems: "center",
+                            }}
+                            onPress={() => consentModal(item.id, "Approve")}
+                        >
+                            <Text
+                                style={{
+                                    color: theme.colors.white,
+                                    fontWeight: "bold",
+                                }}
+                            >
+                                Approve{" "}
+                            </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={{
+                                paddingHorizontal: 5,
+                                paddingVertical: 3,
+                                backgroundColor: "#EA2E07",
+                                borderRadius: 8,
+                                flex: 1,
+                                justifyContent: "center",
+                                alignItems: "center",
+                            }}
+                            onPress={() => consentModal(item.id, "Reject")}
+                        >
+                            <Text
+                                style={{
+                                    color: theme.colors.white,
+                                    fontWeight: "bold",
+                                }}
+                            >
+                                Reject
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </View>
         </View>
@@ -156,13 +278,26 @@ function Approvals() {
 
     return (
         <SafeAreaView style={{ paddingHorizontal: "3%", paddingTop: 10 }}>
-            <View>
-                <FlatList
-                    data={pendingApprovals}
-                    renderItem={renderItem}
-                    keyExtractor={(item, index) => item.id}
-                />
-            </View>
+            {pendingApprovals.length ? (
+                <View>
+                    <FlatList
+                        data={pendingApprovals}
+                        renderItem={renderItem}
+                        keyExtractor={(item, index) => item.id}
+                    />
+                </View>
+            ) : (
+                <View
+                    style={{
+                        flex: 1,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        alignContent:"center"
+                    }}
+                >
+                    <Text >No Pending approvals</Text>
+                </View>
+            )}
         </SafeAreaView>
     );
 }
