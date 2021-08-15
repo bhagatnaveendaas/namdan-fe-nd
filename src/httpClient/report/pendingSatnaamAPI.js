@@ -1,11 +1,5 @@
-import { post } from "../namdanAPIClient";
+import { createRequestBasedOn, post } from "../namdanAPIClient";
 
-export const getPendingSatnaamCount = (csrfToken, f_date, t_date) => {
-  const requestBody = {
-    "page": 1,
-    f_date,
-    t_date
-  };
-  
-  return post("reports/satnam_validity_expiring", requestBody, csrfToken,"post");
+export const getPendingSatnaamCount = (csrfToken, f_date, t_date, data) => {
+  return post("reports/satnam_validity_expiring", createRequestBasedOn(data, f_date, t_date), csrfToken,"post");
 }

@@ -10,8 +10,8 @@ const PendingSatnaam = () => {
 
   const csrfToken = useGetAsyncStorageItem("token");
 
-  const callPendingSatnaamAPI = async (fromDate = "2017-01-03", toDate = "2021-10-03", page) => {
-    const response = await getPendingSatnaamCount(csrfToken, fromDate, toDate, page);
+  const callPendingSatnaamAPI = async (fromDate = "2017-01-03", toDate = "2021-10-03") => {
+    const response = await getPendingSatnaamCount(csrfToken, fromDate, toDate, data);
     setPendingSatnaamResponse(response.data);
   }
 
@@ -23,7 +23,7 @@ const PendingSatnaam = () => {
 
   if (!pendingSatnaamResponse) return <Text>Loading data...</Text>;
 
-  return <ReportTemplate metaData={pendingSatnamMetadata} data={pendingSatnaamResponse.data}
+  return <ReportTemplate metaData={pendingSatnamMetadata(pendingSatnaamResponse.data[0])} data={pendingSatnaamResponse.data}
     callback={callPendingSatnaamAPI} />;
 
 };

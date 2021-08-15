@@ -1,11 +1,5 @@
-import { post } from "../namdanAPIClient";
+import { createRequestBasedOn, post } from "../namdanAPIClient";
 
-export const getPrathamAndSatnamCount = (csrfToken, f_date, t_date, page = 1) => {
-  const requestBody = {
-    page,
-    f_date,
-    t_date
-  };
-  
-  return post("reports/pratham_vs_satnam", requestBody, csrfToken,"post");
+export const getPrathamAndSatnamCount = (csrfToken, f_date, t_date, data) => {
+  return post("reports/pratham_vs_satnam", createRequestBasedOn(data, f_date, t_date), csrfToken,"post");
 }
