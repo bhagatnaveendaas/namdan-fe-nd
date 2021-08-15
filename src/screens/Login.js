@@ -146,17 +146,16 @@ function Login({ navigation }) {
                 Accept: "application/json",
             },
             data: {
-                "username": userName,
-                "password": password,
+                "username": "9790916374",
+                "password": "Speedpe@2020",
                 "device_id": "fdsfsf",
                 "longitude": "20.000",
                 "latitude": "30.555",
                 "channel": "mobile",
                 "device_token": "asdad"
-                // "device_token": Math.random()
             },
         };
-        console.log({config});
+        console.log({ config });
 
         axios(config)
             .then(async (response) => {
@@ -229,7 +228,7 @@ function Login({ navigation }) {
                         style={styles.image}
                         source={require("../../assets/Guruji2.png")}
                     />
-                    
+
                 </View>
                 <View>
                     <Text

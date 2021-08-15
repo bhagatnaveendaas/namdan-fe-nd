@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Text } from 'react-native';
 import ReportTemplate from "../components/ReportTemplate";
 import { useGetAsyncStorageItem } from "../hooks/useGetAsyncStorageItem";
-import { getPendingSatnaamCount } from "../httpClient/report/pendingSatnaamAPI";
+import { getEligibilityForPunarUpdeshCount } from "../httpClient/report/eligiblityForPunarUpdeshAPI";
 import { eligibilityForPunarUpdeshMetadata } from "../metaData/eligibilityForPunarUpdeshMetadata";
 
 const EligibilityForPunarUpdesh = () => {
@@ -10,8 +10,8 @@ const EligibilityForPunarUpdesh = () => {
 
   const csrfToken = useGetAsyncStorageItem("token");
 
-  const callEligibilityForPunarUpdeshAPI = async (fromDate = "2017-01-03", toDate = "2021-10-03") => {
-    const response = await getPendingSatnaamCount(csrfToken, fromDate, toDate);
+  const callEligibilityForPunarUpdeshAPI = async (fromDate = "2017-01-03", toDate = "2021-10-03", data) => {
+    const response = await getEligibilityForPunarUpdeshCount(csrfToken, fromDate, toDate, data);
     setEligiblityForPunarUpdeshResponse(response.data);
   }
 
@@ -23,7 +23,7 @@ const EligibilityForPunarUpdesh = () => {
 
   if (!eligibilityForPunarUpdeshResponse) return <Text>Loading data...</Text>;
 
-  return <ReportTemplate metaData={eligibilityForPunarUpdeshMetadata} data={eligibilityForPunarUpdeshResponse.data}
+  return <ReportTemplate metaData={eligibilityForPunarUpdeshMetadata(eligibilityForPunarUpdeshResponse.data[0])} data={eligibilityForPunarUpdeshResponse.data}
     callback={callEligibilityForPunarUpdeshAPI} />;
 
 };

@@ -11,15 +11,8 @@ const NaamdanReport = () => {
   const csrfToken = useGetAsyncStorageItem("token");
 
   const callPrathamAndSatnamCountAPI = async (fromDate = "2017-01-03", toDate = "2021-10-03") => {
-    try {
-      
-    const response = await getPrathamAndSatnamCount(csrfToken, fromDate, toDate);
-    console.log("Satsaheb");
-    console.log(response.data);
+    const response = await getPrathamAndSatnamCount(csrfToken, fromDate, toDate, data);
     setPrathamAndSatnamResponse(response.data);
-    } catch (error) {
-      console.log(error.message);
-    }
   }
 
   useEffect(() => {
@@ -30,7 +23,7 @@ const NaamdanReport = () => {
 
   if (!prathamAndSatnamCountResponse) return <Text>Loading data...</Text>;
 
-  return <ReportTemplate metaData={naamdanReportMetaData} data={prathamAndSatnamCountResponse.data}
+  return <ReportTemplate metaData={naamdanReportMetaData(prathamAndSatnamCountResponse.data[0])} data={prathamAndSatnamCountResponse.data}
     callback={callPrathamAndSatnamCountAPI} />;
 
 };
