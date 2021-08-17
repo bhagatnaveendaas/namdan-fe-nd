@@ -24,7 +24,7 @@ const ReportTemplate = ({ metaData, data, callback }) => {
       <View style={reportDashboardStyles.listWrapper}>
         {
           metaData.map((metaDatum) =>
-            <Text style={reportDashboardStyles.row}>
+            <Text style={reportDashboardStyles.boldRow}>
               {metaDatum.title}
             </Text>)
         }
