@@ -19,6 +19,8 @@ const tehsilMetaData = {
 };
 
 export const centre = (data) => {
+  if(!data)
+    return [];
   if (data[countryMetaData.dataKey])
     return [countryMetaData];
   else if (data[stateMetaData.dataKey])
