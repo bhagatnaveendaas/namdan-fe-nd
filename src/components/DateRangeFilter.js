@@ -26,14 +26,14 @@ const DateRangeFilter = ({
                 ]}
             >
                 <SemiRoundIconButtons
-                    label="Start Date"
+                    label={dateInDDMMYYFormat(startDate)}
                     icon={require("../../assets/icons/calendar.png")}
                     pressHandler={() => {
                         setShowStartDate(true);
                     }}
                 />
                 <SemiRoundIconButtons
-                    label="End Date"
+                    label={dateInDDMMYYFormat(endDate)}
                     icon={require("../../assets/icons/calendar.png")}
                     pressHandler={() => {
                         setShowEndDate(true);
@@ -68,17 +68,6 @@ const DateRangeFilter = ({
                         }}
                     />
                 )}
-            </View>
-            <View
-                style={[
-                    {
-                        flexDirection: "row",
-                        justifyContent: "space-evenly",
-                    },
-                ]}
-            >
-                <Text>Start date: {dateInDDMMYYFormat(startDate)}</Text>
-                <Text>End date: {dateInDDMMYYFormat(endDate)}</Text>
             </View>
         </>
     );
