@@ -146,8 +146,8 @@ function Login({ navigation }) {
                 Accept: "application/json",
             },
             data: {
-                "username": "9790916374",
-                "password": "Speedpe@2020",
+                "username": userName,
+                "password": password,
                 "device_id": "fdsfsf",
                 "longitude": "20.000",
                 "latitude": "30.555",

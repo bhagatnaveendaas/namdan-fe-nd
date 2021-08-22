@@ -7,7 +7,22 @@ export const reportDashboardStyles = StyleSheet.create({
   listWrapper: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    borderBottomWidth: .5
+    padding: "2%",
+  },
+  rowWrapper: {
+    backgroundColor: "white",
+    padding: "2%",
+    margin: "1%",
+    borderRadius: 10,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    elevation: 5,
+  },
+  boldRow: {
+    fontWeight: "bold",
+    flex: 1,
+    paddingHorizontal: 2,
+    paddingVertical: 10
   },
   row: {
     backgroundColor: '#fff',

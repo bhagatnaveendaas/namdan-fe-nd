@@ -4,6 +4,7 @@ import { dateInYYMMDDFormat } from "../utilities/DateUtils";
 import DateRangeFilter from "./DateRangeFilter";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import { reportDashboardStyles } from "../styles/ReportDashboardStyles";
+import theme from "../constants/theme";
 
 const ReportTemplate = ({ metaData, data, callback }) => {
   const [startDate, setStartDate] = useState(new Date(0));
@@ -24,7 +25,7 @@ const ReportTemplate = ({ metaData, data, callback }) => {
       <View style={reportDashboardStyles.listWrapper}>
         {
           metaData.map((metaDatum) =>
-            <Text style={reportDashboardStyles.row}>
+            <Text style={reportDashboardStyles.boldRow}>
               {metaDatum.title}
             </Text>)
         }
@@ -36,7 +37,7 @@ const ReportTemplate = ({ metaData, data, callback }) => {
             <TouchableOpacity onPress={() =>
               callback(dateInYYMMDDFormat(startDate), dateInYYMMDDFormat(endDate), item)
             }>
-              <View style={reportDashboardStyles.listWrapper}>
+              <View style={reportDashboardStyles.rowWrapper}>
                 {
                   metaData.map((metaDatum) =>
                     <Text style={reportDashboardStyles.row}>

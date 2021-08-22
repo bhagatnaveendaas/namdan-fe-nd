@@ -10,7 +10,7 @@ const PendingSatnaam = () => {
 
   const csrfToken = useGetAsyncStorageItem("token");
 
-  const callPendingSatnaamAPI = async (fromDate = "2017-01-03", toDate = "2021-10-03") => {
+  const callPendingSatnaamAPI = async (fromDate = "2017-01-03", toDate = "2021-10-03", data) => {
     const response = await getPendingSatnaamCount(csrfToken, fromDate, toDate, data);
     setPendingSatnaamResponse(response.data);
   }
