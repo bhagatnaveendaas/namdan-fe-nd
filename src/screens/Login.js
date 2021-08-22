@@ -146,13 +146,13 @@ function Login({ navigation }) {
                 Accept: "application/json",
             },
             data: {
-                username: "9610266767",
-                password: "Speedpe@2020",
-                device_id: "fdsfsf",
-                longitude: "20.000",
-                latitude: "30.555",
-                channel: "web",
-                login_otp: "171030",
+                "username": "9623099600",
+                "password": "ankush",
+                "device_id": "fdsfsf",
+                "longitude": "20.000",
+                "latitude": "30.555",
+                "channel": "mobile",
+                "device_token": "asdad",
             },
         };
 
@@ -181,7 +181,7 @@ function Login({ navigation }) {
                     await getStates();
                     await getDistricts();
                     await getTehsils();
-                    // navigation.push("AshramDashboard");
+                    navigation.push("AshramDashboard");
                 } else {
                     const temp = {
                         ...showAlert,

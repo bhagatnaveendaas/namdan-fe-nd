@@ -5,7 +5,10 @@ const { height, width } = Dimensions.get('window');
 
 export default StyleSheet.create({
   inputField: {
-    paddingTop: '3.5%'
+    paddingTop: '2.5%',
+    width: '40%',
+    marginLeft: 15,
+    marginRight: 15
   },
   label: {
     paddingBottom: '2%'

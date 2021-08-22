@@ -66,32 +66,86 @@ const Home = ({ navigation }) => {
                     <VerticalIconButton
                         label={`Pratham${"\n"}Naam`}
                         icon={require("../../assets/icons/pn.png")}
-                        pressHandler={() => navigation.push("SignUp")}
+                        pressHandler={
+                            () => {
+                                console.log("Pratham naam adding clicked")
+                                navigation.navigate('Entry', {
+                                    "entryType": "PrathamNaam",
+                                    "title": "Pratham Naam",
+                                    
+                                });
+                            }
+                        }
                     />
                     <VerticalIconButton
                         label="Satnaam"
                         icon={require("../../assets/icons/sn.png")}
-                        pressHandler={() => {}}
+                        pressHandler={
+                            () => {
+                                console.log("Pratham naam adding clicked")
+                                navigation.navigate('Entry', {
+                                    "entryType": "SatNaam",
+                                    "title": "Sat Naam",
+                                    
+                                });
+                            }
+                        }
                     />
                     <VerticalIconButton
                         label="Sarnaam"
                         icon={require("../../assets/icons/srn.png")}
-                        pressHandler={() => {}}
+                        pressHandler={
+                            () => {
+                                console.log("Saar naam adding clicked")
+                                navigation.navigate('Entry', {
+                                    "entryType": "SaarNaam",
+                                    "title": "Saar Naam",
+                                    
+                                });
+                            }
+                        }
                     />
                     <VerticalIconButton
                         label={`Punar${"\n"}Updesh`}
                         icon={require("../../assets/icons/pu.png")}
-                        pressHandler={() => {}}
+                        pressHandler={
+                            () => {
+                                console.log("Pratham naam adding clicked")
+                                navigation.navigate('Entry', {
+                                    "entryType": "PunarUpdesh",
+                                    "title": "Punar Updesh",
+                                    
+                                });
+                            }
+                        }
                     />
                     <VerticalIconButton
                         label="Shudhikaran"
                         icon={require("../../assets/icons/sk.png")}
-                        pressHandler={() => {}}
+                        pressHandler={
+                            () => {
+                                console.log("Shudhikaran clicked")
+                                navigation.navigate('Entry', {
+                                    "entryType": "ShudhiKaran",
+                                    "title": "Shudhi Karan",
+                                    
+                                });
+                            }
+                        }
                     />
                     <VerticalIconButton
                         label="Attendance"
                         icon={require("../../assets/icons/at.png")}
-                        pressHandler={() => {}}
+                        pressHandler={
+                            () => {
+                                console.log("Pratham naam adding clicked")
+                                navigation.navigate('Entry', {
+                                    "entryType": "Attendance",
+                                    "title": "Haajri Entry",
+                                    
+                                });
+                            }
+                        }
                     />
                 </View>
             </View>

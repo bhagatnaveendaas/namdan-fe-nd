@@ -7,7 +7,7 @@ import Login from '../screens/Login';
 import HomeHeader from '../components/HomeHeader';
 import SignUp from '../screens/SignUp';
 import verifyOtp from '../screens/verifyOtp';
-import Entry from '../screens/Entry';
+import Entry from '../screens/entry';
 
 const Stack = createStackNavigator();
 
