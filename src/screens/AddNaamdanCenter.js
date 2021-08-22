@@ -7,26 +7,19 @@ import {
 } from "react-native-gesture-handler";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as ImagePicker from "expo-image-picker";
-import AwesomeAlert from "react-native-awesome-alerts";
-import axios from "axios";
 import DropdownV2 from "../components/DropdownV2";
 import Dropdown from "../components/Dropdown";
 import InputFieldWithLabel from "../components/InputFieldWithLabel";
 import RoundButton from "../components/RoundButton";
 import styles from "../styles/Singup";
 import Constants from "../constants/text/Signup";
+import axios from "axios";
+import AwesomeAlert from "react-native-awesome-alerts";
 import _, { fill } from "lodash";
 import { serialize } from "object-to-formdata";
-import appConfig from '../config';
+import moment from "moment";
 
-
-function SignUp({navigation}) {
-    const naamdanTakenAt = ["Online", "Naamdan Center"];
-    const relations = ["S/O", "D/O"];
-    // const countries = ['India', 'Pakistan', 'Nepal'];
-    // const states = ['Maharashtra', 'Haryana'];
-    // const districts = ['Pune', 'Mumbai'];
-    // const tehsils = ['Haveli', 'Pune City'];
+function AddNaamdanCenter() {
     const [states, setStates] = useState([]);
     const [districts, setDistricts] = useState([]);
     const [countries, setcountries] = useState([]);
@@ -34,83 +27,49 @@ function SignUp({navigation}) {
 
     const [showAlert, setShowAlert] = useState({
         show: false,
-        showCancelButton: false,
         title: "",
         message: "",
-        confirm: "Ok",
+        cancel: "",
+        confirm: "",
     });
-    const createId = (length) => {
-        const chars = "ABCDEFGHIJKLMNOPQRSTUFWXYZ1234567890";
-        const pwd = _.sampleSize(chars, length || 12); // lodash v4: use _.sampleSize
-        return pwd.join("");
-    };
-    const getRequiredDateFormat = (dateObj) => `${dateObj.getFullYear()}-${dateObj.getMonth() - 1}-${dateObj.getDate()}`;
-    const [userData, setUserData] = useState({
+
+    const userInitialInfo = {
         address: "",
-        country_id: 2,
+        state_id: 20,
+        tehsil_id: "",
+        country_id: 76,
         district_id: "",
-        age: "",
         email: "",
-        guardian_name: "",
         mobile_no: "",
         name: "",
-        avatar: "",
-        dob: "",
+        // photo: "",
+        started_on: "",
         pincode: "",
-        relation: "",
-        state_id: "",
-        tehsil_id: "",
-        form_no: createId(14),
-        form_date: getRequiredDateFormat(new Date()),
         area_type: "rural",
-    });
+    };
+    const [userData, setUserData] = useState(userInitialInfo);
     const [image, setImage] = useState(null);
     const [mode, setMode] = useState("date");
     const [show, setShow] = useState(false);
-    const onNaamdanChange = (value) => {
-        const temp = { ...userData };
-        temp.naamdanTaken = value;
-        setUserData(temp);
-    };
 
     const onNameChange = (event) => {
         const temp = { ...userData };
         temp.name = event.nativeEvent.text;
         setUserData(temp);
     };
-    const onRelationChange = (value, index) => {
-        const temp = { ...userData };
-        temp.relation = value;
-        setUserData(temp);
-    };
-
-    const onGuardianNameChange = (event) => {
-        const temp = { ...userData };
-        temp.guardian_name = event.nativeEvent.text;
-        setUserData(temp);
-    };
 
     const getCountries = async () => {
         console.log("Callled");
         const temp = JSON.parse(await AsyncStorage.getItem("countries"));
-        console.log({temp});
-        setcountries(temp?temp:[]);
+        console.log({ temp });
+        setcountries(temp ? temp : []);
+        getStates(userData.country_id);
     };
 
     useEffect(() => {
         getCountries();
         console.log({ countries });
     }, []);
-
-    useEffect(() => {
-        const temp = { ...userData };
-        temp.state_id = null;
-        temp.district_id = null;
-        temp.tehsil_id = null;
-        setUserData(temp);
-        setDistricts([]);
-        setTehsils([]);
-    }, [states]);
 
     useEffect(() => {
         const temp = { ...userData };
@@ -132,6 +91,7 @@ function SignUp({navigation}) {
             (state) => state.country_id === countries[countryId].id
         );
         setStates(reqStates);
+        getDistricts(userData.state_id);
     };
 
     const getDistricts = async (stateId) => {
@@ -139,32 +99,29 @@ function SignUp({navigation}) {
         let reqDistricts = temp.filter(
             (district) => district.state_id === states[stateId].id
         );
-        reqDistricts = reqDistricts.map((item) => ({ ...item, name: item.district_name }));
+        reqDistricts = reqDistricts.map((item) => {
+            return { ...item, name: item.district_name };
+        });
         setDistricts(reqDistricts);
     };
 
-    const getTehsils = async (districtId) => {
+    const getTehsils = async (district_id) => {
         const temp = JSON.parse(await AsyncStorage.getItem("tehsils"));
         let reqTehsils = temp.filter(
-            (tehsil) => tehsil.district_id === districts[districtId].district_id
+            (tehsil) =>
+                tehsil.district_id === districts[district_id].district_id
         );
 
-        reqTehsils = reqTehsils.map((item) => ({ ...item, name: item.tehsil_name }));
+        reqTehsils = reqTehsils.map((item) => {
+            return { ...item, name: item.tehsil_name };
+        });
         setTehsils(reqTehsils);
     };
 
-    const onDobChange = (event, selectedDate) => {
+    const handleStartedAtChange = (event, selectedDate) => {
         const temp = { ...userData };
-        temp.dob = new Date(selectedDate);
-        const today = new Date();
-        const birthDate = new Date(selectedDate);
-        let age = today.getFullYear() - birthDate.getFullYear();
-        const m = today.getMonth() - birthDate.getMonth();
-        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-            age -= age;
-        }
-        temp.age = age;
-        console.log({ age });
+        temp.started_on = selectedDate;
+
         setShow(false);
         setUserData(temp);
     };
@@ -184,12 +141,14 @@ function SignUp({navigation}) {
     const onStateChange = (value) => {
         const temp = { ...userData };
         temp.state_id = value;
+        console.log({ temp });
         setUserData(temp);
         getDistricts(value);
     };
     const onDistrictChange = (value) => {
         const temp = { ...userData };
         temp.district_id = value;
+        console.log({ temp });
         setUserData(temp);
         getTehsils(value);
     };
@@ -218,6 +177,18 @@ function SignUp({navigation}) {
         setUserData(temp);
     };
 
+    const onLongitudeChange = (event) => {
+        const temp = { ...userData };
+        temp.longitude = event.nativeEvent.text;
+        setUserData(temp);
+    };
+
+    const onLatitudeChange = (event) => {
+        const temp = { ...userData };
+        temp.latitude = event.nativeEvent.text;
+        setUserData(temp);
+    };
+
     const handleRegister = async () => {
         let filled = true;
         Object.keys(userData).forEach((element) => {
@@ -231,45 +202,39 @@ function SignUp({navigation}) {
             return false;
         }
         const temp = { ...userData };
-        temp.country_id = countries[userData.country_id].id;
-        temp.state_id = states[userData.state_id].id;
-        temp.district_id = districts[userData.district_id].district_id;
-        temp.tehsil_id = tehsils[userData.tehsil_id].tehsil_id;
-        temp.avatar = userData.avatar;
-        temp.dob = getRequiredDateFormat(userData.dob);
-        delete temp.naamdanTaken;
-        delete temp.avatar;
+        temp.started_on = moment(temp.started_on).format("YYYY-MM-DD");
+        // temp.state_id = countries[userData.state_id].id;
+        // temp.district_id = countries[userData.district_id].district_id;
+        // temp.tehsil_id = countries[userData.tehsil_id].tehsil_id;
         const data = serialize(temp);
+        console.log({ data });
         const config = {
             method: "post",
-            url: `${appConfig.api_url}/disciple/create`,
+            url: "https://drfapi.jagatgururampalji.org/v1/namdan_center/create",
             headers: {
                 key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
                 Accept: "multipart/form-data",
                 "X-CSRF-TOKEN": await AsyncStorage.getItem("token"),
+                "Content-Type": "multipart/form-data",
             },
             data,
         };
-        console.log({ config });
+        // console.log({ config });
+        // console.log({userData});
 
         axios(config)
-            .then((response) => {
-                console.log(response.data);
+            .then(() => {
                 const temp = {
                     ...showAlert,
                     show: true,
                     title: "Successful",
-                    message: "Disciple created successfully",
+                    message: "Entry done successfully",
                 };
                 setShowAlert(temp);
-                navigation.push("AshramDashboard");
+                setUserData(userInitialInfo);
             })
             .catch((error) => {
-                if (error && error.response) {
-                    console.log(`Signup: ${JSON.stringify(error.response.data)}`);
-                } else {
-                    console.log(`Signup: ${error}`);
-                }
+                console.log(error.response.data);
             });
     };
 
@@ -310,18 +275,18 @@ function SignUp({navigation}) {
         if (!result.cancelled) {
             const temp = {
                 ...userData,
-                avatar: {
+                photo: {
                     uri: result.uri,
                     name: result.uri.split("/").pop(),
                     type: "image",
                 },
             };
-            setUserData(temp);
+            // setUserData(temp);
         }
     };
 
     return (
-        <ScrollView style={styles.mainContainer}>
+        <ScrollView style={[styles.mainContainer]}>
             <AwesomeAlert
                 show={showAlert.show}
                 showProgress={false}
@@ -344,9 +309,9 @@ function SignUp({navigation}) {
                 }}
             />
             <TouchableOpacity onPress={pickImage}>
-                {userData.avatar?.uri ? (
+                {userData.photo?.uri ? (
                     <Image
-                        source={{ uri: userData.avatar?.uri }}
+                        source={{ uri: userData.photo?.uri }}
                         style={styles.image}
                     />
                 ) : (
@@ -360,6 +325,12 @@ function SignUp({navigation}) {
                 </Text>
             </TouchableOpacity>
 
+            <InputFieldWithLabel
+                label="Name"
+                value={userData.name}
+                changeFn={onNameChange}
+                placeholder="Enter center name"
+            />
             {show && (
                 <DateTimePicker
                     testID="dateTimePicker"
@@ -367,53 +338,29 @@ function SignUp({navigation}) {
                     mode={mode}
                     is24Hour
                     display="default"
-                    onChange={onDobChange}
+                    onChange={handleStartedAtChange}
                 />
             )}
             <InputFieldWithLabel
-                label="Name"
-                value={userData.name}
-                changeFn={onNameChange}
-                placeholder="Enter name"
-            />
-            <Dropdown
-                label="Naamdan Taken"
-                value={userData.naamdanTaken}
-                changeFn={onNaamdanChange}
-                options={naamdanTakenAt}
-            />
-            <Dropdown
-                label="Relation"
-                value={userData.relation}
-                changeFn={onRelationChange}
-                options={relations}
-            />
-            <InputFieldWithLabel
-                label="Guardian Name"
-                value={userData.guardianName}
-                changeFn={onGuardianNameChange}
-                placeholder="Enter guardian name"
-            />
-            <InputFieldWithLabel
-                label="Dob"
+                label="DOC"
                 isDate
                 setShow={setShow}
                 onFocus={() => setShow(true)}
-                value={userData.dob}
-                changeFn={onDobChange}
-                placeholder="Enter DOB"
+                value={userData.started_on}
+                placeholder="Date of creation"
             />
             <InputFieldWithLabel
-                label="Mobile"
-                value={userData.mobile}
-                changeFn={onMobileChange}
-                placeholder="Enter mobile"
+                label="Address"
+                value={userData.address}
+                changeFn={onAddressChange}
+                placeholder="Enter address"
             />
             <DropdownV2
                 label="Country"
                 value={userData.country_id}
                 changeFn={onCountryChange}
                 options={countries}
+                enabled={false}
             />
             {states.length && userData.country_id ? (
                 <DropdownV2
@@ -421,6 +368,7 @@ function SignUp({navigation}) {
                     value={userData.state_id}
                     changeFn={onStateChange}
                     options={states}
+                    enabled={false}
                 />
             ) : null}
             {districts.length && userData.state_id ? (
@@ -440,16 +388,16 @@ function SignUp({navigation}) {
                 />
             ) : null}
             <InputFieldWithLabel
-                label="Address"
-                value={userData.address}
-                changeFn={onAddressChange}
-                placeholder="Enter address"
-            />
-            <InputFieldWithLabel
                 label="Pincode"
                 value={userData.pincode}
                 changeFn={onPincodeChange}
                 placeholder="Enter pincode"
+            />
+            <InputFieldWithLabel
+                label="Mobile"
+                value={userData.mobile}
+                changeFn={onMobileChange}
+                placeholder="Enter mobile"
             />
             <InputFieldWithLabel
                 label="Email"
@@ -458,13 +406,17 @@ function SignUp({navigation}) {
                 placeholder="Enter email"
             />
             <InputFieldWithLabel
-                label="Form ID"
-                value={userData.form_no}
-                // changeFn={onPhotoChange}
-                placeholder="Form ID"
-                disabled={true}
+                label="Longitude"
+                value={userData.longitude}
+                changeFn={onLongitudeChange}
+                placeholder="Enter Longitude"
             />
-
+            <InputFieldWithLabel
+                label="Email"
+                value={userData.latitude}
+                changeFn={onLatitudeChange}
+                placeholder="Enter Latitude"
+            />
             <View style={styles.buttonContainer}>
                 <RoundButton label="Register" handlePress={handleRegister} />
             </View>
@@ -472,4 +424,4 @@ function SignUp({navigation}) {
     );
 }
 
-export default SignUp;
+export default AddNaamdanCenter;

@@ -3,16 +3,15 @@ import { View, Text } from 'react-native';
 import styles from '../styles/AshramDashboard';
 import theme from '../constants/theme';
 
-theme;
-const ScoreBoard = () => (
-  <View style={styles.scoreBoard}>
+const ScoreBoard = (props) =>(
+    <View style={styles.scoreBoard}>
     <View style={{ flexDirection: 'column' }}>
       <View style={[styles.prathamDiv, { padding: '8%' }]}>
         <Text style={{
           color: theme.colors.white, textAlign: 'center', fontWeight: 'bold', fontSize: 25
         }}
         >
-          123,456,789
+          {props.prathams}
         </Text>
         <Text style={{
           color: theme.colors.white, textAlign: 'center', fontWeight: 'bold', paddingTop: '1%'
@@ -34,7 +33,7 @@ const ScoreBoard = () => (
               color: theme.colors.white, fontWeight: 'bold', fontSize: 20, textAlign: 'center'
             }}
             >
-              123,456,789
+              {props.satnams}
 </Text>
             <Text style={{
               color: theme.colors.white, textAlign: 'center', fontWeight: 'bold', paddingTop: '1%'
@@ -48,7 +47,7 @@ const ScoreBoard = () => (
               color: theme.colors.white, fontWeight: 'bold', fontSize: 20, textAlign: 'center'
             }}
             >
-              123,456,789
+              {props.prathamVsSatnam}
 </Text>
             <Text style={{
               color: theme.colors.white, textAlign: 'center', fontWeight: 'bold', paddingTop: '1%'
@@ -70,7 +69,7 @@ const ScoreBoard = () => (
               color: theme.colors.white, fontWeight: 'bold', fontSize: 20, textAlign: 'center'
             }}
             >
-              123,456,789
+              {props.sarnams}
 </Text>
             <Text style={{
               color: theme.colors.white, textAlign: 'center', fontWeight: 'bold', paddingTop: '1%'
@@ -84,7 +83,7 @@ const ScoreBoard = () => (
               color: theme.colors.white, fontWeight: 'bold', fontSize: 20, textAlign: 'center'
             }}
             >
-              123,456,789
+              {props.punarUpdesh}
 </Text>
             <Text style={{
               color: theme.colors.white, textAlign: 'center', fontWeight: 'bold', paddingTop: '1%'

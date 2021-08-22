@@ -13,6 +13,8 @@ const DrawerNavigator = () => (
     <Drawer.Screen name="Login" component={MainStackNavigator} />
     <Drawer.Screen name="CountryDashboard" component={MainStackNavigator} />
     <Drawer.Screen name="Entry" component={MainStackNavigator} />
+    <Drawer.Screen name="AddNaamdanCenter" component={MainStackNavigator} />
+    <Drawer.Screen name="Approvals" component={MainStackNavigator} />
   </Drawer.Navigator>
 );
 

@@ -1,17 +1,18 @@
-import React, { useState, useEffect } from "react";
-import { SafeAreaView, Text, View, Image, AsyncStorage } from "react-native";
+import { Feather } from "@expo/vector-icons";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { AsyncStorage, Image, SafeAreaView, Text, View } from "react-native";
+import AwesomeAlert from "react-native-awesome-alerts";
 import {
     ScrollView,
     TextInput,
     TouchableOpacity,
 } from "react-native-gesture-handler";
-import { Feather } from "@expo/vector-icons";
-import axios from "axios";
-import AwesomeAlert from "react-native-awesome-alerts";
-import theme from "../constants/theme";
-import textConstants from "../constants/text/Login";
-import styles from "../styles/Login";
 import RoundButton from "../components/RoundButton";
+import textConstants from "../constants/text/Login";
+import theme from "../constants/theme";
+import styles from "../styles/Login";
+import appConfig from '../config';
 
 function Login({ navigation }) {
     const [userName, setUserName] = useState("");
@@ -20,21 +21,20 @@ function Login({ navigation }) {
         show: false,
         title: "",
         message: "",
-        cancel: "",
-        confirm: "",
+        confirm: "Ok",
     });
 
-    const handleUserNameChange = (event) => {
-        setUserName(event.target.value);
+    const handleUserNameChange = (value) => {
+        setUserName(value);
     };
-    const handlePasswordChange = (event) => {
-        setPassword(event.target.value);
+    const handlePasswordChange = (value) => {
+        setPassword(value);
     };
     const getCountries = async () => {
         console.log("Called");
         const config = {
             method: "get",
-            url: "https://drfapi.jagatgururampalji.org/v1/country/list?page=1&limit=1000",
+            url: `${appConfig.api_url}/country/list?page=1&limit=1000`,
             headers: {
                 key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
                 Accept: "application/json",
@@ -48,14 +48,12 @@ function Login({ navigation }) {
             "countries",
             JSON.stringify(response.data.data.countries)
         );
-        
-
     };
 
     const getStates = async () => {
         const config = {
             method: "get",
-            url: `https://drfapi.jagatgururampalji.org/v1/state/list?page=1&limit=100000`,
+            url: `${appConfig.api_url}/state/list?page=1&limit=100000`,
             headers: {
                 key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
                 Accept: "application/json",
@@ -74,7 +72,7 @@ function Login({ navigation }) {
     const getDistricts = async () => {
         const config = {
             method: "get",
-            url: "https://drfapi.jagatgururampalji.org/v1/district/list?page=1&limit=1000000",
+            url: `${appConfig.api_url}/district/list?page=1&limit=1000000`,
             headers: {
                 key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
                 Accept: "application/json",
@@ -93,7 +91,7 @@ function Login({ navigation }) {
     const getTehsils = async () => {
         const config = {
             method: "get",
-            url: "https://drfapi.jagatgururampalji.org/v1/tehsil/list?page=1&limit=100000",
+            url: `${appConfig.api_url}/tehsil/list?page=1&limit=100000`,
             headers: {
                 key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
                 Accept: "application/json",
@@ -110,10 +108,10 @@ function Login({ navigation }) {
     };
 
     const checkDataExist = async () => {
-        let countries = await AsyncStorage.getItem("countries");
-        let states = await AsyncStorage.getItem("states");
-        let districts = await AsyncStorage.getItem("districts");
-        let tehsils = await AsyncStorage.getItem("tehsils");
+        const countries = await AsyncStorage.getItem("countries");
+        const states = await AsyncStorage.getItem("states");
+        const districts = await AsyncStorage.getItem("districts");
+        const tehsils = await AsyncStorage.getItem("tehsils");
         return countries && states && districts && tehsils;
     };
 
@@ -126,11 +124,10 @@ function Login({ navigation }) {
         if (checkIfLoggedIn) {
             console.log("Called2");
             if (!checkDataExist()) {
-            getCountries();
-            getStates();
-            getDistricts();
-            getTehsils();
-            //     console.log("Called");
+                getCountries();
+                getStates();
+                getDistricts();
+                getTehsils();
             }
 
             navigation.push("AshramDashboard");
@@ -138,27 +135,31 @@ function Login({ navigation }) {
     }, []);
 
     const handleLogin = async () => {
+        // TODO: If I uncomment the following line, it's giving No identifiers allowed directly after numeric literal
+        // const deviceToken = Math.random() * 1_00_00_000;
+
         const config = {
             method: "post",
-            url: "https://drfapi.jagatgururampalji.org/v1/auth/login",
+            url: `${appConfig.api_url}/auth/login`,
             headers: {
                 key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
                 Accept: "application/json",
             },
             data: {
-                "username": "9623099600",
-                "password": "ankush",
+                "username": userName,
+                "password": password,
                 "device_id": "fdsfsf",
                 "longitude": "20.000",
                 "latitude": "30.555",
                 "channel": "mobile",
-                "device_token": "asdad",
+                "device_token": "asdad"
             },
         };
+        console.log({ config });
 
         axios(config)
             .then(async (response) => {
-                // console.log(response);
+                console.log({ response });
                 if (response.data.success) {
                     const temp = {
                         ...showAlert,
@@ -168,6 +169,7 @@ function Login({ navigation }) {
                     };
                     setShowAlert(temp);
                     let csrfKey = "";
+
                     let cookies = response.headers["set-cookie"];
                     cookies = cookies[0].split(" namdan_csrf_key=");
                     // eslint-disable-next-line prefer-destructuring
@@ -193,7 +195,7 @@ function Login({ navigation }) {
                 }
             })
             .catch((error) => {
-                console.log(error);
+                console.error(error);
             });
     };
 
@@ -226,6 +228,7 @@ function Login({ navigation }) {
                         style={styles.image}
                         source={require("../../assets/Guruji2.png")}
                     />
+
                 </View>
                 <View>
                     <Text
@@ -248,7 +251,7 @@ function Login({ navigation }) {
                             <TextInput
                                 style={styles.inputs}
                                 value={userName}
-                                onChange={handleUserNameChange}
+                                onChangeText={handleUserNameChange}
                                 placeholder="UserName"
                             />
                         </View>
@@ -262,7 +265,7 @@ function Login({ navigation }) {
                             <TextInput
                                 style={styles.inputs}
                                 value={password}
-                                onChange={handlePasswordChange}
+                                onChangeText={handlePasswordChange}
                                 secureTextEntry
                                 placeholder="Password"
                             />
