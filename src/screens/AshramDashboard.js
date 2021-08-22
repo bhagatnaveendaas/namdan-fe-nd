@@ -11,6 +11,7 @@ import OtherControls from "../components/OtherControls";
 import ScoreBoard from "../components/ScoreBoard";
 import VerticalIconButton from "../components/VerticalIconButton";
 import appConfig from "../config";
+import { SafeAreaView } from "react-native";
 
 const Home = ({ navigation }) => {
     const [kpiCounts, setKpiCounts] = useState({});
@@ -37,7 +38,7 @@ const Home = ({ navigation }) => {
                 key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
             },
         };
-        console.log({config});
+        console.log({ config });
         axios(config)
             .then(async (response) => {
                 if (response.data.success) {
@@ -65,8 +66,9 @@ const Home = ({ navigation }) => {
         getKPICounts();
     }, []);
     return (
-        <ScrollView style={{ paddingHorizontal: "3.5%" }}>
-            <View style={{ paddingVertical: "3%" }}>
+        <SafeAreaView style={{paddingTop:"10%"}}>
+            <ScrollView style={{ paddingHorizontal: "3.5%" }}>
+                {/* <View style={{ paddingVertical: "3%" }}>
                 <View style={[theme.card, { padding: "3%" }]}>
                     <Text
                         style={{
@@ -97,140 +99,143 @@ const Home = ({ navigation }) => {
                         </Text>
                     </TouchableOpacity>
                 </View>
-            </View>
-            <ScoreBoard
-                prathams={kpiCounts.prathams}
-                satnams={kpiCounts.satnams}
-                sarnams={kpiCounts.sarnams}
-                prathamVsSatnam={kpiCounts.pratham_vs_satnam}
-                punarUpdesh={0}
-            />
-            <View>
-                <DashboardHeading label="Entries" />
-                <View
-                    style={{
-                        flexDirection: "row",
-                        flexWrap: "wrap",
-                        justifyContent: "space-evenly",
-                    }}
-                >
-                    <VerticalIconButton
-                        label={`Pratham${"\n"}Naam`}
-                        icon={require("../../assets/icons/pn.png")}
-                        pressHandler={() => navigation.push("SignUp")}
-                    />
-                    <VerticalIconButton
-                        label="Satnaam"
-                        icon={require("../../assets/icons/sn.png")}
-                        pressHandler={() => {}}
-                    />
-                    <VerticalIconButton
-                        label="Sarnaam"
-                        icon={require("../../assets/icons/srn.png")}
-                        pressHandler={() => {}}
-                    />
-                    <VerticalIconButton
-                        label={`Punar${"\n"}Updesh`}
-                        icon={require("../../assets/icons/pu.png")}
-                        pressHandler={() => {}}
-                    />
-                    <VerticalIconButton
-                        label="Shudhikaran"
-                        icon={require("../../assets/icons/sk.png")}
-                        pressHandler={() => {}}
-                    />
-                    <VerticalIconButton
-                        label="Attendance"
-                        icon={require("../../assets/icons/at.png")}
-                        pressHandler={() => {}}
-                    />
-                </View>
-            </View>
-            <View>
-                <DashboardHeading label="Features" />
-                <View
-                    style={[
-                        theme.card,
-                        {
-                            flexDirection: "row",
-                            justifyContent: "space-evenly",
-                        },
-                    ]}
-                >
-                    <RoundIconButton
-                        handleClick={() => {}}
-                        label={`Generate${"\n"}Pin`}
-                        iconName={require("../../assets/icons/keyBg.png")}
-                    />
-                    <RoundIconButton
-                        handleClick={() => {
-                            navigation.push("Approvals");
-                        }}
-                        label={`View${"\n"}Approvals`}
-                        iconName={require("../../assets/icons/tickBg.png")}
-                    />
-                    <RoundIconButton
-                        handleClick={() => {
-                            navigation.push("AddNaamdanCenter");
-                        }}
-                        label={`+ Naamdan${"\n"}Center`}
-                        iconName={require("../../assets/icons/naamdanCenterBg.png")}
-                    />
-                    <RoundIconButton
-                        handleClick={() => {}}
-                        label="Messages"
-                        iconName={require("../../assets/icons/messageBg.png")}
-                    />
-                </View>
+            </View> */}
+                <ScoreBoard
+                    prathams={kpiCounts.prathams}
+                    satnams={kpiCounts.satnams}
+                    sarnams={kpiCounts.sarnams}
+                    prathamVsSatnam={kpiCounts.pratham_vs_satnam}
+                    punarUpdesh={0}
+                />
                 <View>
-                    <DashboardHeading label="Reports" />
+                    <DashboardHeading label="Entries" />
                     <View
                         style={{
                             flexDirection: "row",
-                            justifyContent: "space-between",
                             flexWrap: "wrap",
+                            justifyContent: "space-evenly",
                         }}
                     >
-                        <FlatIconButtons
-                            label={`Naamdan${"\n"}Reports`}
+                        <VerticalIconButton
+                            label={`Pratham${"\n"}Naam`}
                             icon={require("../../assets/icons/pn.png")}
-                            pressHandler={() =>
-                                navigation.push("NaamdanReport")
-                            }
+                            pressHandler={() => navigation.push("SignUp")}
                         />
-                        <FlatIconButtons
-                            label={`Naamdan${"\n"}Centre`}
-                            icon={require("../../assets/icons/naamdanCenter.png")}
-                            pressHandler={() =>
-                                navigation.push("NaamdanCentre")
-                            }
+                        <VerticalIconButton
+                            label="Satnaam"
+                            icon={require("../../assets/icons/sn.png")}
+                            pressHandler={() => {}}
                         />
-                        <FlatIconButtons
-                            label={`Pending${"\n"}Satnaam`}
-                            icon={require("../../assets/icons/psn.png")}
-                            pressHandler={() =>
-                                navigation.push("PendingSatnaam")
-                            }
+                        <VerticalIconButton
+                            label="Sarnaam"
+                            icon={require("../../assets/icons/srn.png")}
+                            pressHandler={() => {}}
                         />
-                        <FlatIconButtons
-                            label={`Eligibility for${"\n"}Punar Updesh`}
+                        <VerticalIconButton
+                            label={`Punar${"\n"}Updesh`}
                             icon={require("../../assets/icons/pu.png")}
-                            pressHandler={() =>
-                                navigation.push("EligibilityForPunarUpdesh")
-                            }
+                            pressHandler={() => {}}
+                        />
+                        <VerticalIconButton
+                            label="Shudhikaran"
+                            icon={require("../../assets/icons/sk.png")}
+                            pressHandler={() => {}}
+                        />
+                        <VerticalIconButton
+                            label="Attendance"
+                            icon={require("../../assets/icons/at.png")}
+                            pressHandler={() => {}}
                         />
                     </View>
                 </View>
                 <View>
-                    <DashboardHeading label="Other controls" />
-                    <OtherControls />
+                    <DashboardHeading label="Features" />
+                    <View
+                        style={[
+                            theme.card,
+                            {
+                                flexDirection: "row",
+                                justifyContent: "space-evenly",
+                            },
+                        ]}
+                    >
+                        <RoundIconButton
+                            handleClick={() => {}}
+                            label={`Generate${"\n"}Pin`}
+                            iconName={require("../../assets/icons/keyBg.png")}
+                        />
+                        <RoundIconButton
+                            handleClick={() => {
+                                navigation.push("Approvals");
+                            }}
+                            label={`View${"\n"}Approvals`}
+                            iconName={require("../../assets/icons/tickBg.png")}
+                        />
+                        <RoundIconButton
+                            handleClick={() => {
+                                navigation.push("AddNaamdanCenter");
+                            }}
+                            label={`+ Naamdan${"\n"}Center`}
+                            iconName={require("../../assets/icons/naamdanCenterBg.png")}
+                        />
+                        <RoundIconButton
+                            handleClick={() => {
+                                navigation.push("Messages");
+                            }}
+                            label="Messages"
+                            iconName={require("../../assets/icons/messageBg.png")}
+                        />
+                    </View>
+                    <View>
+                        <DashboardHeading label="Reports" />
+                        <View
+                            style={{
+                                flexDirection: "row",
+                                justifyContent: "space-between",
+                                flexWrap: "wrap",
+                            }}
+                        >
+                            <FlatIconButtons
+                                label={`Naamdan${"\n"}Reports`}
+                                icon={require("../../assets/icons/pn.png")}
+                                pressHandler={() =>
+                                    navigation.push("NaamdanReport")
+                                }
+                            />
+                            <FlatIconButtons
+                                label={`Naamdan${"\n"}Centre`}
+                                icon={require("../../assets/icons/naamdanCenter.png")}
+                                pressHandler={() =>
+                                    navigation.push("NaamdanCentre")
+                                }
+                            />
+                            <FlatIconButtons
+                                label={`Pending${"\n"}Satnaam`}
+                                icon={require("../../assets/icons/psn.png")}
+                                pressHandler={() =>
+                                    navigation.push("PendingSatnaam")
+                                }
+                            />
+                            <FlatIconButtons
+                                label={`Eligibility for${"\n"}Punar Updesh`}
+                                icon={require("../../assets/icons/pu.png")}
+                                pressHandler={() =>
+                                    navigation.push("EligibilityForPunarUpdesh")
+                                }
+                            />
+                        </View>
+                    </View>
+                    <View>
+                        <DashboardHeading label="Other controls" />
+                        <OtherControls />
+                    </View>
+                    <View style={{ paddingBottom: "3%" }}>
+                        <DashboardHeading label="Master Creation" />
+                        <MasterCreation />
+                    </View>
                 </View>
-                <View style={{ paddingBottom: "3%" }}>
-                    <DashboardHeading label="Master Creation" />
-                    <MasterCreation />
-                </View>
-            </View>
-        </ScrollView>
+            </ScrollView>
+        </SafeAreaView>
     );
 };
 

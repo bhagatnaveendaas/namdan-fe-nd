@@ -14,6 +14,9 @@ import PendingSatnaam from "../screens/PendingSatnaam";
 import EligibilityForPunarUpdesh from "../screens/EligiblityForPunarUpdesh";
 import AddNaamdanCenter from "../screens/AddNaamdanCenter";
 import Approvals from "../screens/Approvals";
+import Messages from "../screens/Messages";
+import CreateMessage from "..//screens/CreateMessage";
+import MessageDetails from "../screens/MessageDetails";
 
 const Stack = createStackNavigator();
 
@@ -29,11 +32,12 @@ const MainStackNavigator = () => (
         <Stack.Screen
             name="AshramDashboard"
             component={AshramDashboard}
-            options={{
-                headerTitle: (props) => (
-                    <HomeHeader {...props} title="Ashram dashboard" />
-                ),
-            }}
+            // options={{
+            //     headerTitle: (props) => (
+            //         <HomeHeader {...props} title="Ashram dashboard" />
+            //     ),
+            // }}
+            options={{ headerShown: false }}
         />
         <Stack.Screen
             name="SignUp"
@@ -48,9 +52,15 @@ const MainStackNavigator = () => (
         <Stack.Screen name="NaamdanReport" component={NaamdanReport} />
         <Stack.Screen name="NaamdanCentre" component={NaamdanCentre} />
         <Stack.Screen name="PendingSatnaam" component={PendingSatnaam} />
-        <Stack.Screen name="EligibilityForPunarUpdesh" component={EligibilityForPunarUpdesh} />
+        <Stack.Screen
+            name="EligibilityForPunarUpdesh"
+            component={EligibilityForPunarUpdesh}
+        />
         <Stack.Screen name="AddNaamdanCenter" component={AddNaamdanCenter} />
         <Stack.Screen name="Approvals" component={Approvals} />
+        <Stack.Screen name="Messages" component={Messages} />
+        <Stack.Screen name="Compose Message" component={CreateMessage} />
+        <Stack.Screen name="Message" component={MessageDetails} />
     </Stack.Navigator>
 );
 

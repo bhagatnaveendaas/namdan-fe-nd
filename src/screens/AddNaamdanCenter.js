@@ -33,7 +33,7 @@ function AddNaamdanCenter() {
         confirm: "",
     });
 
-    const userInitialInfo={
+    const userInitialInfo = {
         address: "",
         state_id: 20,
         tehsil_id: "",
@@ -46,7 +46,7 @@ function AddNaamdanCenter() {
         started_on: "",
         pincode: "",
         area_type: "rural",
-    }
+    };
     const [userData, setUserData] = useState(userInitialInfo);
     const [image, setImage] = useState(null);
     const [mode, setMode] = useState("date");
@@ -108,7 +108,8 @@ function AddNaamdanCenter() {
     const getTehsils = async (district_id) => {
         const temp = JSON.parse(await AsyncStorage.getItem("tehsils"));
         let reqTehsils = temp.filter(
-            (tehsil) => tehsil.district_id === districts[district_id].district_id
+            (tehsil) =>
+                tehsil.district_id === districts[district_id].district_id
         );
 
         reqTehsils = reqTehsils.map((item) => {
@@ -147,7 +148,7 @@ function AddNaamdanCenter() {
     const onDistrictChange = (value) => {
         const temp = { ...userData };
         temp.district_id = value;
-        console.log({temp});
+        console.log({ temp });
         setUserData(temp);
         getTehsils(value);
     };
@@ -201,7 +202,7 @@ function AddNaamdanCenter() {
             return false;
         }
         const temp = { ...userData };
-        temp.started_on = moment(temp.started_on).format("YYYY-MM-DD");;
+        temp.started_on = moment(temp.started_on).format("YYYY-MM-DD");
         // temp.state_id = countries[userData.state_id].id;
         // temp.district_id = countries[userData.district_id].district_id;
         // temp.tehsil_id = countries[userData.tehsil_id].tehsil_id;
@@ -230,7 +231,7 @@ function AddNaamdanCenter() {
                     message: "Entry done successfully",
                 };
                 setShowAlert(temp);
-                setUserData(userInitialInfo)
+                setUserData(userInitialInfo);
             })
             .catch((error) => {
                 console.log(error.response.data);
@@ -285,7 +286,7 @@ function AddNaamdanCenter() {
     };
 
     return (
-        <ScrollView style={styles.mainContainer}>
+        <ScrollView style={[styles.mainContainer]}>
             <AwesomeAlert
                 show={showAlert.show}
                 showProgress={false}

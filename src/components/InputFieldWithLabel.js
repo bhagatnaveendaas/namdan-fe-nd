@@ -11,6 +11,7 @@ function InputFieldWithLabel({
     isDate,
     setShow,
     disabled,
+    rows,
 }) {
     return (
         <View style={styles.inputField}>
@@ -29,6 +30,7 @@ function InputFieldWithLabel({
                     style={styles.textInput}
                     value={value}
                     onChange={changeFn}
+                    numberOfLines={rows ? rows : 1}
                     editable={!disabled}
                 />
             )}
