@@ -156,22 +156,28 @@ const UserInfoComponent = (
                     }
                 }
             >
-                <Image
-                    
-                    source={
-                        {
-                            uri: userInfo ? userInfo.avatar : ''
-                        }
-                    }
-                    style={
-                        {
-                            borderRadius: 90,
-                            width: 90,
-                            height: 90,
-                            shadowColor: '#000000',
-                        }
-                    }
-                />
+                {
+                    userInfo && userInfo.avatar ? (
+                        <Image
+                            source={
+                                {
+                                    uri: userInfo.avatar
+                                }
+                            }
+                            style={
+                                {
+                                    borderRadius: 90,
+                                    width: 90,
+                                    height: 90,
+                                    shadowColor: '#000000',
+                                }
+                            }
+                        />
+                    ) : (
+                        null
+                    )
+                }
+                
                 <Text
                     style={
                         {
@@ -387,7 +393,7 @@ const UserInfoComponent = (
                                         hajriList.map(
                                             ( hajri, index) => {
                                                 return (
-                                                    <HajriListItemRowComponent label={`Hajri ${index+1}`} hajriDate={hajri && hajri.attendance_date}></HajriListItemRowComponent>
+                                                    <HajriListItemRowComponent key={index} label={`Hajri ${index+1}`} hajriDate={hajri && hajri.attendance_date}></HajriListItemRowComponent>
                                                 )
                                             }
                                         )

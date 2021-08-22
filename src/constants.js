@@ -3,4 +3,7 @@ export const USER_SEARCH_ACTION = 'SEARCH_USER'
 export const SATNAM = 'SATNAM'
 export const SAARNAAM = 'SAARNAAM'
 export const SAARSHABAD = 'SAARSHABAD'
+export const PUNARUPDESH = "PUNARUPDESH"
+export const SHUDDIKARAN = "SHUDDHIKARAN"
+export const ATTENDANCE = "ATTENDANCE"
 export const PRATHAMNAAM = 'PRATHAMNAAM'

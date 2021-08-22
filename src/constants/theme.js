@@ -12,7 +12,6 @@ export default {
     box: {
         backgroundColor: "white",
         padding: "2%",
-        elevation: 5,
     },
     card: {
         backgroundColor: "white",

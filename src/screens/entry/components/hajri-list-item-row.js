@@ -3,18 +3,15 @@ import React, {
     useState
 } from "react"
 import { 
-    View
+    View, Text
 } from "react-native"
 
 export const HajriListItemRowComponent = (
-
+    props
 ) => {
-
     const [
         hajriDate, setHajriDate
-    ] = useState(
-
-    )
+    ] = useState()
 
     useEffect(
         () => {
@@ -34,6 +31,8 @@ export const HajriListItemRowComponent = (
                     flex: 1,
                     flexDirection: 'column',
                     justifyContent: 'flex-start',
+                    marginLeft: 12,
+                    marginRight: 12,
                     ...props.styles
                     
                 }

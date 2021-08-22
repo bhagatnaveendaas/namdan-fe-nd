@@ -1,11 +1,21 @@
 import { 
+    PUNARUPDESH,
     SAARNAAM,
     SATNAM,
     SEVA_API_REQUEST_URL,
+    SHUDDIKARAN,
     USER_SEARCH_ACTION
 } from "../constants"
 
-export const generateAttendaceCreateRequestURL = (
+/**
+ * 
+ * @returns Current default is set satnaam attendance
+ */
+export const generateAttendanceEntryRequestURL = () => {
+    return `${SEVA_API_REQUEST_URL}/satnam_attendance/create`
+}
+
+export const generateNaamEntryCreateRequestURL = (
     naamType
 ) => {
     switch(
@@ -15,7 +25,13 @@ export const generateAttendaceCreateRequestURL = (
             return `${SEVA_API_REQUEST_URL}/satnam/create`
         }
         case SAARNAAM: {
-            return `${SEVA_API_REQUEST_URL}/saarnaam/create`
+            return `${SEVA_API_REQUEST_URL}/sarnam/create`
+        }
+        case PUNARUPDESH: {
+            return `${SEVA_API_REQUEST_URL}/reupdesh/create`
+        }
+        case SHUDDIKARAN: {
+            return `${SEVA_API_REQUEST_URL}/reupdesh/create`
         }
     }
 }
@@ -42,7 +58,7 @@ export const generateUserInfoRequestURL = (
         action
     ){
         case USER_SEARCH_ACTION: {
-            return `${SEVA_API_REQUEST_URL}/disciple/advance_search?page=1&limit=100`
+            return `${SEVA_API_REQUEST_URL}/disciple/advance_search?page=1&limit=10`
         }
         break;
     }

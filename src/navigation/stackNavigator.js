@@ -7,7 +7,6 @@ import Login from "../screens/Login";
 import HomeHeader from "../components/HomeHeader";
 import SignUp from "../screens/SignUp";
 import verifyOtp from "../screens/verifyOtp";
-import Entry from "../screens/Entry";
 import NaamdanReport from "../screens/NaamdanReport";
 import NaamdanCentre from "../screens/NaamdanCentre";
 import PendingSatnaam from "../screens/PendingSatnaam";
@@ -17,6 +16,7 @@ import Approvals from "../screens/Approvals";
 import Messages from "../screens/Messages";
 import CreateMessage from "..//screens/CreateMessage";
 import MessageDetails from "../screens/MessageDetails";
+import Entry from "../screens/entry/index";
 
 const Stack = createStackNavigator();
 

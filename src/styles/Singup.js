@@ -7,6 +7,9 @@ export default StyleSheet.create({
     inputField: {
         paddingTop: "3.5%",
         textAlignVertical: "top",
+        width: '40%',
+        marginLeft: 15,
+        marginRight: 25
     },
     label: {
         paddingBottom: "2%",

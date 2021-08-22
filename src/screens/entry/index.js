@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Alert } from 'react-native';
-import { View, AsyncStorage } from 'react-native';
-import { SearchBar } from 'react-native-elements';
+import { 
+    View, 
+    AsyncStorage
+} from 'react-native';
+import { 
+    SearchBar 
+} from 'react-native-elements';
 import DateSelectorComponent from './components/naam-date-selector';
 import PopupNotice from './components/notice';
 import UserInfoComponent from './components/user';
@@ -12,10 +16,26 @@ const failedIcon = require("../../../assets/x-circlewrong.png")
 
 import axios from "axios"
 import { ScrollView } from 'react-native-gesture-handler';
-import { SATNAM, USER_SEARCH_ACTION } from '../../constants';
-import { generateAttendaceCreateRequestURL, generateUserInfoRequestURL } from '../../helper/router';
-import { executeRequest } from '../../helper/network/link';
+import { 
+    ATTENDANCE, 
+    PUNARUPDESH, 
+    SAARNAAM, 
+    SATNAM, 
+    USER_SEARCH_ACTION
+} from '../../constants';
+import { 
+    generateAttendanceEntryRequestURL,
+    generateNaamEntryCreateRequestURL, 
+    generateUserInfoRequestURL
+ } from '../../helper/router';
+import { 
+    executeRequest
+ } from '../../helper/network/link';
 import Dropdown from '../../components/DropdownV2';
+import DateRangeFilter from '../../components/DateRangeFilter';
+import { 
+    dateInYYMMDDFormat
+} from '../../utilities/DateUtils';
 
 
 const POST_REQUEST_METHOD = "POST";
@@ -97,7 +117,6 @@ const Entry = (
 
     const fetchCountries = async () => {
         const response = await AsyncStorage.getItem("countries");
-        console.log(response)
         const countryNames = JSON.parse(response).map( (country) => { return {"name": country.name, "id": country.id} })
         setCountries(
             countryNames
@@ -108,9 +127,7 @@ const Entry = (
         try{
             let states = JSON.parse(await AsyncStorage.getItem("states"));
             let stateNames;
-            console.log("States: ", states)
             stateNames = states.filter( (state) => state.country_id == countrySelected).map( (state) =>  {return {name: state.name, id: state.id}} )
-            console.log("State names: ", stateNames)
             setStates(stateNames)
         }catch(error){
             console.log(error)
@@ -173,6 +190,17 @@ const Entry = (
             countrySelected
         ]
     )
+
+    const[
+        filterStartDate,
+        setFilterStartDate
+    ] = useState(new Date())
+
+    const[
+        filterEndDate,
+        setFilterEndDate
+    ] = useState(new Date())
+
     function formatDate(
         date
     ) {
@@ -198,10 +226,13 @@ const Entry = (
 
         ) => {
             const searchData = {
-                "from_date":"2017-01-01",
-                "to_date":"2021-07-23",
+                "from_date":dateInYYMMDDFormat(filterStartDate),
+                "to_date":dateInYYMMDDFormat(filterEndDate),
                 "country_id": countrySelected,
-                "name": "A"
+                // "tehsil_id": tehsilSelected,
+                // "state_id": stateSelected,
+                // "district_id": districtSelected,
+                "name": search
             }
             const config = {
                 method: POST_REQUEST_METHOD,
@@ -229,17 +260,16 @@ const Entry = (
         };
     
     /**
-     * Create satnam entry
+     * Crate Attendance entry
      */
-    const SATNAM_CREATE_ENTRY_REQUEST_URL = generateAttendaceCreateRequestURL(SATNAM)
-    const createSatnamEntry = async (
+    const SATNAM_ATTENDANCE_ENTRY_REQUEST_URL = generateAttendanceEntryRequestURL()
+    const createAttendanceEntry = async (
         discipleId,
-        selectedDate,
-        remark = 'ok'
+        attendanceDate,
     ) => {
-        const satnamEntryData = {
+        const satnamAttendanceRequstBody = {
             "disciple_id": discipleId,
-            "satnam_date": formatDate(selectedDate),
+            "attendance_date": formatDate(attendanceDate),
             "remark": "ok"
         }
         const config = {
@@ -250,9 +280,39 @@ const Entry = (
                 "X-CSRF-TOKEN": await AsyncStorage.getItem("token"),
                 "key": "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
             },
+        }
+        executeRequest(
+            SATNAM_ATTENDANCE_ENTRY_REQUEST_URL,
+            satnamAttendanceRequstBody,
+            config
+        ).then(
+            (
+                response
+            ) => {
+                console.log("Satnam Attendance Entry create responsse: ", response)
+            }
+        ).catch(
+            (error) => {
+                console.log("Error in creatin satnam entry: ", error)
+                throw new Error("Could not create entry")
+            }
+        )
+    }
+    const createEntry = async (
+        requestURL,
+        requestData
+    ) => {
+        const config = {
+            method: POST_REQUEST_METHOD,
+            headers: {
+                key: APPLICATION_KEY,
+                "Accept": "application/json",
+                "X-CSRF-TOKEN": await AsyncStorage.getItem("token"),
+                "key": "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
+            },
         };
         executeRequest(
-            SATNAM_CREATE_ENTRY_REQUEST_URL, 
+            requestURL, 
             satnamEntryData, 
             config
         ).then(
@@ -268,6 +328,63 @@ const Entry = (
             }
         )
     }
+    /**
+     * 
+     * @param {*} discipleId 
+     * @param {*} selectedDate 
+     * Saarnaam entry 
+     */
+    const SARNAM_CREATE_ENTRY_REQUEST_URL = generateNaamEntryCreateRequestURL(SAARNAAM);
+    const createSaarnaamEntry = async (
+        discipleId,
+        selectedDate,
+    ) => {
+        const requestData =  {
+            "disciple_id": discipleId,
+            "sarnam_date": formatDate(selectedDate),
+            "remark": remark
+        }
+        await createEntry(
+            SARNAM_CREATE_ENTRY_REQUEST_URL,
+            requestData
+        )
+    }
+
+    const PUNARUPDESH_CREATE_ENTRY_REQUEST_URL = generateNaamEntryCreateRequestURL(PUNARUPDESH)
+    const createReupdeshEntry = async (
+        discipleId,
+        selectedDate,
+    ) => {
+        const requestData =  {
+            "disciple_id": discipleId,
+            "reupdesh_date": formatDate(selectedDate),
+            "remark": remark
+        }
+        await createEntry(
+            PUNARUPDESH_CREATE_ENTRY_REQUEST_URL,
+            requestData
+        )
+    }
+
+       /**
+     * Create satnam entry
+     */
+        const SATNAM_CREATE_ENTRY_REQUEST_URL = generateNaamEntryCreateRequestURL(SATNAM)
+        const createSatnamEntry = async (
+            discipleId,
+            selectedDate,
+            remark = 'ok'
+        ) => {
+            const requestData =  {
+                "disciple_id": discipleId,
+                "satnam_date": formatDate(selectedDate),
+                "remark": remark
+            }
+            await createEntry(
+                SATNAM_CREATE_ENTRY_REQUEST_URL,
+                requestData
+            )
+        }
 
     const [
         initiateSuccessNotice,
@@ -326,6 +443,102 @@ const Entry = (
         ]
     )
 
+    const handleEntryAPIError = () => {
+        setSelectedDateForEntry(
+            undefined
+        )
+        setPersonSelected(
+            false
+        )
+        setInitiateSuccessNotice(
+            false
+        )
+        setInitiateFailureNotice(
+            true
+        )
+    }
+
+    const handleEntryAPISuccess = () => {
+        setSelectedDateForEntry(
+            undefined
+        )
+        setPersonSelected(
+            false
+        )
+        setInitiateSuccessNotice(
+            true
+        )
+        setInitiateFailureNotice(
+            false
+        )
+    }
+
+
+    const generateNaamEntry = () => {
+        switch(entryType){
+            case ATTENDANCE: {
+                createAttendanceEntry(
+                    personSelected.id,
+                    selectedDateForEntry
+                ).catch(
+                    (error) => {
+                        handleEntryAPIError()
+                    }
+                ).then(
+                    () => {
+                        handleEntryAPISuccess()
+                    }
+                )
+            }
+            break;
+            case SATNAM: {
+                createSatnamEntry(
+                    personSelected.id,
+                    selectedDateForEntry
+                ).catch(
+                    (error) => {
+                        handleEntryAPIError()
+                    }
+                ).then(
+                    () => {
+                        handleEntryAPISuccess()
+                    }
+                )
+            }
+            break;
+            case SAARNAAM: {
+                createSaarnaamEntry(
+                    personSelected.id,
+                    selectedDateForEntry
+                ).catch(
+                    (error) => {
+                        handleEntryAPIError()
+                    }
+                ).then(
+                    () => {
+                        handleEntryAPISuccess()
+                    }
+                )
+            }
+            break;
+            case PUNARUPDESH: {
+                createReupdeshEntry(
+                    personSelected.id,
+                    selectedDateForEntry
+                ).then(
+                    ()=> {
+                        handleEntryAPISuccess()
+                    }
+                ).catch(
+                    () => {
+                        handleEntryAPIError()
+                    }
+                )
+            }
+        }
+    }
+
+
     return (
         <View
             style={
@@ -346,6 +559,51 @@ const Entry = (
                     }
                 }
             >
+                <View>
+                    <SearchBar
+                        placeholder="Type Here..."
+                        onChangeText={ 
+                            (
+                                value
+                            ) => {
+                                console.log("Searching: ", value)
+                                setSearch(value)
+                                searchDisciples()
+                            }
+                        }
+                        showCancel={
+                            true
+                        }
+                        value={search}
+                    />
+                </View>
+                <View
+                    style={
+                        {
+                            flexDirection: 'column',
+                            width: '100%',
+                            backgroundColor: '#ffffff'
+                        }
+                    }
+                >
+                    <View
+                    style={
+                        {
+                            flexDirection: 'row',
+                            width: '100%',
+                            justifyContent: 'center',
+                            marginBottom: 12,
+                            marginTop: 12
+                        }
+                    }
+                >
+                    <DateRangeFilter
+                        startDate={filterStartDate}
+                        endDate={filterEndDate}
+                        onStartDateChange={setFilterStartDate}
+                        onEndDateChange={setFilterStartDate}
+                    />
+                </View>
                 <View
                     style={
                         {
@@ -366,7 +624,6 @@ const Entry = (
                             value
                         ) => {
                             setCountrySelectedIndex(value)
-                            console.log("Country Selected: ", countries[value].id)
                             setCountrySelected(countries[value].id)
                         }
                     }/>
@@ -378,7 +635,6 @@ const Entry = (
                         (
                             value
                         ) => {
-                            console.log("State selected: ",states[value].id)
                             setStateSelectedIndex(
                                 value
                             )
@@ -407,7 +663,6 @@ const Entry = (
                         (
                             value
                         ) => {
-                            console.log("District selected: ", districts[value].id)
                             setDistrictSelectedIndex(
                                 value
                             )
@@ -423,28 +678,10 @@ const Entry = (
                             value
                         ) => {
                             setTehsilSelectedIndex(value)
-                            console.log("Tehsil selected: ", tehsils[value].id)
                             setTehsilsSelected(tehsils[value].id)
                         }
                     }/>
                 </View>
-                <View>
-                    <SearchBar
-                        placeholder="Type Here..."
-                        onChangeText={ 
-                            (
-                                value
-                            ) => {
-                                console.log("Searching: ", value)
-                                setSearch(value)
-                                searchDisciples()
-                            }
-                        }
-                        showCancel={
-                            true
-                        }
-                        value={search}
-                    />
                 </View>
                 {
                     <PopupNotice 
@@ -500,33 +737,7 @@ const Entry = (
                         }
                         confirmEntry={
                             () => {
-                                createSatnamEntry(
-                                    personSelected.id,
-                                    selectedDateForEntry
-                                ).catch(
-                                    (error) => {
-                                        setSelectedDateForEntry(
-                                            undefined
-                                        )
-                                        setPersonSelected(
-                                            false
-                                        )
-                                        setInitiateFailureNotice(true)
-                                    }
-                                ).then(
-                                    () => {
-
-                                        setSelectedDateForEntry(
-                                            undefined
-                                        )
-                                        setPersonSelected(
-                                            false
-                                        )
-                                        setInitiateSuccessNotice(
-                                            true
-                                        )
-                                    }
-                                )
+                                generateNaamEntry()
                             }
                         }
                         isVisible={

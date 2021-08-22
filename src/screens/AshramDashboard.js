@@ -12,6 +12,7 @@ import ScoreBoard from "../components/ScoreBoard";
 import VerticalIconButton from "../components/VerticalIconButton";
 import appConfig from "../config";
 import { SafeAreaView } from "react-native";
+import { ATTENDANCE, PUNARUPDESH, SAARNAAM, SATNAM, SHUDDIKARAN } from "../constants";
 
 const Home = ({ navigation }) => {
     const [kpiCounts, setKpiCounts] = useState({});
@@ -124,27 +125,52 @@ const Home = ({ navigation }) => {
                         <VerticalIconButton
                             label="Satnaam"
                             icon={require("../../assets/icons/sn.png")}
-                            pressHandler={() => {}}
+                            pressHandler={() => {
+                                navigation.navigate("Entry", {
+                                    title: 'Enter Satnaam',
+                                    entryType: SATNAM
+                                })
+                            }}
                         />
                         <VerticalIconButton
                             label="Sarnaam"
                             icon={require("../../assets/icons/srn.png")}
-                            pressHandler={() => {}}
+                            pressHandler={() => {
+                                navigation.navigate("Entry", {
+                                    title: 'Enter SaarNaam',
+                                    entryType: SAARNAAM
+                                })
+                            }}
                         />
                         <VerticalIconButton
                             label={`Punar${"\n"}Updesh`}
                             icon={require("../../assets/icons/pu.png")}
-                            pressHandler={() => {}}
+                            pressHandler={() => {
+                                navigation.navigate("Entry", {
+                                    title: 'Enter Punar Updesh',
+                                    entryType: PUNARUPDESH
+                                })
+                            }}
                         />
                         <VerticalIconButton
                             label="Shudhikaran"
                             icon={require("../../assets/icons/sk.png")}
-                            pressHandler={() => {}}
+                            pressHandler={() => {
+                                navigation.navigate("Entry", {
+                                    title: 'Enter Shudhikaran',
+                                    entryType: SHUDDIKARAN
+                                })
+                            }}
                         />
                         <VerticalIconButton
                             label="Attendance"
                             icon={require("../../assets/icons/at.png")}
-                            pressHandler={() => {}}
+                            pressHandler={() => {
+                                navigation.navigate("Entry", {
+                                    title: 'Attendance',
+                                    entryType: ATTENDANCE
+                                })
+                            }}
                         />
                     </View>
                 </View>
