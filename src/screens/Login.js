@@ -1,7 +1,9 @@
 import { Feather } from "@expo/vector-icons";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { AsyncStorage, Image, SafeAreaView, Text, View } from "react-native";
+import Constants from 'expo-constants';
+import * as Notifications from 'expo-notifications';
+import React, { useEffect, useState, useRef } from "react";
+import { AsyncStorage, Image, SafeAreaView, Text, View, Platform, Alert } from "react-native";
 import AwesomeAlert from "react-native-awesome-alerts";
 import {
     ScrollView,
@@ -14,11 +16,24 @@ import theme from "../constants/theme";
 import styles from "../styles/Login";
 import appConfig from '../config';
 
+Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: false,
+        shouldSetBadge: false,
+    }),
+});
+
 function Login({ navigation }) {
+    const [expoPushToken, setExpoPushToken] = useState('');
+    const [notification, setNotification] = useState(false);
+    const notificationListener = useRef();
+    const responseListener = useRef();
     const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
     const [showAlert, setShowAlert] = useState({
         show: false,
+        showCancelButton: false,
         title: "",
         message: "",
         confirm: "Ok",
@@ -34,7 +49,7 @@ function Login({ navigation }) {
         console.log("Called");
         const config = {
             method: "get",
-            url: `${appConfig.api_url}/country/list?page=1&limit=1000`,
+            url: `${appConfig.apiUrl}/country/list?page=1&limit=1000`,
             headers: {
                 key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
                 Accept: "application/json",
@@ -53,7 +68,7 @@ function Login({ navigation }) {
     const getStates = async () => {
         const config = {
             method: "get",
-            url: `${appConfig.api_url}/state/list?page=1&limit=100000`,
+            url: `${appConfig.apiUrl}/state/list?page=1&limit=100000`,
             headers: {
                 key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
                 Accept: "application/json",
@@ -72,7 +87,7 @@ function Login({ navigation }) {
     const getDistricts = async () => {
         const config = {
             method: "get",
-            url: `${appConfig.api_url}/district/list?page=1&limit=1000000`,
+            url: `${appConfig.apiUrl}/district/list?page=1&limit=1000000`,
             headers: {
                 key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
                 Accept: "application/json",
@@ -91,7 +106,7 @@ function Login({ navigation }) {
     const getTehsils = async () => {
         const config = {
             method: "get",
-            url: `${appConfig.api_url}/tehsil/list?page=1&limit=100000`,
+            url: `${appConfig.apiUrl}/tehsil/list?page=1&limit=100000`,
             headers: {
                 key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
                 Accept: "application/json",
@@ -134,13 +149,29 @@ function Login({ navigation }) {
         }
     }, []);
 
+    useEffect(() => {
+        registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+
+        notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+          setNotification(notification);
+        });
+
+        responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+          console.log(response);
+        });
+
+        return () => {
+          Notifications.removeNotificationSubscription(notificationListener.current);
+          Notifications.removeNotificationSubscription(responseListener.current);
+        };
+    }, []);
     const handleLogin = async () => {
         // TODO: If I uncomment the following line, it's giving No identifiers allowed directly after numeric literal
         // const deviceToken = Math.random() * 1_00_00_000;
 
         const config = {
             method: "post",
-            url: `${appConfig.api_url}/auth/login`,
+            url: `${appConfig.apiUrl}/auth/login`,
             headers: {
                 key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
                 Accept: "application/json",
@@ -152,7 +183,7 @@ function Login({ navigation }) {
                 "longitude": "20.000",
                 "latitude": "30.555",
                 "channel": "mobile",
-                "device_token": "asdad"
+                "device_token": expoPushToken
             },
         };
         console.log({ config });
@@ -296,6 +327,37 @@ function Login({ navigation }) {
             </ScrollView>
         </SafeAreaView>
     );
+}
+
+async function registerForPushNotificationsAsync() {
+    let token;
+    if (Constants.isDevice) {
+      const { status: existingStatus } = await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== 'granted') {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== 'granted') {
+        Alert.alert('Failed', 'Failed to get push token for push notification!');
+        return;
+      }
+      token = (await Notifications.getExpoPushTokenAsync()).data;
+      console.log(token);
+    } else {
+        Alert.alert('Emulator being used', 'Must use physical device for Push Notifications');
+    }
+
+    if (Platform.OS === 'android') {
+      Notifications.setNotificationChannelAsync('default', {
+        name: 'default',
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: '#FF231F7C',
+      });
+    }
+
+    return token;
 }
 
 export default Login;
