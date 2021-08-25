@@ -7,13 +7,13 @@ export default StyleSheet.create({
     inputField: {
         paddingTop: "3.5%",
         textAlignVertical: "top",
-        width: '40%',
-        marginLeft: 15,
-        marginRight: 25
+        paddingHorizontal: "1%",
+        width:"100%"
     },
     label: {
         paddingBottom: "2%",
         color: "#8A8A81",
+        fontFamily: theme.fonts.poppins.regular,
     },
     dropdown: {
         width: "100%",
@@ -31,11 +31,12 @@ export default StyleSheet.create({
         paddingHorizontal: "2%",
         backgroundColor: theme.colors.white,
         textAlignVertical: "top",
+        fontFamily: theme.fonts.poppins.regular,
     },
     mainContainer: {
         paddingHorizontal: theme.screenPadding.horizontal,
         paddingBottom: theme.screenPadding.bottom,
-        backgroundColor: "#FAFAFA",
+        backgroundColor: theme.colors.secondary,
     },
     image: {
         width: 100,
@@ -46,5 +47,5 @@ export default StyleSheet.create({
     textCenter: {
         textAlign: "center",
     },
-    buttonContainer: { paddingVertical: "5%" },
+    buttonContainer: { paddingVertical: "5%", paddingHorizontal: "1%" },
 });

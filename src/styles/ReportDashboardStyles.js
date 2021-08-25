@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import theme from "../constants/theme";
 
 export const reportDashboardStyles = StyleSheet.create({
   body: {
@@ -19,15 +20,19 @@ export const reportDashboardStyles = StyleSheet.create({
     elevation: 5,
   },
   boldRow: {
-    fontWeight: "bold",
     flex: 1,
     paddingHorizontal: 2,
-    paddingVertical: 10
+    paddingTop: 10,
+    paddingBottom: 2,
+    fontFamily:theme.fonts.poppins.semiBold,
+    textTransform:"capitalize"
   },
   row: {
     backgroundColor: '#fff',
     flex: 1,
     paddingHorizontal: 2,
-    paddingVertical: 10
+    paddingVertical: 10,
+    fontFamily:theme.fonts.poppins.regular,
+    textTransform:"capitalize"
   }
 });

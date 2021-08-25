@@ -144,7 +144,7 @@ function Approvals() {
     };
 
     const renderItem = ({ item }) => (
-        <View style={{ paddingBottom: 10 }}>
+        <View style={{ paddingBottom: 10, paddingHorizontal:"1%" }}>
             <Notice
                 requireUserConsent={userConsent}
                 message={message}
@@ -158,6 +158,7 @@ function Approvals() {
                     padding: "2%",
                     backgroundColor: "white",
                     borderRadius: 8,
+                    elevation:5
                 }}
             >
                 <View style={{ flexDirection: "row" }}>
@@ -180,6 +181,7 @@ function Approvals() {
                                 style={{
                                     textAlignVertical: "center",
                                     textAlign: "center",
+                                    fontFamily: theme.fonts.poppins.semiBold,
                                     color: theme.colors.white,
                                     fontSize: 30,
                                 }}
@@ -197,7 +199,7 @@ function Approvals() {
                     >
                         <Text
                             style={{
-                                fontWeight: "bold",
+                                fontFamily: theme.fonts.poppins.semiBold,
                                 textTransform: "capitalize",
                             }}
                         >
@@ -207,6 +209,8 @@ function Approvals() {
                             style={{
                                 textTransform: "capitalize",
                                 color: "#0077cc",
+                                ...theme.sizes.regular,
+                                fontFamily: theme.fonts.poppins.regular,
                             }}
                             onPress={() => {
                                 // openMaps(item.longitude, item.latitude);
@@ -221,6 +225,8 @@ function Approvals() {
                         <Text
                             style={{
                                 textTransform: "capitalize",
+                                ...theme.sizes.regular,
+                                fontFamily: theme.fonts.poppins.regular,
                             }}
                         >
                             +91 {item.mobile_no}
@@ -243,7 +249,8 @@ function Approvals() {
                             <Text
                                 style={{
                                     color: theme.colors.white,
-                                    fontWeight: "bold",
+                                    ...theme.sizes.regular,
+                                    fontFamily: theme.fonts.poppins.semiBold,
                                 }}
                             >
                                 Approve{" "}
@@ -264,7 +271,8 @@ function Approvals() {
                             <Text
                                 style={{
                                     color: theme.colors.white,
-                                    fontWeight: "bold",
+                                    ...theme.sizes.regular,
+                                    fontFamily: theme.fonts.poppins.semiBold,
                                 }}
                             >
                                 Reject
@@ -277,7 +285,14 @@ function Approvals() {
     );
 
     return (
-        <SafeAreaView style={{ paddingHorizontal: "3%", paddingTop: 10 }}>
+        <SafeAreaView
+            style={{
+                paddingHorizontal: "3%",
+                paddingTop: 10,
+                backgroundColor: theme.colors.secondary,
+                flex: 1,
+            }}
+        >
             {pendingApprovals.length ? (
                 <View>
                     <FlatList
@@ -292,10 +307,10 @@ function Approvals() {
                         flex: 1,
                         justifyContent: "center",
                         alignItems: "center",
-                        alignContent:"center"
+                        alignContent: "center",
                     }}
                 >
-                    <Text >No Pending approvals</Text>
+                    <Text>No Pending approvals</Text>
                 </View>
             )}
         </SafeAreaView>

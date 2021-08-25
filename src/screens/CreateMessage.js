@@ -5,6 +5,7 @@ import InputFieldWithLabel from "../components/InputFieldWithLabel";
 import UploadButton from "../components/UploadButton";
 import Files from "../components/Files";
 import * as DocumentPicker from "expo-document-picker";
+import theme from "../constants/theme";
 
 const CreateMessage = ({ navigation }) => {
     const [message, setMessage] = useState({
@@ -34,7 +35,12 @@ const CreateMessage = ({ navigation }) => {
         });
     };
     return (
-        <ScrollView style={{ paddingHorizontal: "3.5%" }}>
+        <ScrollView
+            style={{
+                paddingHorizontal: "3.5%",
+                backgroundColor: theme.colors.secondary,
+            }}
+        >
             <Dropdown
                 label="To,"
                 value={message.to}
@@ -60,8 +66,15 @@ const CreateMessage = ({ navigation }) => {
             />
 
             <View>
-                <View style={{ paddingBottom: "1.5%", paddingTop: "3.5%" }}>
-                    <Text style={{ color: "#8A8A81" }}>Files</Text>
+                <View style={{ paddingBottom: "1%", paddingTop: "3.5%" }}>
+                    <Text
+                        style={{
+                            color: "#8A8A81",
+                            fontFamily: theme.fonts.poppins.regular,
+                        }}
+                    >
+                        Files
+                    </Text>
                 </View>
                 <Files
                     data={message.files}

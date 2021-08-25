@@ -5,7 +5,7 @@ const { height, width } = Dimensions.get("window");
 
 export default StyleSheet.create({
     subject: {
-        fontWeight: "bold",
+        fontFamily:theme.fonts.poppins.semiBold,
         fontSize: 15,
         color: "#5E5E5E",
     },
@@ -14,19 +14,20 @@ export default StyleSheet.create({
     },
     labels: {
         fontSize: 13,
+        fontFamily:theme.fonts.poppins.regular,
         color: "#8A8A81",
     },
     row: {
         flexDirection: "row",
     },
     body: {
-        fontSize: 15,
+        fontSize: 14,
+        fontFamily:theme.fonts.poppins.regular,
         color: "#8A8A81",
     },
     upperContainer: {
         paddingHorizontal: "3.5%",
-        paddingTop: "4%",
-        paddingBottom: "2%",
+        paddingVertical: "4%",
         backgroundColor: "#F2F2F2",
         flex: 1,
     },
@@ -36,7 +37,6 @@ export default StyleSheet.create({
         paddingHorizontal: "3.5%",
         paddingTop: "4%",
         paddingBottom: "12%",
-        backgroundColor: "white",
     },
     approvedbyContainer: {
         paddingTop: "3.5%",
@@ -55,6 +55,7 @@ export default StyleSheet.create({
     chipText: {
         color: "#8A8A81",
         fontSize: 15,
+        fontFamily:theme.fonts.poppins.regular,
         textAlign: "center",
     },
 });

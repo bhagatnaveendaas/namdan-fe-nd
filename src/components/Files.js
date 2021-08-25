@@ -64,7 +64,7 @@ function Files({ data, removeSelectedFile, disableRemove }) {
                             )}
                         </View>
                     </View>
-                    <TouchableOpacity onPress={() => {}}>
+                    <TouchableOpacity onPress={() => {}} >
                         <Text style={styles.label}>{item.name}</Text>
                     </TouchableOpacity>
                 </TouchableOpacity>

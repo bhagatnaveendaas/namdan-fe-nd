@@ -1,8 +1,8 @@
 export default {
     colors: {
-        primary: "#223A6E",
+        primary: "#0045B4",
         white: "white",
-        secondary: "#3558A7",
+        secondary: "#FBFAFA",
         grey: "#C7C7C7",
     },
     screenPadding: {
@@ -10,8 +10,7 @@ export default {
         bottom: "4%",
     },
     box: {
-        backgroundColor: "white",
-        padding: "2%",
+        paddingHorizontal: "2%",
     },
     card: {
         backgroundColor: "white",
@@ -24,5 +23,25 @@ export default {
         padding: "2%",
         borderRadius: 50,
         elevation: 5,
+    },
+    sizes:{
+        regular:{
+            fontSize: 13
+        }
+    },
+    fonts: {
+        poppins: {
+            regular: "poppins-regular",
+            black: "poppins-Black",
+            bold: "poppins-Bold",
+            light: "poppins-Light",
+            medium: "poppins-Medium",
+            semiBold: "poppins-SemiBold",
+            thin: "poppins-Thin",
+        },
+        lora: {
+            regular: "Lora-VariableFont_wght",
+            bold: "Lora-Bold",
+        },
     },
 };

@@ -6,6 +6,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import Files from "../components/Files";
 import GreyButton from "../components/GreyRoundButton";
 import RoundButton from "../components/RoundButton";
+import theme from "../constants/theme";
 
 import style from "../styles/MessageDetails";
 
@@ -73,7 +74,7 @@ const MessageDetails = () => {
         <SafeAreaView
             style={{
                 flex: 1,
-                backgroundColor: "white",
+                backgroundColor: theme.colors.secondary,
             }}
         >
             <ScrollView style={{ flex: 1 }}>

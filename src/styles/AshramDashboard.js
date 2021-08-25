@@ -10,7 +10,8 @@ export default StyleSheet.create({
   },
   scoreBoard: {
     backgroundColor: theme.colors.primary,
-    borderRadius: 10
+    borderRadius: 10,
+    elevation: 5,
   },
   prathamDiv: {
     alignContent: 'center',

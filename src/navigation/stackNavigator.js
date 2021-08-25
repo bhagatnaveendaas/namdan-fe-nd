@@ -17,11 +17,24 @@ import Messages from "../screens/Messages";
 import CreateMessage from "..//screens/CreateMessage";
 import MessageDetails from "../screens/MessageDetails";
 import Entry from "../screens/entry/index";
+import theme from "../constants/theme";
 
 const Stack = createStackNavigator();
 
 const MainStackNavigator = () => (
-    <Stack.Navigator headerMode="screen">
+    <Stack.Navigator
+        headerMode="screen"
+        screenOptions={{
+            headerTitleAlign: "center",
+            headerStyle: {
+                backgroundColor: theme.colors.primary,
+            },
+            headerTintColor: "#fff",
+            headerTitleStyle: {
+                fontFamily: theme.fonts.poppins.semiBold,
+            },
+        }}
+    >
         <Stack.Screen
             name="Login"
             component={Login}
@@ -32,31 +45,18 @@ const MainStackNavigator = () => (
         <Stack.Screen
             name="AshramDashboard"
             component={AshramDashboard}
-            // options={{
-            //     headerTitle: (props) => (
-            //         <HomeHeader {...props} title="Ashram dashboard" />
-            //     ),
-            // }}
             options={{ headerShown: false }}
         />
-        <Stack.Screen
-            name="SignUp"
-            component={SignUp}
-            options={{
-                headerTitle: (props) => (
-                    <HomeHeader {...props} title="Sign up" />
-                ),
-            }}
-        />
+        <Stack.Screen name="Pratham Naam" component={SignUp} />
         <Stack.Screen name="CountryDashboard" component={CountryDashboard} />
-        <Stack.Screen name="NaamdanReport" component={NaamdanReport} />
-        <Stack.Screen name="NaamdanCentre" component={NaamdanCentre} />
-        <Stack.Screen name="PendingSatnaam" component={PendingSatnaam} />
+        <Stack.Screen name="Naamdan Report" component={NaamdanReport} />
+        <Stack.Screen name="Naamdan Centre" component={NaamdanCentre} />
+        <Stack.Screen name="Pending Satnaam" component={PendingSatnaam} />
         <Stack.Screen
-            name="EligibilityForPunarUpdesh"
+            name="Punar Updesh Eligibles"
             component={EligibilityForPunarUpdesh}
         />
-        <Stack.Screen name="AddNaamdanCenter" component={AddNaamdanCenter} />
+        <Stack.Screen name="Add Naamdan Center" component={AddNaamdanCenter} />
         <Stack.Screen name="Approvals" component={Approvals} />
         <Stack.Screen name="Messages" component={Messages} />
         <Stack.Screen name="Compose Message" component={CreateMessage} />

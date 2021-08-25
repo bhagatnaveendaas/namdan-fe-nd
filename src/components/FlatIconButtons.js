@@ -11,7 +11,7 @@ const FlatIconButtons = ({ label, icon, pressHandler }) => (
   <View style={[{ width: '49%', marginTop: '2%', paddingHorizontal: label.length > 20 ? '5%' : '8%', }, theme.card]}>
     <TouchableOpacity onPress={pressHandler} style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: '4%' }}>
       <Text style={{
-        alignContent: 'center', alignSelf: 'center', alignItems: 'center', fontSize: 16
+        alignContent: 'center', alignSelf: 'center', alignItems: 'center', fontFamily: theme.fonts.poppins.regular, ...theme.sizes.regular
       }}
       >
         {label}

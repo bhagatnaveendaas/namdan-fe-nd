@@ -17,10 +17,10 @@ import styles from "../styles/Singup";
 import Constants from "../constants/text/Signup";
 import _, { fill } from "lodash";
 import { serialize } from "object-to-formdata";
-import appConfig from '../config';
+import appConfig from "../config";
+import theme from "../constants/theme";
 
-
-function SignUp({navigation}) {
+function SignUp({ navigation }) {
     const naamdanTakenAt = ["Online", "Naamdan Center"];
     const relations = ["S/O", "D/O"];
     // const countries = ['India', 'Pakistan', 'Nepal'];
@@ -44,7 +44,10 @@ function SignUp({navigation}) {
         const pwd = _.sampleSize(chars, length || 12); // lodash v4: use _.sampleSize
         return pwd.join("");
     };
-    const getRequiredDateFormat = (dateObj) => `${dateObj.getFullYear()}-${dateObj.getMonth() - 1}-${dateObj.getDate()}`;
+    const getRequiredDateFormat = (dateObj) =>
+        `${dateObj.getFullYear()}-${
+            dateObj.getMonth() - 1
+        }-${dateObj.getDate()}`;
     const [userData, setUserData] = useState({
         address: "",
         country_id: 2,
@@ -93,8 +96,8 @@ function SignUp({navigation}) {
     const getCountries = async () => {
         console.log("Callled");
         const temp = JSON.parse(await AsyncStorage.getItem("countries"));
-        console.log({temp});
-        setcountries(temp?temp:[]);
+        console.log({ temp });
+        setcountries(temp ? temp : []);
     };
 
     useEffect(() => {
@@ -139,7 +142,10 @@ function SignUp({navigation}) {
         let reqDistricts = temp.filter(
             (district) => district.state_id === states[stateId].id
         );
-        reqDistricts = reqDistricts.map((item) => ({ ...item, name: item.district_name }));
+        reqDistricts = reqDistricts.map((item) => ({
+            ...item,
+            name: item.district_name,
+        }));
         setDistricts(reqDistricts);
     };
 
@@ -149,7 +155,10 @@ function SignUp({navigation}) {
             (tehsil) => tehsil.district_id === districts[districtId].district_id
         );
 
-        reqTehsils = reqTehsils.map((item) => ({ ...item, name: item.tehsil_name }));
+        reqTehsils = reqTehsils.map((item) => ({
+            ...item,
+            name: item.tehsil_name,
+        }));
         setTehsils(reqTehsils);
     };
 
@@ -266,7 +275,9 @@ function SignUp({navigation}) {
             })
             .catch((error) => {
                 if (error && error.response) {
-                    console.log(`Signup: ${JSON.stringify(error.response.data)}`);
+                    console.log(
+                        `Signup: ${JSON.stringify(error.response.data)}`
+                    );
                 } else {
                     console.log(`Signup: ${error}`);
                 }
@@ -355,7 +366,12 @@ function SignUp({navigation}) {
                         style={styles.image}
                     />
                 )}
-                <Text style={{ textAlign: "center" }}>
+                <Text
+                    style={{
+                        textAlign: "center",
+                        fontFamily: theme.fonts.poppins.regular,
+                    }}
+                >
                     {Constants.uploadPhoto}
                 </Text>
             </TouchableOpacity>

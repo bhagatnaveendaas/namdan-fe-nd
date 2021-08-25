@@ -12,7 +12,7 @@ import RoundButton from "../components/RoundButton";
 import textConstants from "../constants/text/Login";
 import theme from "../constants/theme";
 import styles from "../styles/Login";
-import appConfig from '../config';
+import appConfig from "../config";
 
 function Login({ navigation }) {
     const [userName, setUserName] = useState("");
@@ -146,13 +146,13 @@ function Login({ navigation }) {
                 Accept: "application/json",
             },
             data: {
-                "username": userName,
-                "password": password,
-                "device_id": "fdsfsf",
-                "longitude": "20.000",
-                "latitude": "30.555",
-                "channel": "mobile",
-                "device_token": "asdad"
+                username: userName,
+                password: password,
+                device_id: "fdsfsf",
+                longitude: "20.000",
+                latitude: "30.555",
+                channel: "mobile",
+                device_token: "asdad",
             },
         };
         console.log({ config });
@@ -228,7 +228,6 @@ function Login({ navigation }) {
                         style={styles.image}
                         source={require("../../assets/Guruji2.png")}
                     />
-
                 </View>
                 <View>
                     <Text
@@ -282,12 +281,24 @@ function Login({ navigation }) {
                             />
                         </View>
                         <TouchableOpacity>
-                            <Text style={[styles.textCenter, styles.textWhite]}>
+                            <Text
+                                style={[
+                                    styles.textCenter,
+                                    styles.textWhite,
+                                    styles.fontType,
+                                ]}
+                            >
                                 Forget Password?
                             </Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.signUpContainer}>
-                            <Text style={[styles.textCenter, styles.textWhite]}>
+                            <Text
+                                style={[
+                                    styles.textCenter,
+                                    styles.textWhite,
+                                    styles.fontType,
+                                ]}
+                            >
                                 {textConstants.signUpLine}
                             </Text>
                         </TouchableOpacity>

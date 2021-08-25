@@ -5,6 +5,9 @@ import theme from "../constants/theme";
 const { height, width } = Dimensions.get("window");
 
 export default StyleSheet.create({
+    fontType:{
+        fontFamily:theme.fonts.poppins.regular
+    },
     container: {
         backgroundColor: theme.colors.primary,
         flex: 1,
@@ -24,11 +27,13 @@ export default StyleSheet.create({
     },
     appName: {
         fontSize: height * 0.045,
+        fontFamily:theme.fonts.poppins.semiBold
     },
     inputs: {
         backgroundColor: theme.colors.white,
         flex: 1,
         paddingHorizontal: width * 0.03,
+        fontFamily:theme.fonts.poppins.regular
     },
     iconContainer: {
         flex: 1,
@@ -49,7 +54,7 @@ export default StyleSheet.create({
         paddingTop: height * 0.05,
     },
     loginButton: {
-        backgroundColor: theme.colors.secondary,
+        backgroundColor: theme.colors.primary,
         padding: width * 0.038,
         borderRadius: width * 0.1,
         alignItems: "center",
@@ -72,11 +77,12 @@ export default StyleSheet.create({
     },
     loginButtonText: {
         textTransform: "uppercase",
-        fontWeight: "bold",
+        // fontWeight: "bold",
+        fontFamily:theme.fonts.poppins.semiBold
     },
     GreyButtonText: {
         textTransform: "uppercase",
-        fontWeight: "bold",
+        fontFamily:theme.fonts.poppins.semiBold,
         color: "#666666",
     },
     buttonContainer: {

@@ -10,6 +10,10 @@ export default StyleSheet.create({
     },
     label: {
         color: "#8A8A81",
+        fontFamily:theme.fonts.poppins.regular,
+        textTransform:"capitalize",
+        alignItems:'center',
+        paddingTop:3
     },
     
     container: {

@@ -12,7 +12,14 @@ import ScoreBoard from "../components/ScoreBoard";
 import VerticalIconButton from "../components/VerticalIconButton";
 import appConfig from "../config";
 import { SafeAreaView } from "react-native";
-import { ATTENDANCE, PUNARUPDESH, SAARNAAM, SATNAM, SHUDDIKARAN } from "../constants";
+import {
+    ATTENDANCE,
+    PUNARUPDESH,
+    SAARNAAM,
+    SATNAM,
+    SHUDDIKARAN,
+} from "../constants";
+import { Image } from "react-native";
 
 const Home = ({ navigation }) => {
     const [kpiCounts, setKpiCounts] = useState({});
@@ -67,7 +74,39 @@ const Home = ({ navigation }) => {
         getKPICounts();
     }, []);
     return (
-        <SafeAreaView style={{paddingTop:"10%"}}>
+        <SafeAreaView
+            style={{
+                paddingTop: "10%",
+                backgroundColor: theme.colors.secondary,
+            }}
+        >
+            <View style={{ paddingBottom: "5%" }}>
+                <Text
+                    style={{
+                        fontFamily: theme.fonts.lora.bold,
+                        fontSize: 28,
+                        color: theme.colors.primary,
+                        textAlign: "center",
+                        textTransform: "uppercase",
+                    }}
+                >
+                    Naamdan
+                </Text>
+                <View
+                    style={{
+                        position: "absolute",
+                        paddingTop: 5,
+                        paddingLeft: "20%",
+                    }}
+                >
+                    <TouchableOpacity onPress={() => navigation.openDrawer()}>
+                        <Image
+                            style={{ height: 20, width: 20 }}
+                            source={require("../../assets/icons/side_menu.png")}
+                        />
+                    </TouchableOpacity>
+                </View>
+            </View>
             <ScrollView style={{ paddingHorizontal: "3.5%" }}>
                 {/* <View style={{ paddingVertical: "3%" }}>
                 <View style={[theme.card, { padding: "3%" }]}>
@@ -120,16 +159,16 @@ const Home = ({ navigation }) => {
                         <VerticalIconButton
                             label={`Pratham${"\n"}Naam`}
                             icon={require("../../assets/icons/pn.png")}
-                            pressHandler={() => navigation.push("SignUp")}
+                            pressHandler={() => navigation.push("Pratham Naam")}
                         />
                         <VerticalIconButton
                             label="Satnaam"
                             icon={require("../../assets/icons/sn.png")}
                             pressHandler={() => {
                                 navigation.navigate("Entry", {
-                                    title: 'Enter Satnaam',
-                                    entryType: SATNAM
-                                })
+                                    title: "Enter Satnaam",
+                                    entryType: SATNAM,
+                                });
                             }}
                         />
                         <VerticalIconButton
@@ -137,9 +176,9 @@ const Home = ({ navigation }) => {
                             icon={require("../../assets/icons/srn.png")}
                             pressHandler={() => {
                                 navigation.navigate("Entry", {
-                                    title: 'Enter SaarNaam',
-                                    entryType: SAARNAAM
-                                })
+                                    title: "Enter SaarNaam",
+                                    entryType: SAARNAAM,
+                                });
                             }}
                         />
                         <VerticalIconButton
@@ -147,9 +186,9 @@ const Home = ({ navigation }) => {
                             icon={require("../../assets/icons/pu.png")}
                             pressHandler={() => {
                                 navigation.navigate("Entry", {
-                                    title: 'Enter Punar Updesh',
-                                    entryType: PUNARUPDESH
-                                })
+                                    title: "Enter Punar Updesh",
+                                    entryType: PUNARUPDESH,
+                                });
                             }}
                         />
                         <VerticalIconButton
@@ -157,9 +196,9 @@ const Home = ({ navigation }) => {
                             icon={require("../../assets/icons/sk.png")}
                             pressHandler={() => {
                                 navigation.navigate("Entry", {
-                                    title: 'Enter Shudhikaran',
-                                    entryType: SHUDDIKARAN
-                                })
+                                    title: "Enter Shudhikaran",
+                                    entryType: SHUDDIKARAN,
+                                });
                             }}
                         />
                         <VerticalIconButton
@@ -167,15 +206,15 @@ const Home = ({ navigation }) => {
                             icon={require("../../assets/icons/at.png")}
                             pressHandler={() => {
                                 navigation.navigate("Entry", {
-                                    title: 'Attendance',
-                                    entryType: ATTENDANCE
-                                })
+                                    title: "Attendance",
+                                    entryType: ATTENDANCE,
+                                });
                             }}
                         />
                     </View>
                 </View>
-                <View>
-                    <DashboardHeading label="Features" />
+                <DashboardHeading label="Features" />
+                <View style={{ paddingHorizontal: "1.3%" }}>
                     <View
                         style={[
                             theme.card,
@@ -199,7 +238,7 @@ const Home = ({ navigation }) => {
                         />
                         <RoundIconButton
                             handleClick={() => {
-                                navigation.push("AddNaamdanCenter");
+                                navigation.push("Add Naamdan Center");
                             }}
                             label={`+ Naamdan${"\n"}Center`}
                             iconName={require("../../assets/icons/naamdanCenterBg.png")}
@@ -212,8 +251,10 @@ const Home = ({ navigation }) => {
                             iconName={require("../../assets/icons/messageBg.png")}
                         />
                     </View>
+                </View>
+                <DashboardHeading label="Reports" />
+                <View style={{ paddingHorizontal: "1.3%" }}>
                     <View>
-                        <DashboardHeading label="Reports" />
                         <View
                             style={{
                                 flexDirection: "row",
@@ -225,28 +266,28 @@ const Home = ({ navigation }) => {
                                 label={`Naamdan${"\n"}Reports`}
                                 icon={require("../../assets/icons/pn.png")}
                                 pressHandler={() =>
-                                    navigation.push("NaamdanReport")
+                                    navigation.push("Naamdan Report")
                                 }
                             />
                             <FlatIconButtons
                                 label={`Naamdan${"\n"}Centre`}
                                 icon={require("../../assets/icons/naamdanCenter.png")}
                                 pressHandler={() =>
-                                    navigation.push("NaamdanCentre")
+                                    navigation.push("Naamdan Centre")
                                 }
                             />
                             <FlatIconButtons
                                 label={`Pending${"\n"}Satnaam`}
                                 icon={require("../../assets/icons/psn.png")}
                                 pressHandler={() =>
-                                    navigation.push("PendingSatnaam")
+                                    navigation.push("Pending Satnaam")
                                 }
                             />
                             <FlatIconButtons
                                 label={`Eligibility for${"\n"}Punar Updesh`}
                                 icon={require("../../assets/icons/pu.png")}
                                 pressHandler={() =>
-                                    navigation.push("EligibilityForPunarUpdesh")
+                                    navigation.push("Punar Updesh Eligibles")
                                 }
                             />
                         </View>

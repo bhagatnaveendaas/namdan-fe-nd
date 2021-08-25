@@ -14,26 +14,28 @@ function InputFieldWithLabel({
     rows,
 }) {
     return (
-        <View style={styles.inputField}>
-            <Text style={styles.label}>{label}</Text>
-            {isDate ? (
-                <TouchableOpacity
-                    style={[styles.textInput, { paddingVertical: "4.3%" }]}
-                    onPress={() => setShow(true)}
-                >
-                    {/* <Text>{`${value.toLocaleDateString()}`}</Text> */}
-                    <Text>{`${value}`}</Text>
-                </TouchableOpacity>
-            ) : (
-                <TextInput
-                    placeholder={placeholder}
-                    style={styles.textInput}
-                    value={value}
-                    onChange={changeFn}
-                    numberOfLines={rows ? rows : 1}
-                    editable={!disabled}
-                />
-            )}
+        <View style={{ flex: 1, width: "100%", justifyContent:"center" }}>
+            <View style={styles.inputField}>
+                <Text style={styles.label}>{label}</Text>
+                {isDate ? (
+                    <TouchableOpacity
+                        style={[styles.textInput, { paddingVertical: "4.3%" }]}
+                        onPress={() => setShow(true)}
+                    >
+                        {/* <Text>{`${value.toLocaleDateString()}`}</Text> */}
+                        <Text>{`${value}`}</Text>
+                    </TouchableOpacity>
+                ) : (
+                    <TextInput
+                        placeholder={placeholder}
+                        style={styles.textInput}
+                        value={value}
+                        onChange={changeFn}
+                        numberOfLines={rows ? rows : 1}
+                        editable={!disabled}
+                    />
+                )}
+            </View>
         </View>
     );
 }

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Modal, Image } from "react-native";
 import { Button } from "react-native-elements";
 import { View, Text } from "react-native";
+import theme from "../constants/theme";
 
 const PopupNotice = (props) => {
     const [noticeMessage, setNoticeMessage] = useState("");
@@ -83,6 +84,8 @@ const PopupNotice = (props) => {
                         <Text
                             style={{
                                 marginTop: 12,
+                                ...theme.sizes.regular,
+                                fontFamily: theme.fonts.poppins.semiBold,
                             }}
                         >
                             {" "}
@@ -112,6 +115,10 @@ const PopupNotice = (props) => {
                                             width: 140,
                                             borderRadius: 18,
                                         }}
+                                        titleStyle={{
+                                            fontFamily:
+                                                theme.fonts.poppins.semiBold,
+                                        }}
                                         onPress={() => {
                                             console.log("Calling cancel");
                                             props.cancelEntry &&
@@ -124,6 +131,10 @@ const PopupNotice = (props) => {
                                             backgroundColor: "#305198",
                                             width: 140,
                                             borderRadius: 18,
+                                        }}
+                                        titleStyle={{
+                                            fontFamily:
+                                                theme.fonts.poppins.semiBold,
                                         }}
                                         onPress={() => {
                                             props.confirmEntry &&
@@ -145,10 +156,14 @@ const PopupNotice = (props) => {
                                             width: 223,
                                             borderRadius: 18,
                                         }}
+                                        titleStyle={{
+                                            fontFamily:
+                                                theme.fonts.poppins.semiBold,
+                                        }}
                                         onPress={() => {
                                             console.log("Calling cancel");
                                             props.cancelEntry &&
-                                            props.cancelEntry();
+                                                props.cancelEntry();
                                         }}
                                         title={"Close"}
                                     />

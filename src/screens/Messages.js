@@ -3,6 +3,8 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { MaterialIcons } from "@expo/vector-icons";
 import theme from "../constants/theme";
+import { SafeAreaView } from "react-native";
+import { Image } from "react-native";
 
 const messages = [
     {
@@ -203,7 +205,7 @@ const messages = [
     },
 ];
 
-const Messages = ({navigation}) => {
+const Messages = ({ navigation }) => {
     const [tab, setTab] = useState(0);
     const [data, setData] = useState([]);
 
@@ -217,7 +219,7 @@ const Messages = ({navigation}) => {
                 paddingVertical: index === data.length - 1 ? 17 : 7,
                 paddingHorizontal: "3.5%",
             }}
-            onPress={()=>navigation.push("Message")}
+            onPress={() => navigation.push("Message")}
         >
             <View
                 style={{
@@ -232,34 +234,86 @@ const Messages = ({navigation}) => {
                 }}
             >
                 <View>
-                    <Text>{item.subject}</Text>
+                    <Text
+                        style={{
+                            fontFamily: theme.fonts.poppins.semiBold,
+                        }}
+                    >
+                        {item.subject}
+                    </Text>
                 </View>
                 <View>
-                    <Text>{item.message.text}</Text>
+                    <Text
+                        style={{
+                            fontFamily: theme.fonts.poppins.regular,
+                            ...theme.sizes.regular,
+                        }}
+                    >
+                        {item.message.text}
+                    </Text>
                 </View>
-                <View>
-                    <Text>{item.creator.name}</Text>
+                <View
+                    style={{
+                        flexDirection: "row",
+                        paddingTop: 2,
+                        alignItems: "center",
+                    }}
+                >
+                    <Image
+                        style={{ height: 12, width: 12 }}
+                        source={require("../../assets/icons/user.png")}
+                    />
+                    <Text
+                        style={{
+                            fontFamily: theme.fonts.poppins.regular,
+                            ...theme.sizes.regular,
+                            paddingLeft: 8,
+                            textAlignVertical: "center",
+                            color: "#636363",
+                        }}
+                    >
+                        {item.creator.name}
+                    </Text>
                 </View>
-                <View>
-                    <Text>{item.created_at}</Text>
+                <View
+                    style={{
+                        flexDirection: "row",
+                        alignSelf: "flex-end",
+                        alignItems: "center",
+                    }}
+                >
+                    <Image
+                        style={{ height: 13, width: 13 }}
+                        source={require("../../assets/icons/clock.png")}
+                    />
+                    <Text
+                        style={{
+                            fontFamily: theme.fonts.poppins.regular,
+                            ...theme.sizes.regular,
+                            alignSelf: "flex-end",
+                            color: "#636363",
+                            paddingLeft: 6,
+                        }}
+                    >
+                        {item.created_at}
+                    </Text>
                 </View>
             </View>
         </TouchableOpacity>
     );
 
     return (
-        <View
+        <SafeAreaView
             style={{
                 paddingVertical: "3.5%",
                 flex: 1,
-                backgroundColor: "white",
-
+                backgroundColor: theme.colors.secondary,
             }}
         >
             <View
                 style={{
                     paddingTop: 5,
-                    
+
                     paddingHorizontal: "3.5%",
                 }}
             >
@@ -282,7 +336,15 @@ const Messages = ({navigation}) => {
                             alignItems: "center",
                         }}
                     >
-                        <Text style={{ textAlign: "center" }}>Pending</Text>
+                        <Text
+                            style={{
+                                textAlign: "center",
+                                fontFamily: theme.fonts.poppins.semiBold,
+                                color:"#414040"
+                            }}
+                        >
+                            Pending
+                        </Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                         onPress={() => setTab(1)}
@@ -295,14 +357,22 @@ const Messages = ({navigation}) => {
                             alignItems: "center",
                         }}
                     >
-                        <Text style={{ textAlign: "center" }}>History</Text>
+                        <Text
+                            style={{
+                                textAlign: "center",
+                                fontFamily: theme.fonts.poppins.semiBold,
+                                color:"#414040"
+                            }}
+                        >
+                            History
+                        </Text>
                     </TouchableOpacity>
                 </View>
             </View>
             <View style={{ marginBottom: "5%" }}>
                 <View style={{ padding: "3.5%" }}>
-                    <Text style={{ color: "#AFAFAF" }}>
-                        10 pending approvals
+                    <Text style={{ color: "#AFAFAF",fontFamily: theme.fonts.poppins.regular, }}>
+                        {data.length} pending approvals
                     </Text>
                 </View>
                 <FlatList
@@ -333,12 +403,12 @@ const Messages = ({navigation}) => {
                         backgroundColor: theme.colors.primary,
                         borderRadius: 100,
                     }}
-                    onPress={()=>navigation.push("Compose Message")}
+                    onPress={() => navigation.push("Compose Message")}
                 >
                     <MaterialIcons name="message" size={34} color="white" />
                 </TouchableOpacity>
             </View>
-        </View>
+        </SafeAreaView>
     );
 };
 
