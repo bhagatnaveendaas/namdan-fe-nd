@@ -99,9 +99,7 @@ function AddNaamdanCenter() {
         let reqDistricts = temp.filter(
             (district) => district.state_id === states[stateId].id
         );
-        reqDistricts = reqDistricts.map((item) => {
-            return { ...item, name: item.district_name };
-        });
+        reqDistricts = reqDistricts.map((item) => ({ ...item, name: item.district_name }));
         setDistricts(reqDistricts);
     };
 
@@ -112,9 +110,7 @@ function AddNaamdanCenter() {
                 tehsil.district_id === districts[district_id].district_id
         );
 
-        reqTehsils = reqTehsils.map((item) => {
-            return { ...item, name: item.tehsil_name };
-        });
+        reqTehsils = reqTehsils.map((item) => ({ ...item, name: item.tehsil_name }));
         setTehsils(reqTehsils);
     };
 

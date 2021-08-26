@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "178127620272",
+    "project_id": "namdan-test",
+    "storage_bucket": "namdan-test.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:178127620272:android:e27238cd818105911c5375",
+        "android_client_info": {
+          "package_name": "org.jagatgururampalji.namdan"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "178127620272-d5cu9cd7dsalpmnlp2h4b9u095pf9f3g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDRnvVaKOe6FnUnoR-CopBUyFW9d9UPtks"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "178127620272-d5cu9cd7dsalpmnlp2h4b9u095pf9f3g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
