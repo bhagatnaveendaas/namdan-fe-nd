@@ -13,6 +13,7 @@ import textConstants from "../constants/text/Login";
 import theme from "../constants/theme";
 import styles from "../styles/Login";
 import appConfig from '../config';
+import roles from '../constants/text/Roles'
 
 function Login({ navigation }) {
     const [userName, setUserName] = useState("");
@@ -34,9 +35,9 @@ function Login({ navigation }) {
         console.log("Called");
         const config = {
             method: "get",
-            url: `${appConfig.api_url}/country/list?page=1&limit=1000`,
+            url: `${appConfig.apiUrl}/country/list?page=1&limit=1000`,
             headers: {
-                key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
+                key: appConfig.apiKey,
                 Accept: "application/json",
                 "X-CSRF-TOKEN": await AsyncStorage.getItem("token"),
             },
@@ -53,9 +54,9 @@ function Login({ navigation }) {
     const getStates = async () => {
         const config = {
             method: "get",
-            url: `${appConfig.api_url}/state/list?page=1&limit=100000`,
+            url: `${appConfig.apiUrl}/state/list?page=1&limit=100000`,
             headers: {
-                key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
+                key: appConfig.apiKey,
                 Accept: "application/json",
                 "X-CSRF-TOKEN": await AsyncStorage.getItem("token"),
             },
@@ -72,9 +73,9 @@ function Login({ navigation }) {
     const getDistricts = async () => {
         const config = {
             method: "get",
-            url: `${appConfig.api_url}/district/list?page=1&limit=1000000`,
+            url: `${appConfig.apiUrl}/district/list?page=1&limit=1000000`,
             headers: {
-                key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
+                key: appConfig.apiKey,
                 Accept: "application/json",
                 "X-CSRF-TOKEN": await AsyncStorage.getItem("token"),
             },
@@ -91,9 +92,9 @@ function Login({ navigation }) {
     const getTehsils = async () => {
         const config = {
             method: "get",
-            url: `${appConfig.api_url}/tehsil/list?page=1&limit=100000`,
+            url: `${appConfig.apiUrl}/tehsil/list?page=1&limit=100000`,
             headers: {
-                key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
+                key: appConfig.apiKey,
                 Accept: "application/json",
                 "X-CSRF-TOKEN": await AsyncStorage.getItem("token"),
             },
@@ -115,23 +116,23 @@ function Login({ navigation }) {
         return countries && states && districts && tehsils;
     };
 
-    const checkIfLoggedIn = async () => {
-        const loggedIn = await AsyncStorage.setItem("token", csrfKey);
-        return loggedIn ? true : false;
-    };
+    // const checkIfLoggedIn = async () => {
+    //     const loggedIn = await AsyncStorage.setItem("token", csrfKey);
+    //     return loggedIn ? true : false;
+    // };
 
     useEffect(() => {
-        if (checkIfLoggedIn) {
-            console.log("Called2");
-            if (!checkDataExist()) {
-                getCountries();
-                getStates();
-                getDistricts();
-                getTehsils();
-            }
-
-            navigation.push("AshramDashboard");
+        // if (checkIfLoggedIn) {
+        console.log("Called2");
+        if (!checkDataExist()) {
+            getCountries();
+            getStates();
+            getDistricts();
+            getTehsils();
         }
+
+            // navigation.push("AshramDashboard");
+        // }
     }, []);
 
     const handleLogin = async () => {
@@ -140,10 +141,11 @@ function Login({ navigation }) {
 
         const config = {
             method: "post",
-            url: `${appConfig.api_url}/auth/login`,
+            url: `${appConfig.apiUrl}/auth/login`,
             headers: {
-                key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
-                Accept: "application/json",
+                "key": appConfig.apiKey,
+                "Accept": "application/json",
+                "Content-Type": "application/json",
             },
             data: {
                 "username": userName,
@@ -156,18 +158,19 @@ function Login({ navigation }) {
             },
         };
         console.log({ config });
-
+        try {
         axios(config)
             .then(async (response) => {
+                console.log("Login Response: ");
                 console.log({ response });
                 if (response.data.success) {
-                    const temp = {
-                        ...showAlert,
-                        show: true,
-                        title: "Successful",
-                        message: "You are successfully logged In",
-                    };
-                    setShowAlert(temp);
+                    // const temp = {
+                    //     ...showAlert,
+                    //     show: true,
+                    //     title: "Successful",
+                    //     message: "You are successfully logged In",
+                    // };
+                    // setShowAlert(temp);
                     let csrfKey = "";
 
                     let cookies = response.headers["set-cookie"];
@@ -179,11 +182,24 @@ function Login({ navigation }) {
                     await AsyncStorage.setItem("name", response.data.data.name);
                     await AsyncStorage.setItem("role", response.data.data.role);
                     await AsyncStorage.setItem("loggedIn", "true");
+                    // await AsyncStorage.setItem("userCountry", response.data.data.country);
+                    // await AsyncStorage.setItem("userState", response.data.data.state);
+                    // await AsyncStorage.setItem("userDistrict", response.data.data.district);
                     await getCountries();
                     await getStates();
                     await getDistricts();
                     await getTehsils();
-                    navigation.push("AshramDashboard");
+                    if (response.data.data.role === roles.ASHRAM_ADMIN || response.data.data.role === roles.SUPER_ADMIN) {
+                        navigation.push("Ashram Dashboard");
+                    } else if (response.data.data.role === roles.COUNTRY_COORDINATOR) {
+                        navigation.push("Country Dashboard");
+                    } else if (response.data.data.role === roles.STATE_COORDINATOR) {
+                        navigation.push("State Dashboard");
+                    } else if (response.data.data.role === roles.DISTRICT_COORDINATOR) {
+                        navigation.push("District Dashboard");
+                    } else if (response.data.data.role === roles.NAAMDAN_SEWADAR) {
+                        navigation.push("Naamdan Sevadar Dashboard");
+                    }
                 } else {
                     const temp = {
                         ...showAlert,
@@ -195,8 +211,14 @@ function Login({ navigation }) {
                 }
             })
             .catch((error) => {
+                if (error.response && error.response.data) {
+                    console.log(error.response.data);
+                }
                 console.error(error);
             });
+        } catch(ex) {
+            console.log(ex);
+        }
     };
 
     return (

@@ -107,7 +107,7 @@ const Home = ({ navigation }) => {
                     pendingSatnams={kpiCounts.pending_satnams || 0}
                     punarUpdesh={0}
                 />
-                <View>
+                {/* <View>
                     <DashboardHeading label="Entries" />
                     <View
                         style={{
@@ -147,9 +147,9 @@ const Home = ({ navigation }) => {
                             pressHandler={() => {}}
                         />
                     </View>
-                </View>
+                </View> */}
                 <View>
-                    <DashboardHeading label="Features" />
+                    {/* <DashboardHeading label="Features" />
                     <View
                         style={[
                             theme.card,
@@ -159,11 +159,11 @@ const Home = ({ navigation }) => {
                             },
                         ]}
                     >
-                        {/* <RoundIconButton
+                        <RoundIconButton
                             handleClick={() => {}}
                             label={`Generate${"\n"}Pin`}
                             iconName={require("../../assets/icons/keyBg.png")}
-                        /> */}
+                        />
                         <RoundIconButton
                             handleClick={() => {
                                 navigation.push("Approvals");
@@ -185,7 +185,7 @@ const Home = ({ navigation }) => {
                             label="Messages"
                             iconName={require("../../assets/icons/messageBg.png")}
                         />
-                    </View>
+                    </View> */}
                     <View>
                         <DashboardHeading label="Reports" />
                         <View

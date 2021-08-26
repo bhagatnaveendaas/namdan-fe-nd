@@ -47,7 +47,7 @@ const ScoreBoard = (props) =>(
               color: theme.colors.white, fontWeight: 'bold', fontSize: 20, textAlign: 'center'
             }}
             >
-              {props.prathamVsSatnam}
+              {props.pendingSatnams}
 </Text>
             <Text style={{
               color: theme.colors.white, textAlign: 'center', fontWeight: 'bold', paddingTop: '1%'

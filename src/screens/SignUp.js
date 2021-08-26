@@ -242,7 +242,7 @@ function SignUp({navigation}) {
         const data = serialize(temp);
         const config = {
             method: "post",
-            url: `${appConfig.api_url}/disciple/create`,
+            url: `${appConfig.apiUrl}/disciple/create`,
             headers: {
                 key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
                 Accept: "multipart/form-data",
@@ -262,7 +262,7 @@ function SignUp({navigation}) {
                     message: "Disciple created successfully",
                 };
                 setShowAlert(temp);
-                navigation.push("AshramDashboard");
+                navigation.push("Ashram Dashboard");
             })
             .catch((error) => {
                 if (error && error.response) {
