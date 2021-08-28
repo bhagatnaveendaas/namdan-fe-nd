@@ -11,7 +11,8 @@ import OtherControls from "../components/OtherControls";
 import ScoreBoard from "../components/ScoreBoard";
 import VerticalIconButton from "../components/VerticalIconButton";
 import appConfig from "../config";
-import { SafeAreaView } from "react-native";
+import { SafeAreaView, StatusBar } from "react-native";
+
 import {
     ATTENDANCE,
     PUNARUPDESH,
@@ -29,8 +30,15 @@ const Home = ({ navigation }) => {
         message: "",
         confirm: "Ok",
     });
-    const temp = async () => {
-        const countries = await AsyncStorage.getItem("districts");
+
+    const [role, setRole] = useState("");
+
+    const getInitialProps = async () => {
+        // const countries = await AsyncStorage.getItem("districts");
+        const userRole = await AsyncStorage.getItem("role");
+        console.log(userRole);
+        // setRole(userRole);
+        setRole("Namdan Sewadar");
         // console.log({ countries });
     };
     const getKPICounts = async () => {
@@ -50,6 +58,7 @@ const Home = ({ navigation }) => {
         axios(config)
             .then(async (response) => {
                 if (response.data.success) {
+                    console.log(response.data.data);
                     setKpiCounts(response.data.data);
                 } else {
                     const temp = {
@@ -69,33 +78,61 @@ const Home = ({ navigation }) => {
                 }
             });
     };
+
     useEffect(() => {
-        temp();
+        getInitialProps();
         getKPICounts();
     }, []);
     return (
         <SafeAreaView
             style={{
-                paddingTop: "10%",
-                backgroundColor: theme.colors.secondary,
+                flex: 1,
+                // paddingBottom:"5%",
+                // backgroundColor: theme.colors.secondary,
+                backgroundColor: "white",
             }}
         >
-            <View style={{ paddingBottom: "5%" }}>
+            <StatusBar backgroundColor={theme.colors.primary} />
+            <View
+                style={{
+                    paddingVertical: "5%",
+                    backgroundColor: theme.colors.primary,
+                    borderBottomRightRadius: 10,
+                    borderBottomLeftRadius: 10,
+                    elevation: 10,
+                    shadowColor: "rgba(0,0,0, .4)", // IOS
+                    shadowOffset: { height: 1, width: 1 }, // IOS
+                    shadowOpacity: 1, // IOS
+                    shadowRadius: 1, // IOS
+                }}
+            >
                 <Text
                     style={{
                         fontFamily: theme.fonts.lora.bold,
                         fontSize: 28,
-                        color: theme.colors.primary,
+                        color: "white",
                         textAlign: "center",
                         textTransform: "uppercase",
                     }}
                 >
-                    Naamdan
+                    Naamdan App
+                </Text>
+                <Text
+                    style={{
+                        fontFamily: theme.fonts.lora.bold,
+                        fontSize: 15,
+                        color: "white",
+                        paddingTop: 3,
+                        textAlign: "center",
+                        textTransform: "uppercase",
+                    }}
+                >
+                    {role || ""}
                 </Text>
                 <View
                     style={{
                         position: "absolute",
-                        paddingTop: 5,
+                        paddingTop: 25,
                         paddingLeft: "20%",
                     }}
                 >
@@ -107,7 +144,7 @@ const Home = ({ navigation }) => {
                     </TouchableOpacity>
                 </View>
             </View>
-            <ScrollView style={{ paddingHorizontal: "3.5%" }}>
+            <ScrollView style={{ paddingHorizontal: "3.5%", paddingTop: "5%" }}>
                 {/* <View style={{ paddingVertical: "3%" }}>
                 <View style={[theme.card, { padding: "3%" }]}>
                     <Text
@@ -144,7 +181,7 @@ const Home = ({ navigation }) => {
                     prathams={kpiCounts.prathams}
                     satnams={kpiCounts.satnams}
                     sarnams={kpiCounts.sarnams}
-                    prathamVsSatnam={kpiCounts.pratham_vs_satnam}
+                    prathamVsSatnam={kpiCounts.pending_satnams}
                     punarUpdesh={0}
                 />
                 <View>
@@ -213,94 +250,169 @@ const Home = ({ navigation }) => {
                         />
                     </View>
                 </View>
-                <DashboardHeading label="Features" />
-                <View style={{ paddingHorizontal: "1.3%" }}>
-                    <View
-                        style={[
-                            theme.card,
-                            {
-                                flexDirection: "row",
-                                justifyContent: "space-evenly",
-                            },
-                        ]}
-                    >
-                        <RoundIconButton
-                            handleClick={() => {}}
-                            label={`Generate${"\n"}Pin`}
-                            iconName={require("../../assets/icons/keyBg.png")}
-                        />
-                        <RoundIconButton
-                            handleClick={() => {
-                                navigation.push("Approvals");
-                            }}
-                            label={`View${"\n"}Approvals`}
-                            iconName={require("../../assets/icons/tickBg.png")}
-                        />
-                        <RoundIconButton
-                            handleClick={() => {
-                                navigation.push("Add Naamdan Center");
-                            }}
-                            label={`+ Naamdan${"\n"}Center`}
-                            iconName={require("../../assets/icons/naamdanCenterBg.png")}
-                        />
-                        <RoundIconButton
-                            handleClick={() => {
-                                navigation.push("Messages");
-                            }}
-                            label="Messages"
-                            iconName={require("../../assets/icons/messageBg.png")}
-                        />
-                    </View>
-                </View>
-                <DashboardHeading label="Reports" />
-                <View style={{ paddingHorizontal: "1.3%" }}>
-                    <View>
-                        <View
-                            style={{
-                                flexDirection: "row",
-                                justifyContent: "space-between",
-                                flexWrap: "wrap",
-                            }}
-                        >
-                            <FlatIconButtons
-                                label={`Naamdan${"\n"}Reports`}
-                                icon={require("../../assets/icons/pn.png")}
-                                pressHandler={() =>
-                                    navigation.push("Naamdan Report")
-                                }
-                            />
-                            <FlatIconButtons
-                                label={`Naamdan${"\n"}Centre`}
-                                icon={require("../../assets/icons/naamdanCenter.png")}
-                                pressHandler={() =>
-                                    navigation.push("Naamdan Centre")
-                                }
-                            />
-                            <FlatIconButtons
-                                label={`Pending${"\n"}Satnaam`}
-                                icon={require("../../assets/icons/psn.png")}
-                                pressHandler={() =>
-                                    navigation.push("Pending Satnaam")
-                                }
-                            />
-                            <FlatIconButtons
-                                label={`Eligibility for${"\n"}Punar Updesh`}
-                                icon={require("../../assets/icons/pu.png")}
-                                pressHandler={() =>
-                                    navigation.push("Punar Updesh Eligibles")
-                                }
-                            />
+                {role !== "Namdan Sewadar" && (
+                    <>
+                        <DashboardHeading label="Features" />
+                        <View style={{ paddingHorizontal: "1.3%" }}>
+                            <View
+                                style={[
+                                    theme.card,
+                                    {
+                                        flexDirection: "row",
+                                        justifyContent: "space-evenly",
+                                    },
+                                ]}
+                            >
+                                <RoundIconButton
+                                    handleClick={() => {}}
+                                    label={`Generate${"\n"}Pin`}
+                                    iconName={require("../../assets/icons/keyBg.png")}
+                                />
+                                {role === "Ashram Admin" && (
+                                    <RoundIconButton
+                                        handleClick={() => {
+                                            navigation.push("Approvals");
+                                        }}
+                                        label={`View${"\n"}Approvals`}
+                                        iconName={require("../../assets/icons/tickBg.png")}
+                                    />
+                                )}
+                                {role !== "District Admin" && (
+                                    <RoundIconButton
+                                        handleClick={() => {
+                                            navigation.push(
+                                                "Add Naamdan Center"
+                                            );
+                                        }}
+                                        label={`+ Naamdan${"\n"}Center`}
+                                        iconName={require("../../assets/icons/naamdanCenterBg.png")}
+                                    />
+                                )}
+                                <RoundIconButton
+                                    handleClick={() => {
+                                        navigation.push("Messages");
+                                    }}
+                                    label="Messages"
+                                    iconName={require("../../assets/icons/messageBg.png")}
+                                />
+                            </View>
                         </View>
-                    </View>
-                    <View>
+
+                        <DashboardHeading label="Reports" />
+                    </>
+                )}
+                {/* {role === "Namdan Sewadar" && ( */}
+
+                {role !== "Namdan Sewadar" && (
+                    <View
+                        style={{
+                            paddingHorizontal: "1.3%",
+                            paddingBottom: "10%",
+                        }}
+                    >
+                        <View>
+                            <View
+                                style={{
+                                    flexDirection: "row",
+                                    justifyContent: "space-between",
+                                    flexWrap: "wrap",
+                                }}
+                            >
+                                <FlatIconButtons
+                                    label={`Naamdan${"\n"}Reports`}
+                                    icon={require("../../assets/icons/pn.png")}
+                                    pressHandler={() =>
+                                        navigation.push("Naamdan Report")
+                                    }
+                                />
+                                <FlatIconButtons
+                                    label={`Naamdan${"\n"}Centre`}
+                                    icon={require("../../assets/icons/naamdanCenter.png")}
+                                    pressHandler={() =>
+                                        navigation.push("Naamdan Centre")
+                                    }
+                                />
+                                <FlatIconButtons
+                                    label={`Pending${"\n"}Satnaam`}
+                                    icon={require("../../assets/icons/psn.png")}
+                                    pressHandler={() =>
+                                        navigation.push("Pending Satnaam")
+                                    }
+                                />
+                                <FlatIconButtons
+                                    label={`Eligibility for${"\n"}Punar Updesh`}
+                                    icon={require("../../assets/icons/pu.png")}
+                                    pressHandler={() =>
+                                        navigation.push(
+                                            "Punar Updesh Eligibles"
+                                        )
+                                    }
+                                />
+                            </View>
+                        </View>
+                        {/* <View>
                         <DashboardHeading label="Other controls" />
                         <OtherControls />
                     </View>
                     <View style={{ paddingBottom: "3%" }}>
                         <DashboardHeading label="Master Creation" />
                         <MasterCreation />
+                    </View> */}
                     </View>
-                </View>
+                )}
+
+                {role === "Namdan Sewadar" && (
+                    <View
+                        style={{
+                            justifyContent: "center",
+                            paddingTop: "2%",
+                            flex: 1,
+                            paddingHorizontal: "1.3%",
+                            paddingBottom: "10%",
+                            alignItems: "center",
+                        }}
+                    >
+                        <View
+                            style={{
+                                justifyContent: "center",
+                                width: "100%",
+                                borderRadius: 10,
+                                backgroundColor: "#E9FCFF",
+                                elevation: 5,
+                                flexDirection: "row",
+                                paddingVertical: 7,
+                                alignItems: "center",
+                            }}
+                        >
+                            <TouchableOpacity
+                                style={{
+                                    flexDirection: "row",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                }}
+                                onPress={() => {
+                                    navigation.push("Messages");
+                                }}
+                            >
+                                <Image
+                                    source={require("../../assets/icons/message.png")}
+                                    style={{ height: 40, width: 40 }}
+                                />
+                                <Text
+                                    style={{
+                                        fontFamily:
+                                            theme.fonts.poppins.semiBold,
+                                        color: theme.colors.primary,
+                                        fontSize: 14,
+                                        paddingLeft: 10,
+                                    }}
+                                >
+                                    Messages
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                )}
             </ScrollView>
         </SafeAreaView>
     );

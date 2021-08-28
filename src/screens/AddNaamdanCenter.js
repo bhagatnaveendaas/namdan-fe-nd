@@ -86,18 +86,25 @@ function AddNaamdanCenter() {
     }, [tehsils]);
 
     const getStates = async (countryId) => {
+        if (!countryId) {
+            return false;
+        }
         const temp = JSON.parse(await AsyncStorage.getItem("states"));
         const reqStates = temp.filter(
-            (state) => state.country_id === countries[countryId].id
+            (state) => state.country_id === countries[countryId]?.id
         );
         setStates(reqStates);
         getDistricts(userData.state_id);
     };
 
     const getDistricts = async (stateId) => {
+        console.log(states[stateId]);
+        if (!stateId) {
+            return false;
+        }
         const temp = JSON.parse(await AsyncStorage.getItem("districts"));
         let reqDistricts = temp.filter(
-            (district) => district.state_id === states[stateId].id
+            (district) => district.state_id === states[stateId]?.id
         );
         reqDistricts = reqDistricts.map((item) => {
             return { ...item, name: item.district_name };
@@ -106,10 +113,13 @@ function AddNaamdanCenter() {
     };
 
     const getTehsils = async (district_id) => {
+        if (!district_id) {
+            return false;
+        }
         const temp = JSON.parse(await AsyncStorage.getItem("tehsils"));
         let reqTehsils = temp.filter(
             (tehsil) =>
-                tehsil.district_id === districts[district_id].district_id
+                tehsil.district_id === districts[district_id]?.district_id
         );
 
         reqTehsils = reqTehsils.map((item) => {
@@ -412,7 +422,7 @@ function AddNaamdanCenter() {
                 placeholder="Enter Longitude"
             />
             <InputFieldWithLabel
-                label="Email"
+                label="Latitude"
                 value={userData.latitude}
                 changeFn={onLatitudeChange}
                 placeholder="Enter Latitude"

@@ -31,80 +31,96 @@ function Login({ navigation }) {
         setPassword(value);
     };
     const getCountries = async () => {
-        console.log("Called");
-        const config = {
-            method: "get",
-            url: `${appConfig.api_url}/country/list?page=1&limit=1000`,
-            headers: {
-                key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
-                Accept: "application/json",
-                "X-CSRF-TOKEN": await AsyncStorage.getItem("token"),
-            },
-        };
+        try {
+            console.log("Called");
+            const config = {
+                method: "get",
+                url: `${appConfig.api_url}/country/list?page=1&limit=1000`,
+                headers: {
+                    key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
+                    Accept: "application/json",
+                    "X-CSRF-TOKEN": await AsyncStorage.getItem("token"),
+                },
+            };
 
-        const response = await axios(config);
+            const response = await axios(config);
 
-        await AsyncStorage.setItem(
-            "countries",
-            JSON.stringify(response.data.data.countries)
-        );
+            await AsyncStorage.setItem(
+                "countries",
+                JSON.stringify(response.data.data.countries)
+            );
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const getStates = async () => {
-        const config = {
-            method: "get",
-            url: `${appConfig.api_url}/state/list?page=1&limit=100000`,
-            headers: {
-                key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
-                Accept: "application/json",
-                "X-CSRF-TOKEN": await AsyncStorage.getItem("token"),
-            },
-        };
+        try {
+            const config = {
+                method: "get",
+                url: `${appConfig.api_url}/state/list?page=1&limit=100000`,
+                headers: {
+                    key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
+                    Accept: "application/json",
+                    "X-CSRF-TOKEN": await AsyncStorage.getItem("token"),
+                },
+            };
 
-        const response = await axios(config);
+            const response = await axios(config);
 
-        await AsyncStorage.setItem(
-            "states",
-            JSON.stringify(response.data.data.states)
-        );
+            await AsyncStorage.setItem(
+                "states",
+                JSON.stringify(response.data.data.states)
+            );
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const getDistricts = async () => {
-        const config = {
-            method: "get",
-            url: `${appConfig.api_url}/district/list?page=1&limit=1000000`,
-            headers: {
-                key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
-                Accept: "application/json",
-                "X-CSRF-TOKEN": await AsyncStorage.getItem("token"),
-            },
-        };
+        try {
+            const config = {
+                method: "get",
+                url: `${appConfig.api_url}/district/list?page=1&limit=1000000`,
+                headers: {
+                    key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
+                    Accept: "application/json",
+                    "X-CSRF-TOKEN": await AsyncStorage.getItem("token"),
+                },
+            };
 
-        const response = await axios(config);
+            const response = await axios(config);
 
-        await AsyncStorage.setItem(
-            "districts",
-            JSON.stringify(response.data.data.districts)
-        );
+            await AsyncStorage.setItem(
+                "districts",
+                JSON.stringify(response.data.data.districts)
+            );
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const getTehsils = async () => {
-        const config = {
-            method: "get",
-            url: `${appConfig.api_url}/tehsil/list?page=1&limit=100000`,
-            headers: {
-                key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
-                Accept: "application/json",
-                "X-CSRF-TOKEN": await AsyncStorage.getItem("token"),
-            },
-        };
+        try {
+            const config = {
+                method: "get",
+                url: `${appConfig.api_url}/tehsil/list?page=1&limit=100000`,
+                headers: {
+                    key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
+                    Accept: "application/json",
+                    "X-CSRF-TOKEN": await AsyncStorage.getItem("token"),
+                },
+            };
 
-        const response = await axios(config);
+            const response = await axios(config);
 
-        await AsyncStorage.setItem(
-            "tehsils",
-            JSON.stringify(response.data.data.tehsil_list)
-        );
+            await AsyncStorage.setItem(
+                "tehsils",
+                JSON.stringify(response.data.data.tehsil_list)
+            );
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const checkDataExist = async () => {
@@ -183,6 +199,7 @@ function Login({ navigation }) {
                     await getStates();
                     await getDistricts();
                     await getTehsils();
+
                     navigation.push("AshramDashboard");
                 } else {
                     const temp = {

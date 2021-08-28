@@ -10,7 +10,7 @@ const ScoreBoard = (props) => (
                 <View
                     style={[
                         styles.prathamDiv,
-                        { paddingTop: "8%", paddingBottom: "2%" },
+                        { paddingTop: "3%", paddingBottom: "5%" },
                     ]}
                 >
                     <Text
@@ -41,6 +41,7 @@ const ScoreBoard = (props) => (
                         flexDirection: "row",
                         alignContent: "center",
                         alignSelf: "center",
+                        paddingBottom: "3%",
                     }}
                 >
                     <View
@@ -90,7 +91,7 @@ const ScoreBoard = (props) => (
                         <View
                             style={[
                                 styles.prathamDiv,
-                                { paddingVertical: "10%" },
+                                { paddingVertical: "6%" },
                             ]}
                         >
                             <Text
@@ -102,7 +103,7 @@ const ScoreBoard = (props) => (
                                     textAlign: "center",
                                 }}
                             >
-                                {props.prathamVsSatnam?.slice(0, 4)} %
+                                {props.prathamVsSatnam}
                             </Text>
                             <Text
                                 style={{
@@ -163,7 +164,7 @@ const ScoreBoard = (props) => (
                         <View
                             style={[
                                 styles.prathamDiv,
-                                { paddingVertical: "10%" },
+                                { paddingVertical: "6%" },
                             ]}
                         >
                             <Text

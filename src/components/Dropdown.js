@@ -10,7 +10,13 @@ function Dropdown({ label, value, changeFn, options }) {
         <View style={styles.inputField}>
             <Text style={styles.label}>{label}</Text>
             <View style={styles.dropdown}>
-                <Picker selectedValue={value} onValueChange={changeFn}>
+                <Picker
+                    selectedValue={value}
+                    onValueChange={changeFn}
+                   
+                    style={{height:35}}
+                >
+                    <Picker.Item label="select an option" value={null} />
                     {options.map((item, index) => (
                         <Picker.Item
                             key={index}
@@ -19,6 +25,7 @@ function Dropdown({ label, value, changeFn, options }) {
                             fontFamily={theme.fonts.poppins.regular}
                             itemStyle={{
                                 fontFamily: theme.fonts.poppins.regular,
+                                textTransform: "capitalize",
                             }}
                         />
                     ))}

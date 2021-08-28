@@ -19,10 +19,34 @@ import _, { fill } from "lodash";
 import { serialize } from "object-to-formdata";
 import appConfig from "../config";
 import theme from "../constants/theme";
+import { Platform } from "react-native";
+import CountryCodes from "../constants/CountryCode.json";
+
+const fieldNames = {
+    address: "Address",
+    country_id: "Country",
+    district_id: "District",
+    email: "Email",
+    guardian_name: "Guardian Name",
+    mobile_no: "Mobile number",
+    name: "Name",
+    avatar: "Avatar",
+    dob: "DOB",
+    pincode: "Pincode",
+    relation: "Relation",
+    state_id: "State",
+    tehsil_id: "Tehsil",
+    form_id: "Form ID",
+    form_no: "Form Number",
+    country_code: "Country Code",
+    form_date: "Form Date",
+    area_type: "Area Type",
+    naamdanTaken: "Naamdan taken at",
+};
 
 function SignUp({ navigation }) {
     const naamdanTakenAt = ["Online", "Naamdan Center"];
-    const relations = ["S/O", "D/O"];
+    const relations = ["S/O", "D/O", "NA"];
     // const countries = ['India', 'Pakistan', 'Nepal'];
     // const states = ['Maharashtra', 'Haryana'];
     // const districts = ['Pune', 'Mumbai'];
@@ -50,7 +74,7 @@ function SignUp({ navigation }) {
         }-${dateObj.getDate()}`;
     const [userData, setUserData] = useState({
         address: "",
-        country_id: 2,
+        country_id: "",
         district_id: "",
         age: "",
         email: "",
@@ -61,9 +85,12 @@ function SignUp({ navigation }) {
         dob: "",
         pincode: "",
         relation: "",
+        naamdanTaken: "",
         state_id: "",
         tehsil_id: "",
-        form_no: createId(14),
+        form_id: createId(14),
+        form_no: "",
+        country_code: "+91 | IN",
         form_date: getRequiredDateFormat(new Date()),
         area_type: "rural",
     });
@@ -75,15 +102,27 @@ function SignUp({ navigation }) {
         temp.naamdanTaken = value;
         setUserData(temp);
     };
+    const onCountryCodeChange = (value) => {
+        const temp = { ...userData };
+        temp.country_code = value;
+        setUserData(temp);
+    };
 
     const onNameChange = (event) => {
         const temp = { ...userData };
         temp.name = event.nativeEvent.text;
         setUserData(temp);
     };
+
+    const onFormNoChange = (event) => {
+        const temp = { ...userData };
+        temp.form_no = event.nativeEvent.text;
+        setUserData(temp);
+    };
     const onRelationChange = (value, index) => {
         const temp = { ...userData };
         temp.relation = value;
+        
         setUserData(temp);
     };
 
@@ -130,6 +169,9 @@ function SignUp({ navigation }) {
     }, [tehsils]);
 
     const getStates = async (countryId) => {
+        if (!countryId) {
+            return false;
+        }
         const temp = JSON.parse(await AsyncStorage.getItem("states"));
         const reqStates = temp.filter(
             (state) => state.country_id === countries[countryId].id
@@ -138,6 +180,9 @@ function SignUp({ navigation }) {
     };
 
     const getDistricts = async (stateId) => {
+        if (!stateId) {
+            return false;
+        }
         const temp = JSON.parse(await AsyncStorage.getItem("districts"));
         let reqDistricts = temp.filter(
             (district) => district.state_id === states[stateId].id
@@ -150,6 +195,9 @@ function SignUp({ navigation }) {
     };
 
     const getTehsils = async (districtId) => {
+        if (!districtId) {
+            return false;
+        }
         const temp = JSON.parse(await AsyncStorage.getItem("tehsils"));
         let reqTehsils = temp.filter(
             (tehsil) => tehsil.district_id === districts[districtId].district_id
@@ -228,15 +276,15 @@ function SignUp({ navigation }) {
     };
 
     const handleRegister = async () => {
-        let filled = true;
+        let notFilled = false;
         Object.keys(userData).forEach((element) => {
             if (!userData[element]) {
                 console.log({ element });
-                filled = false;
+                notFilled = element;
             }
         });
-        if (!filled) {
-            alert("Please fill all the required fields");
+        if (notFilled) {
+            alert(`Please fill ${fieldNames[notFilled]}`);
             return false;
         }
         const temp = { ...userData };
@@ -261,27 +309,27 @@ function SignUp({ navigation }) {
         };
         console.log({ config });
 
-        axios(config)
-            .then((response) => {
-                console.log(response.data);
-                const temp = {
-                    ...showAlert,
-                    show: true,
-                    title: "Successful",
-                    message: "Disciple created successfully",
-                };
-                setShowAlert(temp);
-                navigation.push("AshramDashboard");
-            })
-            .catch((error) => {
-                if (error && error.response) {
-                    console.log(
-                        `Signup: ${JSON.stringify(error.response.data)}`
-                    );
-                } else {
-                    console.log(`Signup: ${error}`);
-                }
-            });
+        // axios(config)
+        //     .then((response) => {
+        //         console.log(response.data);
+        //         const temp = {
+        //             ...showAlert,
+        //             show: true,
+        //             title: "Successful",
+        //             message: "Disciple created successfully",
+        //         };
+        //         setShowAlert(temp);
+        //         navigation.push("AshramDashboard");
+        //     })
+        //     .catch((error) => {
+        //         if (error && error.response) {
+        //             console.log(
+        //                 `Signup: ${JSON.stringify(error.response.data)}`
+        //             );
+        //         } else {
+        //             console.log(`Signup: ${error}`);
+        //         }
+        //     });
     };
 
     useEffect(() => {
@@ -341,6 +389,7 @@ function SignUp({ navigation }) {
                 closeOnTouchOutside={true}
                 closeOnHardwareBackPress={false}
                 showCancelButton={true}
+                fieldNames
                 showConfirmButton={true}
                 cancelText={showAlert.cancel}
                 confirmText={showAlert.confirm}
@@ -406,7 +455,7 @@ function SignUp({ navigation }) {
             />
             <InputFieldWithLabel
                 label="Guardian Name"
-                value={userData.guardianName}
+                value={userData.guardian_name}
                 changeFn={onGuardianNameChange}
                 placeholder="Enter guardian name"
             />
@@ -419,12 +468,28 @@ function SignUp({ navigation }) {
                 changeFn={onDobChange}
                 placeholder="Enter DOB"
             />
-            <InputFieldWithLabel
-                label="Mobile"
-                value={userData.mobile}
-                changeFn={onMobileChange}
-                placeholder="Enter mobile"
-            />
+            <View style={{ flexDirection: "row" }}>
+                <View style={{ width: "35%", paddingTop: "1.6%" }}>
+                    <Dropdown
+                        label="Code"
+                        value={userData.country_code}
+                        changeFn={onCountryCodeChange}
+                        options={CountryCodes.map(
+                            (country) =>
+                                country.dial_code + " | " + country.code
+                        )}
+                    />
+                </View>
+                <InputFieldWithLabel
+                    label="Mobile"
+                    value={userData.mobile}
+                    changeFn={onMobileChange}
+                    placeholder="Enter mobile"
+                    keyboard={
+                        Platform.OS === "android" ? "numeric" : "number-pad"
+                    }
+                />
+            </View>
             <DropdownV2
                 label="Country"
                 value={userData.country_id}
@@ -466,6 +531,7 @@ function SignUp({ navigation }) {
                 value={userData.pincode}
                 changeFn={onPincodeChange}
                 placeholder="Enter pincode"
+                keyboard={Platform.OS === "android" ? "numeric" : "number-pad"}
             />
             <InputFieldWithLabel
                 label="Email"
@@ -474,8 +540,14 @@ function SignUp({ navigation }) {
                 placeholder="Enter email"
             />
             <InputFieldWithLabel
-                label="Form ID"
+                label="Form Number"
                 value={userData.form_no}
+                changeFn={onFormNoChange}
+                placeholder="Enter Form Number"
+            />
+            <InputFieldWithLabel
+                label="Form ID"
+                value={userData.form_id}
                 // changeFn={onPhotoChange}
                 placeholder="Form ID"
                 disabled={true}
