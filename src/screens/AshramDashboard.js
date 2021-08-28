@@ -225,8 +225,10 @@ const Home = ({ navigation }) => {
                         ]}
                     >
                         <RoundIconButton
-                            handleClick={() => {}}
-                            label={`Generate${"\n"}Pin`}
+                            handleClick={() => {
+                                navigation.push("Add Sewadaar");
+                            }}
+                            label={`Add${"\n"}Sewadaar`}
                             iconName={require("../../assets/icons/keyBg.png")}
                         />
                         <RoundIconButton
