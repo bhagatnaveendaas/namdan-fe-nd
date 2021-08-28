@@ -1,16 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, Image } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 import theme from "../../../constants/theme";
+const userDefaultImage = require("../../../../assets/icons/user.png")
 
 const UserListRowItem = (props) => {
     const [userInfo, setUserInfo] = useState({});
     useEffect(() => {
         setUserInfo(props.user);
     }, [props.user]);
+
+    const [
+        useDefaultImage,
+        setUseDefaultImage
+    ] = useState(false)
     return (
-        <View
-            onStartShouldSetResponder={() =>
-                props.onClickHandler && props.onClickHandler(userInfo)
+        <TouchableOpacity
+            onPress={
+                () => {
+                    props.onClickHandler && props.onClickHandler(userInfo)
+                }
             }
             style={{
                 width: "100%",
@@ -18,27 +27,37 @@ const UserListRowItem = (props) => {
                 elevation: 20,
                 flexDirection: "row",
                 backgroundColor: "#FFFFFF",
-                marginTop: 13,
+                marginTop: 6,
+                marginBottom: 6,
                 borderRadius: 8,
+                alignContent: 'center',
+                justifyContent: 'center'
             }}
         >
             <View
                 style={{
                     margin: 8,
                     flex: 1,
+                    alignContent: 'center',
+                    justifyContent: 'center',
                     flexDirection: "row",
                 }}
             >
                 <Image
-                    source={{
-                        uri: userInfo ? userInfo.avatar : "",
-                    }}
+                    source={
+                        userDefaultImage
+                    }
                     style={{
                         borderRadius: 8,
-                        width: 50,
-                        height: 50,
+                        width: 30,
+                        height: 30,
                         shadowColor: "#000000",
                     }}
+                    onError={
+                        () => {
+                            setUseDefaultImage(true)
+                        }
+                    }
                 />
                 <View
                     style={{
@@ -58,7 +77,7 @@ const UserListRowItem = (props) => {
                             textTransform: "capitalize",
                         }}
                     >
-                        {userInfo && userInfo.name}
+                        {userInfo && userInfo.name && userInfo.name.trim()}
                     </Text>
                     <Text
                         style={{
@@ -68,7 +87,7 @@ const UserListRowItem = (props) => {
                             textTransform: "capitalize",
                         }}
                     >
-                        {userInfo && userInfo.address}
+                        {userInfo && ([userInfo.district_name, userInfo.state_name, userInfo.country_name].join(", ") )}
                     </Text>
                     <Text
                         style={{
@@ -82,7 +101,7 @@ const UserListRowItem = (props) => {
                     </Text>
                 </View>
             </View>
-        </View>
+        </TouchableOpacity>
     );
 };
 

@@ -8,6 +8,7 @@ import { generateAttendanceInfoRequestURL } from "../../../helper/router";
 import { executeRequest } from "../../../helper/network/link";
 import { HajriListItemRowComponent } from "./hajri-list-item-row";
 import theme from "../../../constants/theme";
+import { ATTENDANCE } from "../../../constants";
 
 const UserInfoComponent = (props) => {
     const [userInfo, setUserInfo] = useState();
@@ -214,29 +215,6 @@ const UserInfoComponent = (props) => {
                                 }
                             />
                         </View>
-                        <View
-                            style={{
-                                width: "100%",
-                                height: 55,
-                                marginTop: 24,
-                                flexDirection: "row",
-                                justifyContent: "center",
-                            }}
-                        >
-                            <Button
-                                onPress={() => {
-                                    setUserInfo(undefined);
-                                    props.setIinitiateSelectDate &&
-                                        props.setIinitiateSelectDate(true);
-                                }}
-                                buttonStyle={{
-                                    backgroundColor: "#2F4F94",
-                                    width: "100%",
-                                    borderRadius: 8,
-                                }}
-                                title={"Select Date"}
-                            />
-                        </View>
                         {isHajriListRequested ? (
                             <View
                                 style={{
@@ -262,8 +240,34 @@ const UserInfoComponent = (props) => {
                                 </ScrollView>
                             </View>
                         ) : (
-                            <View />
+                            null
                         )}
+                        <View
+                            style={{
+                                width: "100%",
+                                height: 55,
+                                marginTop: 24,
+                                flexDirection: "row",
+                                justifyContent: "center",
+                            }}
+                        >
+                            <Button
+                                disabled={
+                                    hajriList.length == 3 && props.entryType == ATTENDANCE
+                                }
+                                onPress={() => {
+                                    setUserInfo(undefined);
+                                    props.setIinitiateSelectDate &&
+                                        props.setIinitiateSelectDate(true);
+                                }}
+                                buttonStyle={{
+                                    backgroundColor: "#2F4F94",
+                                    width: "100%",
+                                    borderRadius: 8,
+                                }}
+                                title={ props.entryType == ATTENDANCE ? `Select Date for Hajri No. ${hajriList.length +1 }` : 'Select Date'}
+                            />
+                        </View>
                     </View>
                 </View>
             </View>

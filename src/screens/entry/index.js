@@ -19,7 +19,7 @@ import {
     generateUserInfoRequestURL,
 } from "../../helper/router";
 import { executeRequest } from "../../helper/network/link";
-import Dropdown from "../../components/DropdownV2";
+import Dropdown from "../../components/DropdownV3";
 import DateRangeFilter from "../../components/DateRangeFilter";
 import { dateInYYMMDDFormat } from "../../utilities/DateUtils";
 import theme from "../../constants/theme";
@@ -42,13 +42,13 @@ const Entry = ({ route, navigation }) => {
 
     const [states, setStates] = useState();
 
-    const [stateSelectedIndex, setStateSelectedIndex] = useState(20);
+    const [stateSelectedIndex, setStateSelectedIndex] = useState(-1);
 
     const [stateSelected, setStateSelected] = useState(27);
 
     const [countrySelected, setCountrySelected] = useState(2);
 
-    const [countrySelectedIndex, setCountrySelectedIndex] = useState(76);
+    const [countrySelectedIndex, setCountrySelectedIndex] = useState(-1);
 
     const [districts, setDistricts] = useState();
 
@@ -67,6 +67,7 @@ const Entry = ({ route, navigation }) => {
         const countryNames = JSON.parse(response).map((country) => {
             return { name: country.name, id: country.id };
         });
+        countryNames.unshift({id: '-1', name: 'Select Country'})
         setCountries(countryNames);
     };
 
@@ -78,7 +79,8 @@ const Entry = ({ route, navigation }) => {
                 .filter((state) => state.country_id == countrySelected)
                 .map((state) => {
                     return { name: state.name, id: state.id };
-                });
+                })
+            stateNames.unshift({id: '-1', name: 'Select State'})
             setStates(stateNames);
         } catch (error) {
             console.log(error);
@@ -102,6 +104,7 @@ const Entry = ({ route, navigation }) => {
                     id: distrinct.district_id,
                 };
             });
+            distrinctNames.unshift({id: '-1', name: 'Select District'})
         setDistricts(distrinctNames);
     };
 
@@ -124,6 +127,7 @@ const Entry = ({ route, navigation }) => {
             .map((tehsil) => {
                 return { name: tehsil.tehsil_name, id: tehsil.tehsil_id };
             });
+            tehsilNames.unshift({id: '-1', name: 'Select Tehsil'})
         setTehsils(tehsilNames);
     };
 
@@ -138,7 +142,7 @@ const Entry = ({ route, navigation }) => {
         fetchStates();
     }, [countrySelected]);
 
-    const [filterStartDate, setFilterStartDate] = useState(new Date());
+    const [filterStartDate, setFilterStartDate] = useState(new Date("1996"));
 
     const [filterEndDate, setFilterEndDate] = useState(new Date());
 
@@ -167,7 +171,7 @@ const Entry = ({ route, navigation }) => {
             // "tehsil_id": tehsilSelected,
             // "state_id": stateSelected,
             // "district_id": districtSelected,
-            name: search,
+            term: search,
         };
         const config = {
             method: POST_REQUEST_METHOD,
@@ -234,7 +238,7 @@ const Entry = ({ route, navigation }) => {
                 key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
             },
         };
-        executeRequest(requestURL, satnamEntryData, config)
+        executeRequest(requestURL, requestData, config)
             .then((response) => {
                 console.log("Satnam Entry create responsse: ", response);
             })
@@ -328,9 +332,11 @@ const Entry = ({ route, navigation }) => {
         setPersonSelected(false);
         setInitiateSuccessNotice(true);
         setInitiateFailureNotice(false);
+        searchDisciples(search)
     };
 
     const generateNaamEntry = () => {
+        console.log("Entry type", entryType)
         switch (entryType) {
             case ATTENDANCE:
                 {
@@ -385,9 +391,18 @@ const Entry = ({ route, navigation }) => {
             style={{
                 flex: 1,
                 backgroundColor: theme.colors.secondary,
+                height: '100%'
             }}
         >
-            <View>
+            <View
+                style={
+                    {
+                        flex: 1,
+                        height: '100%',
+                        width: '100%'
+                    }
+                }
+            >
                 <View
                     styl={{
                         flex: 1,
@@ -400,10 +415,18 @@ const Entry = ({ route, navigation }) => {
                         <SearchBar
                             placeholder="Type Here..."
                             onChangeText={(value) => {
-                                console.log("Searching: ", value);
                                 setSearch(value);
-                                searchDisciples();
+                                if(value.length > 2){
+                                    console.log("Searching: ", value);
+                                    searchDisciples();
+                                }
+                                
                             }}
+                            onClear={
+                                () => {
+                                    setUsersSearched([])
+                                }
+                            }
                             lightTheme={true}
                             showCancel={true}
                             containerStyle={{
@@ -474,8 +497,21 @@ const Entry = ({ route, navigation }) => {
                                         justifyContent: "space-between",
                                     }}
                                 >
-                                    <View style={{ width: "50%" }}>
+                                    <View
+                                        style={
+                                            {
+                                                width: '47.5%'
+                                            }
+                                        }
+                                    >
                                         <Dropdown
+                                            inputStyles={
+                                                {
+                                                    dropdown: {
+                                                        width: '100%'
+                                                    }
+                                                }
+                                            }
                                             options={countries ? countries : []}
                                             label={"Country"}
                                             value={countrySelectedIndex}
@@ -487,8 +523,21 @@ const Entry = ({ route, navigation }) => {
                                             }}
                                         />
                                     </View>
-                                    <View style={{ width: "50%" }}>
+                                    <View
+                                        style={
+                                            {
+                                                width: '47.5%'
+                                            }
+                                        }
+                                    >
                                         <Dropdown
+                                            inputStyles={
+                                                {
+                                                    dropdown: {
+                                                        width: '100%'
+                                                    }
+                                                }
+                                            }
                                             options={states ? states : []}
                                             label={"State"}
                                             value={stateSelectedIndex || 0}
@@ -500,8 +549,8 @@ const Entry = ({ route, navigation }) => {
                                             }}
                                         />
                                     </View>
-                                </View>
-                                <View
+                                    </View>
+                                    <View
                                     style={{
                                         flexDirection: "row",
                                         width: "100%",
@@ -510,8 +559,21 @@ const Entry = ({ route, navigation }) => {
                                         justifyContent: "space-between",
                                     }}
                                 >
-                                    <View style={{ width: "50%" }}>
+                                    <View
+                                        style={
+                                            {
+                                                width: '47.5%'
+                                            }
+                                        }
+                                    >
                                         <Dropdown
+                                            inputStyles={
+                                                {
+                                                    dropdown: {
+                                                        width: '100%'
+                                                    }
+                                                }
+                                            }
                                             options={districts ? districts : []}
                                             label={"District"}
                                             value={districtSelectedIndex}
@@ -523,8 +585,21 @@ const Entry = ({ route, navigation }) => {
                                             }}
                                         />
                                     </View>
-                                    <View style={{ width: "50%" }}>
+                                    <View 
+                                        style={
+                                            {
+                                                width: '47.5%'
+                                            }
+                                        }
+                                    >
                                         <Dropdown
+                                            inputStyles={
+                                                {
+                                                    dropdown: {
+                                                        width: '100%'
+                                                    }
+                                                }
+                                            }
                                             options={tehsils ? tehsils : []}
                                             label={"Tehsil"}
                                             value={tehsilSelectedIndex}
@@ -587,34 +662,40 @@ const Entry = ({ route, navigation }) => {
                             setIinitiateSelectDate={setIinitiateSelectDate}
                             isHajriListRequested={true}
                             hajriType={SATNAM}
+                            entryType={
+                                entryType
+                            }
                             user={personSelected}
                         />
                     ) : (
                         <View></View>
                     )}
-                    <ScrollView
-                        style={{
-                            height: "100%",
-                            width: "100%",
-                            flexDirection: "column",
-                        }}
-                    >
-                        {initiateSelectDate ? (
-                            <DateSelectorComponent
-                                onDateSelected={(date) => {
-                                    setIinitiateSelectDate(false);
-                                    setSelectedDateForEntry(date);
-                                }}
-                            />
-                        ) : (
-                            <View></View>
-                        )}
+                    <View>
+                        <ScrollView
+                            style={{
+                                width: "100%",
+                                flexDirection: "column",
+                                marginTop: 10,
+                                paddingBottom: 20
+                            }}
+                        >
+                            {initiateSelectDate ? (
+                                <DateSelectorComponent
+                                    onDateSelected={(date) => {
+                                        setIinitiateSelectDate(false);
+                                        setSelectedDateForEntry(date);
+                                    }}
+                                />
+                            ) : (
+                                <View></View>
+                            )}
 
-                        <UserListComponent
-                            setPersonSelected={setPersonSelected}
-                            users={usersSearched}
-                        ></UserListComponent>
-                    </ScrollView>
+                            <UserListComponent
+                                setPersonSelected={setPersonSelected}
+                                users={usersSearched}
+                            ></UserListComponent>
+                        </ScrollView>
+                    </View>
                 </View>
             </View>
         </ScrollView>
