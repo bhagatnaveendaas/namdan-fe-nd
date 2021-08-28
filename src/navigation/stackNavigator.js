@@ -18,6 +18,7 @@ import CreateMessage from "..//screens/CreateMessage";
 import MessageDetails from "../screens/MessageDetails";
 import Entry from "../screens/entry/index";
 import theme from "../constants/theme";
+import AddSewadaar from "../screens/AddSewadaar";
 
 const Stack = createStackNavigator();
 
@@ -57,6 +58,7 @@ const MainStackNavigator = () => (
             component={EligibilityForPunarUpdesh}
         />
         <Stack.Screen name="Add Naamdan Center" component={AddNaamdanCenter} />
+        <Stack.Screen name="Add Sewadaar" component={AddSewadaar} />
         <Stack.Screen name="Approvals" component={Approvals} />
         <Stack.Screen name="Messages" component={Messages} />
         <Stack.Screen name="Compose Message" component={CreateMessage} />
