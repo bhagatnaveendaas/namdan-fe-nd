@@ -17,7 +17,7 @@ function Dropdown({ label, value, changeFn, options, enabled }) {
                         <Picker.Item
                             key={index}
                             label={item.name}
-                            value={index}
+                            value={item.id || index}
                         />
                     ))}
                 </Picker>
