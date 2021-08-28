@@ -20,7 +20,6 @@ import appConfig from "../config";
 import theme from "../constants/theme";
 import { useGetAsyncStorageItem } from "../hooks/useGetAsyncStorageItem";
 import { roleToAddSewadaarMapping } from "../utilities/RoleToAddSewadaarMapping";
-import DropdownV3 from "../components/DropdownV3";
 
 const AddSewadaar = ({ navigation }) => {
     const userRole = useGetAsyncStorageItem("role");
