@@ -238,7 +238,8 @@ const Entry = ({ route, navigation }) => {
                 key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
             },
         };
-        executeRequest(requestURL, requestData, config)
+        console.log("Creating entry: ", config)
+        await executeRequest(requestURL, requestData, config)
             .then((response) => {
                 console.log("Satnam Entry create responsse: ", response);
             })
@@ -255,7 +256,7 @@ const Entry = ({ route, navigation }) => {
      */
     const SARNAM_CREATE_ENTRY_REQUEST_URL =
         generateNaamEntryCreateRequestURL(SAARNAAM);
-    const createSaarnaamEntry = async (discipleId, selectedDate) => {
+    const createSaarnaamEntry = async (discipleId, selectedDate, remark = "ok") => {
         const requestData = {
             disciple_id: discipleId,
             sarnam_date: formatDate(selectedDate),
@@ -266,7 +267,7 @@ const Entry = ({ route, navigation }) => {
 
     const PUNARUPDESH_CREATE_ENTRY_REQUEST_URL =
         generateNaamEntryCreateRequestURL(PUNARUPDESH);
-    const createReupdeshEntry = async (discipleId, selectedDate) => {
+    const createReupdeshEntry = async (discipleId, selectedDate, remark = "ok") => {
         const requestData = {
             disciple_id: discipleId,
             reupdesh_date: formatDate(selectedDate),
@@ -365,6 +366,7 @@ const Entry = ({ route, navigation }) => {
                 break;
             case SAARNAAM:
                 {
+                    console.log("Creating saarnaam entry")
                     createSaarnaamEntry(personSelected.id, selectedDateForEntry)
                         .catch((error) => {
                             handleEntryAPIError();
