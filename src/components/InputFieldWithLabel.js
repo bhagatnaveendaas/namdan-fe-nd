@@ -1,8 +1,9 @@
+import moment from "moment";
 import React from "react";
 import { Text, View, TextInput } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import styles from "../styles/Singup";
-
+import { Ionicons } from "@expo/vector-icons";
 function InputFieldWithLabel({
     label,
     value,
@@ -12,18 +13,54 @@ function InputFieldWithLabel({
     setShow,
     disabled,
     rows,
+    keyboard,
+    validateEmail,
 }) {
     return (
-        <View style={{ flex: 1, width: "100%", justifyContent:"center" }}>
+        <View style={{ flex: 1, width: "100%", justifyContent: "center" }}>
             <View style={styles.inputField}>
-                <Text style={styles.label}>{label}</Text>
+                <Text style={styles.label}>
+                    {label}{" "}
+                    {label === "Email" &&
+                        value &&
+                        (validateEmail(value) ? (
+                            <Text
+                                style={{
+                                    color: "green",
+                                    alignSelf: "flex-end",
+                                }}
+                            >
+                                {" "}
+                                <Ionicons
+                                    name="checkmark-done"
+                                    size={18}
+                                    color="green"
+                                />{" "}
+                                Valid Email
+                            </Text>
+                        ) : (
+                            <Text
+                                style={{ color: "red", alignSelf: "flex-end" }}
+                            >
+                                {" "}
+                                <Ionicons
+                                    name="alert-circle-outline"
+                                    size={18}
+                                    color="red"
+                                />{" "}
+                                Invalid Email
+                            </Text>
+                        ))}
+                </Text>
                 {isDate ? (
                     <TouchableOpacity
                         style={[styles.textInput, { paddingVertical: "4.3%" }]}
                         onPress={() => setShow(true)}
                     >
                         {/* <Text>{`${value.toLocaleDateString()}`}</Text> */}
-                        <Text>{`${value}`}</Text>
+                        <Text>{`${
+                            value && moment(value).format("DD-MM-YYYY")
+                        }`}</Text>
                     </TouchableOpacity>
                 ) : (
                     <TextInput
@@ -33,6 +70,7 @@ function InputFieldWithLabel({
                         onChange={changeFn}
                         numberOfLines={rows ? rows : 1}
                         editable={!disabled}
+                        keyboardType={keyboard}
                     />
                 )}
             </View>

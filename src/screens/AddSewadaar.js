@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Text, View, Image, AsyncStorage } from "react-native";
-import {
-    ScrollView,
-    TouchableOpacity,
-} from "react-native-gesture-handler";
+import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as ImagePicker from "expo-image-picker";
 import AwesomeAlert from "react-native-awesome-alerts";
@@ -20,12 +17,11 @@ import appConfig from "../config";
 import theme from "../constants/theme";
 import { useGetAsyncStorageItem } from "../hooks/useGetAsyncStorageItem";
 import { roleToAddSewadaarMapping } from "../utilities/RoleToAddSewadaarMapping";
+import { roles } from "../constants/text/Roles";
 
 const AddSewadaar = ({ navigation }) => {
     const userRole = useGetAsyncStorageItem("role");
-    console.log("User role", userRole);
     const roleToAddSewadaarMappingList = roleToAddSewadaarMapping(userRole);
-    console.log("roleToAddSewadaarMappingList", roleToAddSewadaarMappingList);
 
     const naamdanTakenAt = ["Online", "Naamdan Center"];
     const relations = ["S/O", "D/O"];
@@ -53,7 +49,8 @@ const AddSewadaar = ({ navigation }) => {
     };
 
     const getRequiredDateFormat = (dateObj) =>
-        `${dateObj.getFullYear()}-${dateObj.getMonth() - 1
+        `${dateObj.getFullYear()}-${
+            dateObj.getMonth() - 1
         }-${dateObj.getDate()}`;
 
     const [userData, setUserData] = useState({
@@ -67,6 +64,9 @@ const AddSewadaar = ({ navigation }) => {
         name: "",
         avatar: "",
         dob: "",
+        satnaamDate: "",
+        saarnaamDate: "",
+        saarshabadDate: "",
         pincode: "",
         relation: "",
         state_id: "",
@@ -79,6 +79,9 @@ const AddSewadaar = ({ navigation }) => {
     const [image, setImage] = useState(null);
     const [mode, setMode] = useState("date");
     const [show, setShow] = useState(false);
+    const [showSatnaamDate, setShowSatnaamDate] = useState(false);
+    const [showSaarnaamDate, setShowSaarnaamDate] = useState(false);
+    const [showSaarshabadDate, setShowSaarshabadDate] = useState(false);
 
     const onNaamdanChange = (value) => {
         const temp = { ...userData };
@@ -88,10 +91,9 @@ const AddSewadaar = ({ navigation }) => {
 
     const onRoleChange = (value) => {
         const temp = { ...userData };
-        temp.role = value.id;
-        console.log(value);
+        temp.role_id = value;
         setUserData(temp);
-    }
+    };
 
     const onNameChange = (event) => {
         const temp = { ...userData };
@@ -149,9 +151,9 @@ const AddSewadaar = ({ navigation }) => {
 
     const getStates = async (countryId) => {
         const temp = JSON.parse(await AsyncStorage.getItem("states"));
-        const reqStates = temp.filter(
-            (state) => state.country_id === countries[countryId].id
-        );
+        const reqStates = temp.filter((state) => {
+            return state.country_id === countryId;
+        });
         setStates(reqStates);
     };
 
@@ -162,6 +164,7 @@ const AddSewadaar = ({ navigation }) => {
         );
         reqDistricts = reqDistricts.map((item) => ({
             ...item,
+            id: item.district_id,
             name: item.district_name,
         }));
         setDistricts(reqDistricts);
@@ -196,6 +199,27 @@ const AddSewadaar = ({ navigation }) => {
         setUserData(temp);
     };
 
+    const onSatnaamDateChange = (event, selectedDate) => {
+        const temp = { ...userData };
+        temp.satnaamDate = new Date(selectedDate);
+        setShowSatnaamDate(false);
+        setUserData(temp);
+    };
+
+    const onSaarnaamDateChange = (event, selectedDate) => {
+        const temp = { ...userData };
+        temp.saarnaamDate = new Date(selectedDate);
+        setShowSaarnaamDate(false);
+        setUserData(temp);
+    };
+
+    const onSaarshabadDateChange = (event, selectedDate) => {
+        const temp = { ...userData };
+        temp.saarshabadDate = new Date(selectedDate);
+        setShowSaarshabadDate(false);
+        setUserData(temp);
+    };
+
     const onMobileChange = (event) => {
         const temp = { ...userData };
         temp.mobile_no = event.nativeEvent.text;
@@ -221,6 +245,12 @@ const AddSewadaar = ({ navigation }) => {
         temp.district_id = value;
         setUserData(temp);
         getTehsils(value);
+    };
+
+    const onNamdanCenterChange = (value) => {
+        const temp = { ...userData };
+        temp.namdan_center_id = value;
+        setUserData(temp);
     };
 
     const onTehsilChange = (value) => {
@@ -255,10 +285,12 @@ const AddSewadaar = ({ navigation }) => {
                 filled = false;
             }
         });
+
         if (!filled) {
             alert("Please fill all the required fields");
             return false;
         }
+
         const temp = { ...userData };
         temp.country_id = countries[userData.country_id].id;
         temp.state_id = states[userData.state_id].id;
@@ -406,19 +438,52 @@ const AddSewadaar = ({ navigation }) => {
                     onChange={onDobChange}
                 />
             )}
+            {showSatnaamDate && (
+                <DateTimePicker
+                    testID="dateTimePickerForSatnaam"
+                    value={
+                        userData.satnaamDate ? userData.satnaamDate : new Date()
+                    }
+                    mode={mode}
+                    is24Hour
+                    display="default"
+                    onChange={onSatnaamDateChange}
+                />
+            )}
+            {showSaarnaamDate && (
+                <DateTimePicker
+                    testID="dateTimePickerForSaarnaam"
+                    value={
+                        userData.saarnaamDate
+                            ? userData.saarnaamDate
+                            : new Date()
+                    }
+                    mode={mode}
+                    is24Hour
+                    display="default"
+                    onChange={onSaarnaamDateChange}
+                />
+            )}
+            {showSaarshabadDate && (
+                <DateTimePicker
+                    testID="dateTimePickerForSaarshabad"
+                    value={
+                        userData.saarshabadDate
+                            ? userData.saarshabadDate
+                            : new Date()
+                    }
+                    mode={mode}
+                    is24Hour
+                    display="default"
+                    onChange={onSaarshabadDateChange}
+                />
+            )}
             <InputFieldWithLabel
                 label="Name"
                 value={userData.name}
                 changeFn={onNameChange}
                 placeholder="Enter name"
             />
-
-            {/* <DropdownV3
-                label="Role"
-                value={userData.role}
-                changeFn={onRoleChange}
-                options={roleToAddSewadaarMappingList}
-            /> */}
 
             <Dropdown
                 label="Naamdan Taken"
@@ -448,6 +513,33 @@ const AddSewadaar = ({ navigation }) => {
                 placeholder="Enter DOB"
             />
             <InputFieldWithLabel
+                label="Satnaam initiation date"
+                isDate
+                setShow={setShowSatnaamDate}
+                onFocus={() => setShowSatnaamDate(true)}
+                value={userData.satnaamDate}
+                changeFn={onSatnaamDateChange}
+                placeholder="Enter satnaam initiation date"
+            />
+            <InputFieldWithLabel
+                label="Saarnaam initiation date"
+                isDate
+                setShow={setShowSaarnaamDate}
+                onFocus={() => setShowSaarnaamDate(true)}
+                value={userData.saarnaamDate}
+                changeFn={onSaarnaamDateChange}
+                placeholder="Enter saarnaam initiation date"
+            />
+            <InputFieldWithLabel
+                label="Saarshabad initiation date"
+                isDate
+                setShow={setShowSaarshabadDate}
+                onFocus={() => setShowSaarshabadDate(true)}
+                value={userData.saarshabadDate}
+                changeFn={onSaarshabadDateChange}
+                placeholder="Enter saarshabad initiation date"
+            />
+            <InputFieldWithLabel
                 label="Mobile"
                 value={userData.mobile}
                 changeFn={onMobileChange}
@@ -467,6 +559,7 @@ const AddSewadaar = ({ navigation }) => {
                     options={states}
                 />
             ) : null}
+
             {districts.length && userData.state_id ? (
                 <DropdownV2
                     label="District"
@@ -475,6 +568,26 @@ const AddSewadaar = ({ navigation }) => {
                     options={districts}
                 />
             ) : null}
+
+            {roleToAddSewadaarMappingList && (
+                <DropdownV2
+                    label="Role"
+                    value={userData.role_id}
+                    changeFn={onRoleChange}
+                    options={roleToAddSewadaarMappingList}
+                    reqId
+                />
+            )}
+
+            {userData.role_id === roles.NAAMDAN_SEWADAR.id ? (
+                <DropdownV2
+                    label="Namdan center"
+                    value={userData.namdan_center_id}
+                    changeFn={onNamdanCenterChange}
+                    options={[]}
+                />
+            ) : null}
+
             {tehsils.length && userData.district_id ? (
                 <DropdownV2
                     label="Tehsil"
@@ -514,6 +627,6 @@ const AddSewadaar = ({ navigation }) => {
             </View>
         </ScrollView>
     );
-}
+};
 
 export default AddSewadaar;

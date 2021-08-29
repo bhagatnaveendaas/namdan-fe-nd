@@ -12,7 +12,7 @@ const messages = [
         subject: "Adesh from guruji",
         to: "Naamdan sevadar",
         message: {
-            text: "Lorem ipsum dorem lorem ipsum dorem iset.",
+            text: "Lorem ipsum dorem lorem ipsum dorem iset.Lorem ipsum dorem lorem ipsum dorem iset.Lorem ipsum dorem lorem ipsum dorem iset.",
             files: [],
         },
         creator: {
@@ -40,7 +40,7 @@ const messages = [
         subject: "Adesh from guruji",
         to: "Naamdan sevadar",
         message: {
-            text: "Lorem ipsum dorem lorem ipsum dorem iset.",
+            text: "Lorem ipsum dorem lorem ipsum dorem iset.Lorem ipsum dorem lorem ipsum dorem iset.Lorem ipsum dorem lorem ipsum dorem iset.",
             files: [],
         },
         creator: {
@@ -68,7 +68,7 @@ const messages = [
         subject: "Adesh from guruji",
         to: "Naamdan sevadar",
         message: {
-            text: "Lorem ipsum dorem lorem ipsum dorem iset.",
+            text: "Lorem ipsum dorem lorem ipsum dorem iset.Lorem ipsum dorem lorem ipsum dorem iset.Lorem ipsum dorem lorem ipsum dorem iset.",
             files: [],
         },
         creator: {
@@ -96,7 +96,7 @@ const messages = [
         subject: "Adesh from guruji",
         to: "Naamdan sevadar",
         message: {
-            text: "Lorem ipsum dorem lorem ipsum dorem iset.",
+            text: "Lorem ipsum dorem lorem ipsum dorem iset.Lorem ipsum dorem lorem ipsum dorem iset.Lorem ipsum dorem lorem ipsum dorem iset.",
             files: [],
         },
         creator: {
@@ -124,7 +124,7 @@ const messages = [
         subject: "Adesh from guruji",
         to: "Naamdan sevadar",
         message: {
-            text: "Lorem ipsum dorem lorem ipsum dorem iset.",
+            text: "Lorem ipsum dorem lorem ipsum dorem iset.Lorem ipsum dorem lorem ipsum dorem iset.Lorem ipsum dorem lorem ipsum dorem iset.",
             files: [],
         },
         creator: {
@@ -152,7 +152,7 @@ const messages = [
         subject: "Adesh from guruji",
         to: "Naamdan sevadar",
         message: {
-            text: "Lorem ipsum dorem lorem ipsum dorem iset.",
+            text: "Lorem ipsum dorem lorem ipsum dorem iset.Lorem ipsum dorem lorem ipsum dorem iset.Lorem ipsum dorem lorem ipsum dorem iset.",
             files: [],
         },
         creator: {
@@ -180,7 +180,7 @@ const messages = [
         subject: "Adesh from guruji",
         to: "Naamdan sevadar",
         message: {
-            text: "Lorem ipsum dorem lorem ipsum dorem iset.",
+            text: "Lorem ipsum dorem lorem ipsum dorem iset.Lorem ipsum dorem lorem ipsum dorem iset.Lorem ipsum dorem lorem ipsum dorem iset.",
             files: [],
         },
         creator: {
@@ -248,6 +248,7 @@ const Messages = ({ navigation }) => {
                             fontFamily: theme.fonts.poppins.regular,
                             ...theme.sizes.regular,
                         }}
+                        numberOfLines={2}
                     >
                         {item.message.text}
                     </Text>
@@ -340,7 +341,7 @@ const Messages = ({ navigation }) => {
                             style={{
                                 textAlign: "center",
                                 fontFamily: theme.fonts.poppins.semiBold,
-                                color:"#414040"
+                                color: "#414040",
                             }}
                         >
                             Pending
@@ -361,7 +362,7 @@ const Messages = ({ navigation }) => {
                             style={{
                                 textAlign: "center",
                                 fontFamily: theme.fonts.poppins.semiBold,
-                                color:"#414040"
+                                color: "#414040",
                             }}
                         >
                             History
@@ -371,7 +372,12 @@ const Messages = ({ navigation }) => {
             </View>
             <View style={{ marginBottom: "5%" }}>
                 <View style={{ padding: "3.5%" }}>
-                    <Text style={{ color: "#AFAFAF",fontFamily: theme.fonts.poppins.regular, }}>
+                    <Text
+                        style={{
+                            color: "#AFAFAF",
+                            fontFamily: theme.fonts.poppins.regular,
+                        }}
+                    >
                         {data.length} pending approvals
                     </Text>
                 </View>

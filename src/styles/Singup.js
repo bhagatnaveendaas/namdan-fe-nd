@@ -8,10 +8,10 @@ export default StyleSheet.create({
         paddingTop: "3.5%",
         textAlignVertical: "top",
         paddingHorizontal: "1%",
-        width:"100%"
+        width: "100%",
     },
     label: {
-        paddingBottom: "2%",
+        paddingBottom: "0.3%",
         color: "#8A8A81",
         fontFamily: theme.fonts.poppins.regular,
     },
@@ -21,6 +21,8 @@ export default StyleSheet.create({
         borderWidth: 1,
         borderRadius: 10,
         alignSelf: "center",
+        height: 40,
+        
         backgroundColor: theme.colors.white,
     },
     textInput: {
