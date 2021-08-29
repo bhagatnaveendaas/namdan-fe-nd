@@ -12,7 +12,7 @@ export default StyleSheet.create({
         backgroundColor: theme.colors.primary,
         flex: 1,
         // marginTop: StatusBar.currentHeight,
-        paddingTop: height * 0.08,
+        // paddingTop: height * 0.08,
     },
     image: {
         height: width * 0.6,

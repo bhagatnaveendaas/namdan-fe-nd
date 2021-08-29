@@ -45,34 +45,18 @@ const fieldNames = {
 };
 
 function SignUp({ navigation }) {
-    const naamdanTakenAt = ["Online", "Naamdan Center"];
-    const relations = ["S/O", "D/O", "NA"];
-    // const countries = ['India', 'Pakistan', 'Nepal'];
-    // const states = ['Maharashtra', 'Haryana'];
-    // const districts = ['Pune', 'Mumbai'];
-    // const tehsils = ['Haveli', 'Pune City'];
-    const [states, setStates] = useState([]);
-    const [districts, setDistricts] = useState([]);
-    const [countries, setcountries] = useState([]);
-    const [tehsils, setTehsils] = useState([]);
+    const getRequiredDateFormat = (dateObj) =>
+        `${dateObj.getFullYear()}-${
+            dateObj.getMonth() - 1
+        }-${dateObj.getDate()}`;
 
-    const [showAlert, setShowAlert] = useState({
-        show: false,
-        showCancelButton: false,
-        title: "",
-        message: "",
-        confirm: "Ok",
-    });
     const createId = (length) => {
         const chars = "ABCDEFGHIJKLMNOPQRSTUFWXYZ1234567890";
         const pwd = _.sampleSize(chars, length || 12); // lodash v4: use _.sampleSize
         return pwd.join("");
     };
-    const getRequiredDateFormat = (dateObj) =>
-        `${dateObj.getFullYear()}-${
-            dateObj.getMonth() - 1
-        }-${dateObj.getDate()}`;
-    const [userData, setUserData] = useState({
+
+    const formFields = {
         address: "",
         country_id: "",
         district_id: "",
@@ -93,7 +77,27 @@ function SignUp({ navigation }) {
         country_code: "+91 | IN",
         form_date: getRequiredDateFormat(new Date()),
         area_type: "rural",
+    };
+    const naamdanTakenAt = ["Online", "Naamdan Center"];
+    const relations = ["S/O", "D/O", "NA"];
+    // const countries = ['India', 'Pakistan', 'Nepal'];
+    // const states = ['Maharashtra', 'Haryana'];
+    // const districts = ['Pune', 'Mumbai'];
+    // const tehsils = ['Haveli', 'Pune City'];
+    const [states, setStates] = useState([]);
+    const [districts, setDistricts] = useState([]);
+    const [countries, setcountries] = useState([]);
+    const [tehsils, setTehsils] = useState([]);
+
+    const [showAlert, setShowAlert] = useState({
+        show: false,
+        showCancelButton: false,
+        title: "",
+        message: "",
+        confirm: "Ok",
     });
+
+    const [userData, setUserData] = useState(formFields);
     const [image, setImage] = useState(null);
     const [mode, setMode] = useState("date");
     const [show, setShow] = useState(false);
@@ -122,7 +126,7 @@ function SignUp({ navigation }) {
     const onRelationChange = (value, index) => {
         const temp = { ...userData };
         temp.relation = value;
-        
+
         setUserData(temp);
     };
 
@@ -169,6 +173,7 @@ function SignUp({ navigation }) {
     }, [tehsils]);
 
     const getStates = async (countryId) => {
+        console.log({ countryId });
         if (!countryId) {
             return false;
         }
@@ -176,6 +181,7 @@ function SignUp({ navigation }) {
         const reqStates = temp.filter(
             (state) => state.country_id === countries[countryId].id
         );
+        console.log("data: ", countries[countryId]);
         setStates(reqStates);
     };
 
@@ -275,16 +281,35 @@ function SignUp({ navigation }) {
         setUserData(temp);
     };
 
+    function validateEmail(email) {
+        const re =
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(String(email).toLowerCase());
+    }
+
     const handleRegister = async () => {
         let notFilled = false;
         Object.keys(userData).forEach((element) => {
             if (!userData[element]) {
                 console.log({ element });
                 notFilled = element;
+                return;
+            }
+            if (
+                (element === "age" && userData[element] < 3) ||
+                (element === "email" && !validateEmail(userData[element]))
+            ) {
+                notFilled = element;
+                return;
             }
         });
         if (notFilled) {
-            alert(`Please fill ${fieldNames[notFilled]}`);
+            let alertMessage = `Please fill ${fieldNames[notFilled]}`;
+            if (notFilled === "age")
+                alertMessage = `Check DOB make sure age is greater than 3 years`;
+            if (notFilled === "email")
+                alertMessage = `Please enter valid email address`;
+            alert(alertMessage);
             return false;
         }
         const temp = { ...userData };
@@ -309,27 +334,27 @@ function SignUp({ navigation }) {
         };
         console.log({ config });
 
-        // axios(config)
-        //     .then((response) => {
-        //         console.log(response.data);
-        //         const temp = {
-        //             ...showAlert,
-        //             show: true,
-        //             title: "Successful",
-        //             message: "Disciple created successfully",
-        //         };
-        //         setShowAlert(temp);
-        //         navigation.push("AshramDashboard");
-        //     })
-        //     .catch((error) => {
-        //         if (error && error.response) {
-        //             console.log(
-        //                 `Signup: ${JSON.stringify(error.response.data)}`
-        //             );
-        //         } else {
-        //             console.log(`Signup: ${error}`);
-        //         }
-        //     });
+        axios(config)
+            .then((response) => {
+                console.log(response.data);
+                const temp = {
+                    ...showAlert,
+                    show: true,
+                    title: "Successful",
+                    message: "Disciple created successfully",
+                };
+                setShowAlert(temp);
+                navigation.push("AshramDashboard");
+            })
+            .catch((error) => {
+                if (error && error.response) {
+                    console.log(
+                        `Signup: ${JSON.stringify(error.response.data)}`
+                    );
+                } else {
+                    console.log(`Signup: ${error}`);
+                }
+            });
     };
 
     useEffect(() => {
@@ -537,6 +562,7 @@ function SignUp({ navigation }) {
                 label="Email"
                 value={userData.email}
                 changeFn={onEmailChange}
+                validateEmail={validateEmail}
                 placeholder="Enter email"
             />
             <InputFieldWithLabel

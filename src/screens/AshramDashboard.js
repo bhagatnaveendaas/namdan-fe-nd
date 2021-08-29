@@ -1,17 +1,23 @@
 import React, { useEffect, useState } from "react";
-import { AsyncStorage, Text, View } from "react-native";
+import {
+    AsyncStorage,
+    Text,
+    View,
+    Image,
+    SafeAreaView,
+    StatusBar,
+} from "react-native";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import axios from "axios";
 import theme from "../constants/theme";
 import RoundIconButton from "../components/RoundIconButton";
 import FlatIconButtons from "../components/FlatIconButtons";
 import DashboardHeading from "../components/DashboardHeading";
-import MasterCreation from "../components/MasterCreation";
-import OtherControls from "../components/OtherControls";
+// import MasterCreation from "../components/MasterCreation";
+// import OtherControls from "../components/OtherControls";
 import ScoreBoard from "../components/ScoreBoard";
 import VerticalIconButton from "../components/VerticalIconButton";
 import appConfig from "../config";
-import { SafeAreaView, StatusBar } from "react-native";
 
 import {
     ATTENDANCE,
@@ -20,7 +26,6 @@ import {
     SATNAM,
     SHUDDIKARAN,
 } from "../constants";
-import { Image } from "react-native";
 
 const Home = ({ navigation }) => {
     const [kpiCounts, setKpiCounts] = useState({});
@@ -37,8 +42,8 @@ const Home = ({ navigation }) => {
         // const countries = await AsyncStorage.getItem("districts");
         const userRole = await AsyncStorage.getItem("role");
         console.log(userRole);
-        // setRole(userRole);
-        setRole("Namdan Sewadar");
+        setRole(userRole);
+        // setRole("Ashram Admin");
         // console.log({ countries });
     };
     const getKPICounts = async () => {
@@ -184,72 +189,76 @@ const Home = ({ navigation }) => {
                     prathamVsSatnam={kpiCounts.pending_satnams}
                     punarUpdesh={0}
                 />
-                <View>
-                    <DashboardHeading label="Entries" />
-                    <View
-                        style={{
-                            flexDirection: "row",
-                            flexWrap: "wrap",
-                            justifyContent: "space-evenly",
-                        }}
-                    >
-                        <VerticalIconButton
-                            label={`Pratham${"\n"}Naam`}
-                            icon={require("../../assets/icons/pn.png")}
-                            pressHandler={() => navigation.push("Pratham Naam")}
-                        />
-                        <VerticalIconButton
-                            label="Satnaam"
-                            icon={require("../../assets/icons/sn.png")}
-                            pressHandler={() => {
-                                navigation.navigate("Entry", {
-                                    title: "Enter Satnaam",
-                                    entryType: SATNAM,
-                                });
+                {(role === "Namdan Sewadar" || role === "Ashram Admin") && (
+                    <View>
+                        <DashboardHeading label="Entries" />
+                        <View
+                            style={{
+                                flexDirection: "row",
+                                flexWrap: "wrap",
+                                justifyContent: "space-evenly",
                             }}
-                        />
-                        <VerticalIconButton
-                            label="Sarnaam"
-                            icon={require("../../assets/icons/srn.png")}
-                            pressHandler={() => {
-                                navigation.navigate("Entry", {
-                                    title: "Enter SaarNaam",
-                                    entryType: SAARNAAM,
-                                });
-                            }}
-                        />
-                        <VerticalIconButton
-                            label={`Punar${"\n"}Updesh`}
-                            icon={require("../../assets/icons/pu.png")}
-                            pressHandler={() => {
-                                navigation.navigate("Entry", {
-                                    title: "Enter Punar Updesh",
-                                    entryType: PUNARUPDESH,
-                                });
-                            }}
-                        />
-                        <VerticalIconButton
-                            label="Shudhikaran"
-                            icon={require("../../assets/icons/sk.png")}
-                            pressHandler={() => {
-                                navigation.navigate("Entry", {
-                                    title: "Enter Shudhikaran",
-                                    entryType: SHUDDIKARAN,
-                                });
-                            }}
-                        />
-                        <VerticalIconButton
-                            label="Attendance"
-                            icon={require("../../assets/icons/at.png")}
-                            pressHandler={() => {
-                                navigation.navigate("Entry", {
-                                    title: "Attendance",
-                                    entryType: ATTENDANCE,
-                                });
-                            }}
-                        />
+                        >
+                            <VerticalIconButton
+                                label={`Pratham${"\n"}Naam`}
+                                icon={require("../../assets/icons/pn.png")}
+                                pressHandler={() =>
+                                    navigation.push("Pratham Naam")
+                                }
+                            />
+                            <VerticalIconButton
+                                label="Satnaam"
+                                icon={require("../../assets/icons/sn.png")}
+                                pressHandler={() => {
+                                    navigation.navigate("Entry", {
+                                        title: "Enter Satnaam",
+                                        entryType: SATNAM,
+                                    });
+                                }}
+                            />
+                            <VerticalIconButton
+                                label="Sarnaam"
+                                icon={require("../../assets/icons/srn.png")}
+                                pressHandler={() => {
+                                    navigation.navigate("Entry", {
+                                        title: "Enter SaarNaam",
+                                        entryType: SAARNAAM,
+                                    });
+                                }}
+                            />
+                            <VerticalIconButton
+                                label={`Punar${"\n"}Updesh`}
+                                icon={require("../../assets/icons/pu.png")}
+                                pressHandler={() => {
+                                    navigation.navigate("Entry", {
+                                        title: "Enter Punar Updesh",
+                                        entryType: PUNARUPDESH,
+                                    });
+                                }}
+                            />
+                            <VerticalIconButton
+                                label="Shudhikaran"
+                                icon={require("../../assets/icons/sk.png")}
+                                pressHandler={() => {
+                                    navigation.navigate("Entry", {
+                                        title: "Enter Shudhikaran",
+                                        entryType: SHUDDIKARAN,
+                                    });
+                                }}
+                            />
+                            <VerticalIconButton
+                                label="Attendance"
+                                icon={require("../../assets/icons/at.png")}
+                                pressHandler={() => {
+                                    navigation.navigate("Entry", {
+                                        title: "Attendance",
+                                        entryType: ATTENDANCE,
+                                    });
+                                }}
+                            />
+                        </View>
                     </View>
-                </View>
+                )}
                 {role !== "Namdan Sewadar" && (
                     <>
                         <DashboardHeading label="Features" />
@@ -265,7 +274,7 @@ const Home = ({ navigation }) => {
                             >
                                 <RoundIconButton
                                     handleClick={() => {}}
-                                    label={`Generate${"\n"}Pin`}
+                                    label={`Add Sevadar`}
                                     iconName={require("../../assets/icons/keyBg.png")}
                                 />
                                 {role === "Ashram Admin" && (

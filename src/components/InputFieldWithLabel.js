@@ -14,33 +14,43 @@ function InputFieldWithLabel({
     disabled,
     rows,
     keyboard,
+    validateEmail,
 }) {
-    function validateEmail(email) {
-        const re =
-            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return re.test(String(email).toLowerCase()) ? (
-            <Text style={{ color: "green", alignSelf: "flex-end" }}>
-                {" "}
-                <Ionicons name="checkmark-done" size={18} color="green" /> Valid
-                Email
-            </Text>
-        ) : (
-            <Text style={{ color: "red", alignSelf: "flex-end" }}>
-                {" "}
-                <Ionicons
-                    name="alert-circle-outline"
-                    size={18}
-                    color="red"
-                />{" "}
-                Invalid Email
-            </Text>
-        );
-    }
     return (
         <View style={{ flex: 1, width: "100%", justifyContent: "center" }}>
             <View style={styles.inputField}>
                 <Text style={styles.label}>
-                    {label} {label === "Email" && value && validateEmail(value)}
+                    {label}{" "}
+                    {label === "Email" &&
+                        value &&
+                        (validateEmail(value) ? (
+                            <Text
+                                style={{
+                                    color: "green",
+                                    alignSelf: "flex-end",
+                                }}
+                            >
+                                {" "}
+                                <Ionicons
+                                    name="checkmark-done"
+                                    size={18}
+                                    color="green"
+                                />{" "}
+                                Valid Email
+                            </Text>
+                        ) : (
+                            <Text
+                                style={{ color: "red", alignSelf: "flex-end" }}
+                            >
+                                {" "}
+                                <Ionicons
+                                    name="alert-circle-outline"
+                                    size={18}
+                                    color="red"
+                                />{" "}
+                                Invalid Email
+                            </Text>
+                        ))}
                 </Text>
                 {isDate ? (
                     <TouchableOpacity

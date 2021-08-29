@@ -1,7 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { AsyncStorage, Image, SafeAreaView, Text, View } from "react-native";
+import { AsyncStorage, Image, SafeAreaView, Text, View, StatusBar } from "react-native";
 import AwesomeAlert from "react-native-awesome-alerts";
 import {
     ScrollView,
@@ -13,6 +13,7 @@ import textConstants from "../constants/text/Login";
 import theme from "../constants/theme";
 import styles from "../styles/Login";
 import appConfig from "../config";
+import {  } from "react-native";
 
 function Login({ navigation }) {
     const [userName, setUserName] = useState("");
@@ -212,34 +213,36 @@ function Login({ navigation }) {
                 }
             })
             .catch((error) => {
-                console.error(error);
+                console.error(error.response);
             });
     };
 
     return (
         <SafeAreaView style={styles.container}>
-            <AwesomeAlert
-                show={showAlert.show}
-                showProgress={false}
-                title={showAlert.title}
-                message={showAlert.message}
-                closeOnTouchOutside
-                closeOnHardwareBackPress={false}
-                showCancelButton
-                showConfirmButton
-                cancelText={showAlert.cancel}
-                confirmText={showAlert.confirm}
-                confirmButtonColor="#DD6B55"
-                onCancelPressed={() => {
-                    const temp = { ...showAlert, show: false };
-                    setShowAlert(temp);
-                }}
-                onConfirmPressed={() => {
-                    const temp = { ...showAlert, show: false };
-                    setShowAlert(temp);
-                }}
-            />
-            <ScrollView style={{}}>
+            <StatusBar backgroundColor={theme.colors.primary} />
+            <ScrollView style={{ paddingTop: "10%" }}>
+                <AwesomeAlert
+                    show={showAlert.show}
+                    showProgress={false}
+                    title={showAlert.title}
+                    message={showAlert.message}
+                    closeOnTouchOutside
+                    closeOnHardwareBackPress={false}
+                    showCancelButton
+                    showConfirmButton
+                    cancelText={showAlert.cancel}
+                    confirmText={showAlert.confirm}
+                    confirmButtonColor="#DD6B55"
+                    onCancelPressed={() => {
+                        const temp = { ...showAlert, show: false };
+                        setShowAlert(temp);
+                    }}
+                    onConfirmPressed={() => {
+                        const temp = { ...showAlert, show: false };
+                        setShowAlert(temp);
+                    }}
+                />
+
                 <View>
                     <Image
                         style={styles.image}
