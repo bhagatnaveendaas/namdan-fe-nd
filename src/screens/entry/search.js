@@ -3,21 +3,12 @@ import { View, AsyncStorage, Image, Dimensions } from "react-native";
 import { SearchBar } from "react-native-elements";
 
 const { height } = Dimensions.get("window");
-
-import axios from "axios";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import {
-    ATTENDANCE,
-    PUNARUPDESH,
-    SAARNAAM,
     SATNAM,
-    SHUDDIKARAN,
     USER_SEARCH_ACTION,
 } from "../../constants";
 import {
-    generateAttendanceEntryRequestURL,
-    generateNaamEntryCreateRequestURL,
-    generateShuddhiKaranRequestURL,
     generateUserInfoRequestURL,
 } from "../../helper/router";
 import { executeRequest } from "../../helper/network/link";
@@ -26,19 +17,16 @@ import DateRangeFilter from "../../components/DateRangeFilter";
 import { dateInYYMMDDFormat } from "../../utilities/DateUtils";
 import theme from "../../constants/theme";
 import DateSelectorComponent from "./components/naam-date-selector";
-import PopupNotice from "./components/notice";
 import UserInfoComponent from "./components/user";
 import UserListComponent from "./components/user-list";
-const successImageIcon = require("../../../assets/check-circletick.png");
-const questionUserIcon = require("../../../assets/help-circle-outlinequestion-mark.png");
-const failedIcon = require("../../../assets/x-circlewrong.png");
 
 const POST_REQUEST_METHOD = "POST";
 const USER_SEARCH_REQUEST_URL = generateUserInfoRequestURL(USER_SEARCH_ACTION);
-console.log(USER_SEARCH_REQUEST_URL);
 const APPLICATION_KEY = "dsv213a213sfv21123fs31d3fd132c3dv31dsf33";
 
-const Entry = ({ route, navigation }) => {
+const SearchScreen = (
+    { route, navigation }
+) => {
     const [countries, setCountries] = useState();
     const [showFilters, setShowFilters] = useState(false);
 
@@ -63,10 +51,6 @@ const Entry = ({ route, navigation }) => {
     const [tehsilSelected, setTehsilsSelected] = useState();
 
     const [tehsilSelectedIndex, setTehsilSelectedIndex] = useState();
-
-    const [
-        niyamSelectedForUpdesh, setNiyamSelectedForUpdesh
-    ] = useState()
 
     const fetchCountries = async () => {
         const response = await AsyncStorage.getItem("countries");
@@ -198,121 +182,6 @@ const Entry = ({ route, navigation }) => {
             });
     };
 
-    /**
-     * Crate Attendance entry
-     */
-    const SATNAM_ATTENDANCE_ENTRY_REQUEST_URL =
-        generateAttendanceEntryRequestURL();
-    const createAttendanceEntry = async (discipleId, attendanceDate) => {
-        const satnamAttendanceRequstBody = {
-            disciple_id: discipleId,
-            attendance_date: formatDate(attendanceDate),
-            remark: "ok",
-        };
-        const config = {
-            method: POST_REQUEST_METHOD,
-            headers: {
-                key: APPLICATION_KEY,
-                Accept: "application/json",
-                "X-CSRF-TOKEN": await AsyncStorage.getItem("token"),
-                key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
-            },
-        };
-        executeRequest(
-            SATNAM_ATTENDANCE_ENTRY_REQUEST_URL,
-            satnamAttendanceRequstBody,
-            config
-        )
-            .then((response) => {
-                console.log(
-                    "Satnam Attendance Entry create responsse: ",
-                    response
-                );
-            })
-            .catch((error) => {
-                console.log("Error in creatin satnam entry: ", error);
-                throw new Error("Could not create entry");
-            });
-    };
-    const createEntry = async (requestURL, requestData) => {
-        const config = {
-            method: POST_REQUEST_METHOD,
-            headers: {
-                key: APPLICATION_KEY,
-                Accept: "application/json",
-                "X-CSRF-TOKEN": await AsyncStorage.getItem("token")
-            },
-        };
-        console.log("Creating entry: ", config)
-        await executeRequest(requestURL, requestData, config)
-            .then((response) => {
-                console.log("Satnam Entry create responsse: ", response);
-            })
-            .catch((error) => {
-                console.log("Error in creatin satnam entry: ", error);
-                throw new Error("Could not create entry");
-            });
-    };
-    /**
-     *
-     * @param {*} discipleId
-     * @param {*} selectedDate
-     * Saarnaam entry
-     */
-    const SARNAM_CREATE_ENTRY_REQUEST_URL =
-        generateNaamEntryCreateRequestURL(SAARNAAM);
-    const createSaarnaamEntry = async (discipleId, selectedDate, remark = "ok") => {
-        const requestData = {
-            disciple_id: discipleId,
-            sarnam_date: formatDate(selectedDate),
-            remark: remark,
-        };
-        await createEntry(SARNAM_CREATE_ENTRY_REQUEST_URL, requestData);
-    };
-
-    const PUNARUPDESH_CREATE_ENTRY_REQUEST_URL =
-        generateNaamEntryCreateRequestURL(PUNARUPDESH);
-    const createReupdeshEntry = async (discipleId, selectedDate, remark = "ok") => {
-        const requestData = {
-            disciple_id: discipleId,
-            reupdesh_date: formatDate(selectedDate),
-            remark: remark,
-        };
-        await createEntry(PUNARUPDESH_CREATE_ENTRY_REQUEST_URL, requestData);
-    };
-
-    const SHUDDHI_KARAN_CREATE_ENTRY_REQUEST_URL = generateShuddhiKaranRequestURL()
-    const createShuddhiKaranEntry = async (
-        discipleId, 
-        selectedDate, 
-        remark = "ok"
-    ) => {
-        const requestData = {
-            disciple_id: discipleId,
-            shuddhikaran_date: formatDate(selectedDate),
-            niyam_id: niyamSelectedForUpdesh
-        };
-        await createEntry(SHUDDHI_KARAN_CREATE_ENTRY_REQUEST_URL, requestData);
-    };
-
-    /**
-     * Create satnam entry
-     */
-    const SATNAM_CREATE_ENTRY_REQUEST_URL =
-        generateNaamEntryCreateRequestURL(SATNAM);
-    const createSatnamEntry = async (
-        discipleId,
-        selectedDate,
-        remark = "ok"
-    ) => {
-        const requestData = {
-            disciple_id: discipleId,
-            satnam_date: formatDate(selectedDate),
-            remark: remark,
-        };
-        await createEntry(SATNAM_CREATE_ENTRY_REQUEST_URL, requestData);
-    };
-
     const [initiateSuccessNotice, setInitiateSuccessNotice] = useState(false);
 
     const [initiateFailureNotice, setInitiateFailureNotice] = useState(false);
@@ -321,7 +190,6 @@ const Entry = ({ route, navigation }) => {
     const [personSelected, setPersonSelected] = useState(false);
     const [usersSearched, setUsersSearched] = useState([]);
     const [selectedDateForEntry, setSelectedDateForEntry] = useState();
-    const handleSearchChange = (e) => {};
     const { entryType, title } = route.params;
     const [initiateSelectDate, setIinitiateSelectDate] = useState(false);
     useEffect(() => {
@@ -339,83 +207,6 @@ const Entry = ({ route, navigation }) => {
         console.log("Person selected", personSelected);
         console.log("Date for entry", selectedDateForEntry);
     }, [personSelected]);
-
-    const handleEntryAPIError = () => {
-        setSelectedDateForEntry(undefined);
-        setPersonSelected(false);
-        setInitiateSuccessNotice(false);
-        setInitiateFailureNotice(true);
-    };
-
-    const handleEntryAPISuccess = () => {
-        setSelectedDateForEntry(undefined);
-        setPersonSelected(false);
-        setInitiateSuccessNotice(true);
-        setInitiateFailureNotice(false);
-        searchDisciples(search)
-    };
-
-    const generateNaamEntry = () => {
-        console.log("Entry type", entryType)
-        switch (entryType) {
-            case ATTENDANCE:
-                {
-                    createAttendanceEntry(
-                        personSelected.id,
-                        selectedDateForEntry
-                    )
-                        .catch((error) => {
-                            handleEntryAPIError();
-                        })
-                        .then(() => {
-                            handleEntryAPISuccess();
-                        });
-                }
-                break;
-            case SATNAM:
-                {
-                    createSatnamEntry(personSelected.id, selectedDateForEntry)
-                        .catch((error) => {
-                            handleEntryAPIError();
-                        })
-                        .then(() => {
-                            handleEntryAPISuccess();
-                        });
-                }
-                break;
-            case SAARNAAM:
-                {
-                    console.log("Creating saarnaam entry")
-                    createSaarnaamEntry(personSelected.id, selectedDateForEntry)
-                        .catch((error) => {
-                            handleEntryAPIError();
-                        })
-                        .then(() => {
-                            handleEntryAPISuccess();
-                        });
-                }
-                break;
-            case PUNARUPDESH: {
-                createReupdeshEntry(personSelected.id, selectedDateForEntry)
-                    .then(() => {
-                        handleEntryAPISuccess();
-                    })
-                    .catch(() => {
-                        handleEntryAPIError();
-                    });
-            }
-            break;
-            case SHUDDIKARAN: {
-                createShuddhiKaranEntry(personSelected.id, selectedDateForEntry).then(() => {
-                    handleEntryAPISuccess();
-                })
-                .catch(() => {
-                    handleEntryAPIError();
-                });
-                
-            }
-        }
-    };
 
     return (
         <ScrollView
@@ -646,48 +437,6 @@ const Entry = ({ route, navigation }) => {
                             </View>
                         )}
                     </View>
-                    {
-                        <PopupNotice
-                            requireUserConsent={false}
-                            message={"Success Adding Entry"}
-                            isVisible={initiateSuccessNotice}
-                            clickHandler={() => {
-                                setInitiateSuccessNotice(false);
-                            }}
-                            sourceImage={successImageIcon}
-                        />
-                    }
-                    {
-                        <PopupNotice
-                            requireUserConsent={false}
-                            message={"Failure Adding Entry"}
-                            isVisible={initiateFailureNotice}
-                            clickHandler={() => {
-                                setInitiateFailureNotice(false);
-                            }}
-                            sourceImage={failedIcon}
-                        />
-                    }
-                    {
-                        <PopupNotice
-                            requireUserConsent={true}
-                            message={
-                                "Are you sure you want to continue adding entry ?"
-                            }
-                            cancelEntry={() => {
-                                setSelectedDateForEntry(undefined);
-                                setPersonSelected(false);
-                            }}
-                            confirmEntry={() => {
-                                generateNaamEntry();
-                            }}
-                            isVisible={
-                                personSelected &&
-                                selectedDateForEntry !== undefined
-                            }
-                            sourceImage={questionUserIcon}
-                        />
-                    }
                     {personSelected ? (
                         <UserInfoComponent
                             setIinitiateSelectDate={setIinitiateSelectDate}
@@ -695,9 +444,6 @@ const Entry = ({ route, navigation }) => {
                             hajriType={SATNAM}
                             entryType={
                                 entryType
-                            }
-                            setNiyamSelectedForUpdesh={
-                                setNiyamSelectedForUpdesh
                             }
                             user={personSelected}
                         />
@@ -736,4 +482,4 @@ const Entry = ({ route, navigation }) => {
     );
 };
 
-export default Entry;
+export default SearchScreen;

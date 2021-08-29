@@ -64,3 +64,11 @@ export const generateUserInfoRequestURL = (
     }
     
 }
+
+export const generateNiyamRequestURL = () => {
+    return `${SEVA_API_REQUEST_URL}/niyam/list`
+}
+
+export const generateShuddhiKaranRequestURL = () => {
+    return `${SEVA_API_REQUEST_URL}/shuddhikaran/create`
+}

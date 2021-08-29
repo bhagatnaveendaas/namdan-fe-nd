@@ -4,11 +4,12 @@ import TextViewComponent from "./text-view";
 import { Button } from "react-native-elements";
 import Modal from "react-native-modal";
 import { ScrollView } from "react-native-gesture-handler";
-import { generateAttendanceInfoRequestURL } from "../../../helper/router";
+import { generateAttendanceInfoRequestURL, generateNiyamRequestURL } from "../../../helper/router";
 import { executeRequest } from "../../../helper/network/link";
 import { HajriListItemRowComponent } from "./hajri-list-item-row";
 import theme from "../../../constants/theme";
-import { ATTENDANCE } from "../../../constants";
+import { ATTENDANCE, SEARCH, SHUDDIKARAN } from "../../../constants";
+import Dropdown from "../../../components/DropdownV2";
 
 const UserInfoComponent = (props) => {
     const [userInfo, setUserInfo] = useState();
@@ -22,6 +23,11 @@ const UserInfoComponent = (props) => {
 
     const [hajriList, setHajriList] = useState([]);
 
+    const [
+        niyamList,
+        setNiyamList
+    ] = useState([])
+ 
     const fetchHajriAttendance = (discipleId) => {
         const hajriRequestURL = generateAttendanceInfoRequestURL(
             hajriType,
@@ -40,6 +46,27 @@ const UserInfoComponent = (props) => {
             });
     };
 
+    const [
+        niyamSelectedIndex,
+        setNiyamSelectedIndex
+    ] = useState()
+
+    const fetchNiyamList = () => {
+        const niyamListRequestURL = generateNiyamRequestURL()
+        executeRequest(niyamListRequestURL, undefined, {
+            method: "GET",
+        })
+            .then((response) => {
+                const niyamList = response.data?.data;
+                niyamTracableList = niyamList.map((niyam) => {return {name: niyam.description, id: niyam.id}})
+                setNiyamList(niyamTracableList);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+
+    }
+
     useEffect(() => {
         fetchHajriAttendance(props.user?.id);
     }, [isHajriListRequested]);
@@ -50,6 +77,7 @@ const UserInfoComponent = (props) => {
         } else {
             setIsVisible(false);
         }
+        fetchNiyamList()
     }, [userInfo]);
 
     useEffect(() => {
@@ -76,7 +104,7 @@ const UserInfoComponent = (props) => {
         >
             <View
                 style={{
-                    height: 550,
+                    height: props.entryType === SHUDDIKARAN ? 650 : 550,
                     borderRadius: 18,
                     backgroundColor: "#FFFFFF",
                     flexDirection: "column",
@@ -242,32 +270,55 @@ const UserInfoComponent = (props) => {
                         ) : (
                             null
                         )}
-                        <View
-                            style={{
-                                width: "100%",
-                                height: 55,
-                                marginTop: 24,
-                                flexDirection: "row",
-                                justifyContent: "center",
-                            }}
-                        >
-                            <Button
-                                disabled={
-                                    hajriList.length == 3 && props.entryType == ATTENDANCE
-                                }
-                                onPress={() => {
-                                    setUserInfo(undefined);
-                                    props.setIinitiateSelectDate &&
-                                        props.setIinitiateSelectDate(true);
-                                }}
-                                buttonStyle={{
-                                    backgroundColor: "#2F4F94",
-                                    width: "100%",
-                                    borderRadius: 8,
-                                }}
-                                title={ props.entryType == ATTENDANCE ? `Select Date for Hajri No. ${hajriList.length +1 }` : 'Select Date'}
-                            />
-                        </View>
+                        {
+                            props.entryType === SHUDDIKARAN ? (
+                                <Dropdown
+                                    options={niyamList ? niyamList : []}
+                                    label={"Niyam"}
+                                    value={niyamSelectedIndex || 0}
+                                    changeFn={(value) => {
+                                        setNiyamSelectedIndex(value);
+                                        props.setNiyamSelectedForUpdesh && props.setNiyamSelectedForUpdesh(
+                                            niyamList[value].id
+                                        );
+                                    }}
+                                />
+                            ) : (
+                                null
+                            )
+                        }
+                        {
+                            props.entryType !== SEARCH ? (
+                                <View
+                                    style={{
+                                        width: "100%",
+                                        height: 55,
+                                        marginTop: 24,
+                                        flexDirection: "row",
+                                        justifyContent: "center",
+                                    }}
+                                >
+                                    <Button
+                                        disabled={
+                                            hajriList.length == 3 && props.entryType == ATTENDANCE
+                                        }
+                                        onPress={() => {
+                                            setUserInfo(undefined);
+                                            props.setIinitiateSelectDate &&
+                                                props.setIinitiateSelectDate(true);
+                                        }}
+                                        buttonStyle={{
+                                            backgroundColor: "#2F4F94",
+                                            width: "100%",
+                                            borderRadius: 8,
+                                        }}
+                                        title={ props.entryType == ATTENDANCE ? `Select Date for Hajri No. ${hajriList.length +1 }` : 'Select Date'}
+                                    />
+                                </View>
+                            ) : (
+                                null
+                            )
+                        }
                     </View>
                 </View>
             </View>

@@ -7,3 +7,4 @@ export const PUNARUPDESH = "PUNARUPDESH"
 export const SHUDDIKARAN = "SHUDDHIKARAN"
 export const ATTENDANCE = "ATTENDANCE"
 export const PRATHAMNAAM = 'PRATHAMNAAM'
+export const SEARCH = "SEARCH"
