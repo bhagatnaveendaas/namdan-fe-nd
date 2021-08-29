@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Text, View, Image, AsyncStorage } from "react-native";
-import {
-    ScrollView,
-    TouchableOpacity,
-} from "react-native-gesture-handler";
+import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as ImagePicker from "expo-image-picker";
 import AwesomeAlert from "react-native-awesome-alerts";
@@ -52,7 +49,8 @@ const AddSewadaar = ({ navigation }) => {
     };
 
     const getRequiredDateFormat = (dateObj) =>
-        `${dateObj.getFullYear()}-${dateObj.getMonth() - 1
+        `${dateObj.getFullYear()}-${
+            dateObj.getMonth() - 1
         }-${dateObj.getDate()}`;
 
     const [userData, setUserData] = useState({
@@ -95,7 +93,7 @@ const AddSewadaar = ({ navigation }) => {
         const temp = { ...userData };
         temp.role_id = value;
         setUserData(temp);
-    }
+    };
 
     const onNameChange = (event) => {
         const temp = { ...userData };
@@ -153,11 +151,9 @@ const AddSewadaar = ({ navigation }) => {
 
     const getStates = async (countryId) => {
         const temp = JSON.parse(await AsyncStorage.getItem("states"));
-        const reqStates = temp.filter(
-            (state) => {
-                return state.country_id === countryId;
-            }
-        );
+        const reqStates = temp.filter((state) => {
+            return state.country_id === countryId;
+        });
         setStates(reqStates);
     };
 
@@ -445,7 +441,9 @@ const AddSewadaar = ({ navigation }) => {
             {showSatnaamDate && (
                 <DateTimePicker
                     testID="dateTimePickerForSatnaam"
-                    value={userData.satnaamDate ? userData.satnaamDate : new Date()}
+                    value={
+                        userData.satnaamDate ? userData.satnaamDate : new Date()
+                    }
                     mode={mode}
                     is24Hour
                     display="default"
@@ -455,7 +453,11 @@ const AddSewadaar = ({ navigation }) => {
             {showSaarnaamDate && (
                 <DateTimePicker
                     testID="dateTimePickerForSaarnaam"
-                    value={userData.saarnaamDate ? userData.saarnaamDate : new Date()}
+                    value={
+                        userData.saarnaamDate
+                            ? userData.saarnaamDate
+                            : new Date()
+                    }
                     mode={mode}
                     is24Hour
                     display="default"
@@ -465,7 +467,11 @@ const AddSewadaar = ({ navigation }) => {
             {showSaarshabadDate && (
                 <DateTimePicker
                     testID="dateTimePickerForSaarshabad"
-                    value={userData.saarshabadDate ? userData.saarshabadDate : new Date()}
+                    value={
+                        userData.saarshabadDate
+                            ? userData.saarshabadDate
+                            : new Date()
+                    }
                     mode={mode}
                     is24Hour
                     display="default"
@@ -563,19 +569,22 @@ const AddSewadaar = ({ navigation }) => {
                 />
             ) : null}
 
-            {roleToAddSewadaarMappingList && <DropdownV2
-                label="Role"
-                value={userData.role_id}
-                changeFn={onRoleChange}
-                options={roleToAddSewadaarMappingList}
-            />}
+            {roleToAddSewadaarMappingList && (
+                <DropdownV2
+                    label="Role"
+                    value={userData.role_id}
+                    changeFn={onRoleChange}
+                    options={roleToAddSewadaarMappingList}
+                    reqId
+                />
+            )}
 
-            {userData.role_id === roles.NAAMDAN_SEWADAR.id && districts.length ? (
+            {userData.role_id === roles.NAAMDAN_SEWADAR.id ? (
                 <DropdownV2
                     label="Namdan center"
                     value={userData.namdan_center_id}
                     changeFn={onNamdanCenterChange}
-                    options={districts}
+                    options={[]}
                 />
             ) : null}
 
@@ -618,6 +627,6 @@ const AddSewadaar = ({ navigation }) => {
             </View>
         </ScrollView>
     );
-}
+};
 
 export default AddSewadaar;

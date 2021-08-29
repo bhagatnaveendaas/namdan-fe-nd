@@ -144,7 +144,7 @@ const Home = ({ navigation }) => {
                     <TouchableOpacity onPress={() => navigation.openDrawer()}>
                         <Image
                             style={{ height: 20, width: 20 }}
-                            source={require("../../assets/icons/side_menu.png")}
+                            source={require("../../assets/icons/white_side_menu.png")}
                         />
                     </TouchableOpacity>
                 </View>
@@ -259,7 +259,7 @@ const Home = ({ navigation }) => {
                         </View>
                     </View>
                 )}
-                {role !== "Namdan Sewadar" && (
+                {(role !== "Namdan Sewadar" || role !== "District Admin") && (
                     <>
                         <DashboardHeading label="Features" />
                         <View style={{ paddingHorizontal: "1.3%" }}>
@@ -273,7 +273,9 @@ const Home = ({ navigation }) => {
                                 ]}
                             >
                                 <RoundIconButton
-                                    handleClick={() => {}}
+                                    handleClick={() => {
+                                        navigation.push("Add Sewadaar");
+                                    }}
                                     label={`Add Sevadar`}
                                     iconName={require("../../assets/icons/keyBg.png")}
                                 />

@@ -4,7 +4,7 @@ import { Picker } from "@react-native-picker/picker";
 import styles from "../styles/Singup";
 import theme from "../constants/theme";
 
-function Dropdown({ label, value, changeFn, options, enabled }) {
+function Dropdown({ label, value, changeFn, options, enabled, reqId }) {
     return (
         <View style={styles.inputField}>
             <Text style={styles.label}>{label}</Text>
@@ -18,11 +18,10 @@ function Dropdown({ label, value, changeFn, options, enabled }) {
                         textTransform: "capitalize",
                         fontFamily: theme.fonts.poppins.regular,
                         ...theme.sizes.regular,
-                        height:34
+                        height: 34,
                     }}
-                    
                 >
-                    <Picker.Item label="select an option" value={null}  />
+                    <Picker.Item label="select an option" value={null} />
                     {options.map((item, index) => (
                         <Picker.Item
                             key={index}
@@ -30,7 +29,7 @@ function Dropdown({ label, value, changeFn, options, enabled }) {
                                 item.name[0].toUpperCase() +
                                 item.name.slice(1).toLowerCase()
                             }
-                            value={index}
+                            value={reqId ? item.id : index}
                         />
                     ))}
                 </Picker>

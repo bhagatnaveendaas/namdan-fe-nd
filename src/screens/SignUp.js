@@ -319,6 +319,8 @@ function SignUp({ navigation }) {
         temp.tehsil_id = tehsils[userData.tehsil_id].tehsil_id;
         temp.avatar = userData.avatar;
         temp.dob = getRequiredDateFormat(userData.dob);
+        temp.mobile_no = temp.country_code.split(" | ")[0] + temp.mobile_no;
+        delete temp.country_code
         delete temp.naamdanTaken;
         delete temp.avatar;
         const data = serialize(temp);
@@ -344,6 +346,7 @@ function SignUp({ navigation }) {
                     message: "Disciple created successfully",
                 };
                 setShowAlert(temp);
+                setUserData(formFields);
                 navigation.push("AshramDashboard");
             })
             .catch((error) => {
