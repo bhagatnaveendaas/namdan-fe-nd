@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { MaterialIcons } from "@expo/vector-icons";
-import theme from "../constants/theme";
 import { SafeAreaView } from "react-native";
 import { Image } from "react-native";
+import theme from "../constants/theme";
 
 const messages = [
     {
