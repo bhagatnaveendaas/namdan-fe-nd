@@ -14,6 +14,7 @@
  - Do not ignore eslint errors
  - Incase any external component is needed it should only be used from react-native-element library
  - Try to minimize as much warnings as possible
+ - Do not use deprecated features
 
 ## Branche Rules
 - DO NOT PUSH DIRECTLY INTO MAIN
