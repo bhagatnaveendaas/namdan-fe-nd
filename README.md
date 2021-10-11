@@ -7,11 +7,18 @@
 - npm ci [It uses package-lock.json to install dependencies]
 - expo start
 
+## Standards and Norms
+ - All the components and screens should be built in functional component/react hooks
+ - Use Only Axios as http client
+ - No api should be called directly from the components
+ - Do not ignore eslint errors
+ - Incase any external component is needed it should only be used from react-native-element library
+ - Try to minimize as much warnings as possible
+
 ## Branche Rules
 - DO NOT PUSH DIRECTLY INTO MAIN
 - Create branch of the your work with following rules
     - For feature - feature/[NAME OF THE FEATURE]
-    - For update - update/[NAME OF THE UPDATE]
     - For bugFix - bugFix/[NAME OF THE BUGFIX]
 - Raise PR
 - Merge it
@@ -21,6 +28,5 @@
 - All the constant string in the app should be exported from ./src/constants/[FILENAME of the screen]
 
 ## Styles Rule
-- No inline style should be used
-- Create file inside ./src/styles with name of the screen
-
+- No inline style should be used.
+- Create file in the respective component.
