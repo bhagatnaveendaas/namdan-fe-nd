@@ -17,7 +17,8 @@
       "assets/"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.rs91.naamdan"
     },
     "android": {
       "adaptiveIcon": {
