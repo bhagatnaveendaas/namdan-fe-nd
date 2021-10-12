@@ -1,11 +1,11 @@
 # README #
 
 ## Installation
-- sudo npm i -g expo-cli
 - git clone https://ramsuthar305@bitbucket.org/namdan-app/namdan-fe.git
 - cd namdan-fe
 - npm ci [It uses package-lock.json to install dependencies]
-- expo start
+- npm start
+- Then run `npm run android` in a separate terminal window.
 
 ## Branche Rules
 - DO NOT PUSH DIRECTLY INTO MAIN
