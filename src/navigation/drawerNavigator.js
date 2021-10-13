@@ -9,10 +9,10 @@ const Drawer = createDrawerNavigator();
 
 const DrawerNavigator = () => (
   <Drawer.Navigator>
-    <Drawer.Screen name="AshramDashboard" component={MainStackNavigator} />
+    <Drawer.Screen name="Ashram Dashboard" component={MainStackNavigator} />
     <Drawer.Screen name="SignUp" component={MainStackNavigator} />
     <Drawer.Screen name="Login" component={MainStackNavigator} />
-    <Drawer.Screen name="CountryDashboard" component={MainStackNavigator} />
+    <Drawer.Screen name="Country Dashboard" component={MainStackNavigator} />
     <Drawer.Screen name="Entry" component={MainStackNavigator} />
     <Drawer.Screen name="SearchScreen" component={SearchScreen} />
     <Drawer.Screen name="Add Naamdan Center" component={MainStackNavigator} />

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, AsyncStorage } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { MaterialIcons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native";
 import { Image } from "react-native";
 import theme from "../constants/theme";
+import roles from '../constants/text/Roles'
 
 const messages = [
     {
@@ -208,9 +209,20 @@ const messages = [
 const Messages = ({ navigation }) => {
     const [tab, setTab] = useState(0);
     const [data, setData] = useState([]);
+    const [showCreateMessage, setShowCreateMessage] = useState(false);
 
     useEffect(() => {
         setData(messages);
+    }, []);
+
+    useEffect(() => {
+        const messageCreate = async () => {
+            const userRole = await AsyncStorage.getItem("role");
+            if (userRole === roles.ASHRAM_ADMIN || userRole === roles.SUPER_ADMIN) {
+                setShowCreateMessage(true);
+            }
+        };
+        messageCreate();
     }, []);
 
     const renderItem = ({ item, index }) => (
@@ -388,6 +400,7 @@ const Messages = ({ navigation }) => {
                     style={{ marginBottom: 50 }}
                 />
             </View>
+
             <View
                 style={{
                     flex: 1,
@@ -397,10 +410,9 @@ const Messages = ({ navigation }) => {
                     bottom: 30,
                 }}
             >
-                <TouchableOpacity
+                { showCreateMessage && <TouchableOpacity
                     style={{
                         alignItems: "center",
-
                         flexDirection: "row",
                         justifyContent: "center",
                         height: 70,
@@ -412,7 +424,7 @@ const Messages = ({ navigation }) => {
                     onPress={() => navigation.push("Compose Message")}
                 >
                     <MaterialIcons name="message" size={34} color="white" />
-                </TouchableOpacity>
+                </TouchableOpacity> }
             </View>
         </SafeAreaView>
     );
