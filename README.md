@@ -1,11 +1,13 @@
 # README #
 
 ## Installation
-- git clone https://ramsuthar305@bitbucket.org/namdan-app/namdan-fe.git
-- cd namdan-fe
+- ```git clone git@github.com:Satlok-Ashram/namdan-fe.git```
+- ```cd namdan-fe```
 - npm ci [It uses package-lock.json to install dependencies]
 - npm start
 - Then run `npm run android` in a separate terminal window.
+- In a separate terminal window run ```npm run android```
+- Optionally you can run in another terminal window `npm run android:logs` to see the output of console.log on your terminal.
 
 ## Standards and Norms
  - All the components and screens should be built in functional component/react hooks
