@@ -1,7 +1,14 @@
 import { Feather } from "@expo/vector-icons";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { AsyncStorage, Image, SafeAreaView, Text, View, StatusBar } from "react-native";
+import {
+    AsyncStorage,
+    Image,
+    SafeAreaView,
+    Text,
+    View,
+    StatusBar,
+} from "react-native";
 import AwesomeAlert from "react-native-awesome-alerts";
 import {
     ScrollView,
@@ -13,7 +20,6 @@ import textConstants from "../constants/text/Login";
 import theme from "../constants/theme";
 import styles from "../styles/Login";
 import appConfig from "../config";
-import {  } from "react-native";
 
 function Login({ navigation }) {
     const [userName, setUserName] = useState("");
@@ -133,22 +139,22 @@ function Login({ navigation }) {
     };
 
     const checkIfLoggedIn = async () => {
-        const loggedIn = await AsyncStorage.setItem("token", csrfKey);
-        return loggedIn ? true : false;
-    };
-
-    useEffect(() => {
-        if (checkIfLoggedIn) {
+        const loggedIn = await AsyncStorage.getItem("token");
+        if (loggedIn) {
             console.log("Called2");
             if (!checkDataExist()) {
-                getCountries();
-                getStates();
-                getDistricts();
-                getTehsils();
+                 await getCountries();
+                    await getStates();
+                    await getDistricts();
+                    await getTehsils();
             }
 
             navigation.push("AshramDashboard");
         }
+    };
+
+    useEffect(() => {
+        checkIfLoggedIn()
     }, []);
 
     const handleLogin = async () => {

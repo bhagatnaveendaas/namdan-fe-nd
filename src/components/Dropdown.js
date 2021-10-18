@@ -8,7 +8,7 @@ function Dropdown({ label, value, changeFn, options }) {
     // console.log({value})
     return (
         <View style={styles.inputField}>
-            <Text style={styles.label}>{label}</Text>
+            <Text style={styles.label}>{label}<Text style={{color: "rgb(256,0,0)"}}>{" *"}</Text></Text>
             <View style={styles.dropdown}>
                 <Picker
                     selectedValue={value}

@@ -18,6 +18,8 @@ import theme from "../constants/theme";
 import { useGetAsyncStorageItem } from "../hooks/useGetAsyncStorageItem";
 import { roleToAddSewadaarMapping } from "../utilities/RoleToAddSewadaarMapping";
 import { roles } from "../constants/text/Roles";
+import UploadButton from "../components/UploadButton";
+
 
 const AddSewadaar = ({ navigation }) => {
     const userRole = useGetAsyncStorageItem("role");
@@ -114,15 +116,12 @@ const AddSewadaar = ({ navigation }) => {
     };
 
     const getCountries = async () => {
-        console.log("Callled");
         const temp = JSON.parse(await AsyncStorage.getItem("countries"));
-        console.log({ temp });
         setcountries(temp ? temp : []);
     };
 
     useEffect(() => {
         getCountries();
-        console.log({ countries });
     }, []);
 
     useEffect(() => {
@@ -621,7 +620,7 @@ const AddSewadaar = ({ navigation }) => {
                 placeholder="Form ID"
                 disabled={true}
             />
-
+            <UploadButton label={"Upload Aadhar Card"} onPressFn={() => console.log("Upload button clicked")} />
             <View style={styles.buttonContainer}>
                 <RoundButton label="Register" handlePress={handleRegister} />
             </View>
