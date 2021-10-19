@@ -9,13 +9,21 @@ export default StyleSheet.create({
         textAlignVertical: "top",
     },
     label: {
-        color: "#8A8A81",
-        fontFamily:theme.fonts.poppins.regular,
+        color: theme.colors.primary,
+        fontFamily:theme.fonts.poppins.semiBold,
         textTransform:"capitalize",
         alignItems:'center',
         paddingTop:3
     },
-    
+    upload: {
+        height: 50,
+        flexDirection:'row',
+        alignItems:"center",
+        justifyContent: "center",
+        backgroundColor: "#EBEBEB",
+        borderRadius: 25,
+        marginTop: 20,
+    },
     container: {
         borderColor: theme.colors.grey,
         borderWidth: 1,

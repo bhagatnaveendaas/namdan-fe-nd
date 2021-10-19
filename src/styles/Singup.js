@@ -12,7 +12,7 @@ export default StyleSheet.create({
     },
     label: {
         paddingBottom: "0.3%",
-        color: "#8A8A81",
+        color: theme.colors.primary,
         fontFamily: theme.fonts.poppins.regular,
     },
     dropdown: {
@@ -22,7 +22,7 @@ export default StyleSheet.create({
         borderRadius: 10,
         alignSelf: "center",
         height: 40,
-        
+
         backgroundColor: theme.colors.white,
     },
     textInput: {
@@ -50,4 +50,7 @@ export default StyleSheet.create({
         textAlign: "center",
     },
     buttonContainer: { paddingVertical: "5%", paddingHorizontal: "1%" },
+    placeholder: {
+        color: "#A4A4A4",
+    },
 });

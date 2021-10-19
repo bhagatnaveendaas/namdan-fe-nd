@@ -15,12 +15,14 @@ function InputFieldWithLabel({
     rows,
     keyboard,
     validateEmail,
+    required,
+    ...rest
 }) {
     return (
         <View style={{ flex: 1, width: "100%", justifyContent: "center" }}>
             <View style={styles.inputField}>
                 <Text style={styles.label}>
-                    {label}{" "}
+                    {label}{required && <Text style={{color: "rgb(256,0,0)"}}>{" *"}</Text>}
                     {label === "Email" &&
                         value &&
                         (validateEmail(value) ? (
@@ -71,6 +73,7 @@ function InputFieldWithLabel({
                         numberOfLines={rows ? rows : 1}
                         editable={!disabled}
                         keyboardType={keyboard}
+                        {...rest}
                     />
                 )}
             </View>

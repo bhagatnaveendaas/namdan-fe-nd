@@ -18,9 +18,12 @@ import Constants from "../constants/text/Signup";
 import _, { fill } from "lodash";
 import { serialize } from "object-to-formdata";
 import appConfig from "../config";
+import moment from "moment";
 import theme from "../constants/theme";
 import { Platform } from "react-native";
 import CountryCodes from "../constants/CountryCode.json";
+import UploadButton from "../components/UploadButton";
+import DatePicker from "../components/DatePicker";
 
 const fieldNames = {
     address: "Address",
@@ -42,13 +45,13 @@ const fieldNames = {
     form_date: "Form Date",
     area_type: "Area Type",
     naamdanTaken: "Naamdan taken at",
+    aadhaar_no: "Aadhar Number",
+    occupation: "Your Occupation",
 };
 
 function SignUp({ navigation }) {
     const getRequiredDateFormat = (dateObj) =>
-        `${dateObj.getFullYear()}-${
-            dateObj.getMonth() - 1
-        }-${dateObj.getDate()}`;
+        moment(dateObj).format("YYYY-MM-DD");
 
     const createId = (length) => {
         const chars = "ABCDEFGHIJKLMNOPQRSTUFWXYZ1234567890";
@@ -57,33 +60,33 @@ function SignUp({ navigation }) {
     };
 
     const formFields = {
-        address: "",
-        country_id: "",
-        district_id: "",
-        age: "",
-        email: "",
-        guardian_name: "",
-        mobile_no: "",
         name: "",
-        avatar: "",
-        dob: "",
-        pincode: "",
         relation: "",
-        naamdanTaken: "",
+        guardian_name: "",
+        age: "",
+        address: "",
+        aadhaar_no: "",
+        country_id: "",
         state_id: "",
+        district_id: "",
         tehsil_id: "",
-        form_id: createId(14),
         form_no: "",
-        country_code: "+91 | IN",
         form_date: getRequiredDateFormat(new Date()),
-        area_type: "rural",
+        mobile_no: "",
+        area_type: "",
+        avatar: "image file",
+
+        email: "",
+        pincode: "",
+        occupation: "",
+        dob: new Date(),
+        naamdanTaken: "",
+        form_id: createId(14),
+        country_code: "+91 | IN",
     };
     const naamdanTakenAt = ["Online", "Naamdan Center"];
     const relations = ["S/O", "D/O", "NA"];
-    // const countries = ['India', 'Pakistan', 'Nepal'];
-    // const states = ['Maharashtra', 'Haryana'];
-    // const districts = ['Pune', 'Mumbai'];
-    // const tehsils = ['Haveli', 'Pune City'];
+    const area_types = ["rural", "urban"];
     const [states, setStates] = useState([]);
     const [districts, setDistricts] = useState([]);
     const [countries, setcountries] = useState([]);
@@ -137,22 +140,19 @@ function SignUp({ navigation }) {
     };
 
     const getCountries = async () => {
-        console.log("Callled");
         const temp = JSON.parse(await AsyncStorage.getItem("countries"));
-        console.log({ temp });
         setcountries(temp ? temp : []);
     };
 
     useEffect(() => {
         getCountries();
-        console.log({ countries });
     }, []);
 
     useEffect(() => {
         const temp = { ...userData };
         temp.state_id = null;
         temp.district_id = null;
-        temp.tehsil_id = null;
+        // temp.tehsil_id = null;
         setUserData(temp);
         setDistricts([]);
         setTehsils([]);
@@ -161,14 +161,14 @@ function SignUp({ navigation }) {
     useEffect(() => {
         const temp = { ...userData };
         temp.district_id = null;
-        temp.tehsil_id = null;
+        // temp.tehsil_id = null;
         setUserData(temp);
         setTehsils([]);
     }, [districts]);
 
     useEffect(() => {
         const temp = { ...userData };
-        temp.tehsil_id = null;
+        // temp.tehsil_id = null;
         setUserData(temp);
     }, [tehsils]);
 
@@ -216,20 +216,15 @@ function SignUp({ navigation }) {
         setTehsils(reqTehsils);
     };
 
-    const onDobChange = (event, selectedDate) => {
-        const temp = { ...userData };
-        temp.dob = new Date(selectedDate);
-        const today = new Date();
-        const birthDate = new Date(selectedDate);
-        let age = today.getFullYear() - birthDate.getFullYear();
-        const m = today.getMonth() - birthDate.getMonth();
-        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-            age -= age;
+    const onDobChange = (selectedDate) => {
+        let Age = moment(new Date(selectedDate)).toNow(true).split(" "); // Age = ["a/number", "days/months/years"]
+
+        if (Age[1] == "years" || Age[1] == "year") {
+            const age = Age[0] == "a" ? 1 : Age[0];
+            setUserData({ ...userData, dob: selectedDate, age });
+        } else {
+            setUserData({ ...userData, dob: selectedDate, age: 0 });
         }
-        temp.age = age;
-        console.log({ age });
-        setShow(false);
-        setUserData(temp);
     };
 
     const onMobileChange = (event) => {
@@ -263,6 +258,12 @@ function SignUp({ navigation }) {
         setUserData(temp);
     };
 
+    const onAreaChange = (value) => {
+        const temp = { ...userData };
+        temp.area_type = value;
+        setUserData(temp);
+    };
+
     const onAddressChange = (event) => {
         const temp = { ...userData };
         temp.address = event.nativeEvent.text;
@@ -274,11 +275,25 @@ function SignUp({ navigation }) {
         temp.pincode = event.nativeEvent.text;
         setUserData(temp);
     };
+    const onAadharChange = (event) => {
+        const temp = { ...userData };
+        temp.aadhaar_no = event.nativeEvent.text;
+        setUserData(temp);
+    };
 
     const onEmailChange = (event) => {
         const temp = { ...userData };
         temp.email = event.nativeEvent.text;
         setUserData(temp);
+    };
+    const onOccupationChange = (event) => {
+        const temp = { ...userData };
+        temp.occupation = event.nativeEvent.text;
+        setUserData(temp);
+    };
+
+    const onChangeText = (text, name) => {
+        setUserData({ ...userData, [name]: text });
     };
 
     function validateEmail(email) {
@@ -291,7 +306,6 @@ function SignUp({ navigation }) {
         let notFilled = false;
         Object.keys(userData).forEach((element) => {
             if (!userData[element]) {
-                console.log({ element });
                 notFilled = element;
                 return;
             }
@@ -313,17 +327,19 @@ function SignUp({ navigation }) {
             return false;
         }
         const temp = { ...userData };
-        temp.country_id = countries[userData.country_id].id;
-        temp.state_id = states[userData.state_id].id;
-        temp.district_id = districts[userData.district_id].district_id;
-        temp.tehsil_id = tehsils[userData.tehsil_id].tehsil_id;
-        temp.avatar = userData.avatar;
         temp.dob = getRequiredDateFormat(userData.dob);
         temp.mobile_no = temp.country_code.split(" | ")[0] + temp.mobile_no;
-        delete temp.country_code
+        delete temp.country_code;
         delete temp.naamdanTaken;
         delete temp.avatar;
+
+        delete temp.email;
+        delete temp.pincode;
+        delete temp.occupation;
+        delete temp.dob;
+        delete temp.form_id;
         const data = serialize(temp);
+        console.log(temp);
         const config = {
             method: "post",
             url: `${appConfig.api_url}/disciple/create`,
@@ -452,28 +468,18 @@ function SignUp({ navigation }) {
                     {Constants.uploadPhoto}
                 </Text>
             </TouchableOpacity>
-
-            {show && (
-                <DateTimePicker
-                    testID="dateTimePicker"
-                    value={userData.dob ? userData.dob : new Date()}
-                    mode={mode}
-                    is24Hour
-                    display="default"
-                    onChange={onDobChange}
-                />
-            )}
-            <InputFieldWithLabel
-                label="Name"
-                value={userData.name}
-                changeFn={onNameChange}
-                placeholder="Enter name"
-            />
             <Dropdown
                 label="Naamdan Taken"
                 value={userData.naamdanTaken}
                 changeFn={onNaamdanChange}
                 options={naamdanTakenAt}
+            />
+            <InputFieldWithLabel
+                label="Name"
+                value={userData.name}
+                onChangeText={(text) => onChangeText(text, "name")}
+                placeholder="Enter Fullname"
+                required={true}
             />
             <Dropdown
                 label="Relation"
@@ -485,23 +491,30 @@ function SignUp({ navigation }) {
                 label="Guardian Name"
                 value={userData.guardian_name}
                 changeFn={onGuardianNameChange}
-                placeholder="Enter guardian name"
+                placeholder="Enter Guardian Name"
+                required={true}
             />
             <InputFieldWithLabel
-                label="Dob"
-                isDate
+                label="Occupation"
+                value={userData.occupation}
+                changeFn={onOccupationChange}
+                placeholder="Enter Your Occupation"
+                required={true}
+            />
+            <DatePicker
+                label="Date of birth"
+                show={show}
                 setShow={setShow}
-                onFocus={() => setShow(true)}
-                value={userData.dob}
-                changeFn={onDobChange}
-                placeholder="Enter DOB"
+                date={moment(userData.dob)}
+                setDate={(date) => onDobChange(date)}
             />
             <View style={{ flexDirection: "row" }}>
                 <View style={{ width: "35%", paddingTop: "1.6%" }}>
                     <Dropdown
-                        label="Code"
+                        label="Mobile Number"
                         value={userData.country_code}
                         changeFn={onCountryCodeChange}
+                        required={true}
                         options={CountryCodes.map(
                             (country) =>
                                 country.dial_code + " | " + country.code
@@ -509,10 +522,11 @@ function SignUp({ navigation }) {
                     />
                 </View>
                 <InputFieldWithLabel
-                    label="Mobile"
-                    value={userData.mobile}
+                    label=""
+                    value={userData.mobile_no}
                     changeFn={onMobileChange}
-                    placeholder="Enter mobile"
+                    placeholder="Enter Mobile Number"
+                    maxLength={10}
                     keyboard={
                         Platform.OS === "android" ? "numeric" : "number-pad"
                     }
@@ -552,36 +566,51 @@ function SignUp({ navigation }) {
                 label="Address"
                 value={userData.address}
                 changeFn={onAddressChange}
-                placeholder="Enter address"
+                placeholder="Enter Address"
+                required={true}
             />
             <InputFieldWithLabel
                 label="Pincode"
                 value={userData.pincode}
                 changeFn={onPincodeChange}
-                placeholder="Enter pincode"
+                placeholder="Enter Pincode"
+                required={true}
                 keyboard={Platform.OS === "android" ? "numeric" : "number-pad"}
+            />
+            <Dropdown
+                label="Is the area Rural or Urban?"
+                value={userData.area_type}
+                changeFn={onAreaChange}
+                options={area_types}
             />
             <InputFieldWithLabel
                 label="Email"
                 value={userData.email}
                 changeFn={onEmailChange}
                 validateEmail={validateEmail}
-                placeholder="Enter email"
+                placeholder="Enter Email Address"
+                required={true}
             />
             <InputFieldWithLabel
                 label="Form Number"
                 value={userData.form_no}
                 changeFn={onFormNoChange}
                 placeholder="Enter Form Number"
+                required={true}
             />
             <InputFieldWithLabel
-                label="Form ID"
-                value={userData.form_id}
-                // changeFn={onPhotoChange}
-                placeholder="Form ID"
-                disabled={true}
+                label="Aadhar Number"
+                value={userData.aadhaar_no}
+                changeFn={onAadharChange}
+                placeholder="Enter 12 digit aadhar number"
+                required={true}
+                keyboard={Platform.OS === "android" ? "numeric" : "number-pad"}
+                maxLength={12}
             />
-
+            <UploadButton
+                label="Upload Aadhar Card"
+                onPressFn={() => console.log("Pressed")}
+            />
             <View style={styles.buttonContainer}>
                 <RoundButton label="Register" handlePress={handleRegister} />
             </View>
