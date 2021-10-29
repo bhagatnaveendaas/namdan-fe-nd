@@ -5,6 +5,11 @@ export default {
         white: "white",
         secondary: "#FBFAFA",
         grey: "#C7C7C7",
+        lightGray: "#EEEEEE",
+        red: "#B90909",
+        yellow: "#FFBC00",
+        green: "#21A500",
+        darkgray: "#b1b1b1",
     },
     screenPadding: {
         horizontal: "4%",
@@ -25,10 +30,10 @@ export default {
         borderRadius: 50,
         elevation: 5,
     },
-    sizes:{
-        regular:{
-            fontSize: 13
-        }
+    sizes: {
+        regular: {
+            fontSize: 13,
+        },
     },
     fonts: {
         poppins: {

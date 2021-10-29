@@ -20,6 +20,7 @@ import Entry from "../screens/entry/index";
 import theme from "../constants/theme";
 import AddSewadaar from "../screens/AddSewadaar";
 import SearchScreen from "../screens/entry/search";
+import Profile from '../screens/Profile'
 
 const Stack = createStackNavigator();
 
@@ -43,6 +44,7 @@ const MainStackNavigator = () => (
             options={{ header: () => {} }}
         />
         <Stack.Screen name="Entry" component={Entry} />
+        <Stack.Screen name="Profile" component={Profile} />
         <Stack.Screen name="SearchScreen" component={SearchScreen} />
         <Stack.Screen name="verifyOtp" component={verifyOtp} />
         <Stack.Screen

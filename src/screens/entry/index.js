@@ -29,6 +29,7 @@ import DateSelectorComponent from "./components/naam-date-selector";
 import PopupNotice from "./components/notice";
 import UserInfoComponent from "./components/user";
 import UserListComponent from "./components/user-list";
+import UserCard from "./components/UserCard";
 const successImageIcon = require("../../../assets/check-circletick.png");
 const questionUserIcon = require("../../../assets/help-circle-outlinequestion-mark.png");
 const failedIcon = require("../../../assets/x-circlewrong.png");
@@ -64,16 +65,14 @@ const Entry = ({ route, navigation }) => {
 
     const [tehsilSelectedIndex, setTehsilSelectedIndex] = useState();
 
-    const [
-        niyamSelectedForUpdesh, setNiyamSelectedForUpdesh
-    ] = useState()
+    const [niyamSelectedForUpdesh, setNiyamSelectedForUpdesh] = useState();
 
     const fetchCountries = async () => {
         const response = await AsyncStorage.getItem("countries");
         const countryNames = JSON.parse(response).map((country) => {
             return { name: country.name, id: country.id };
         });
-        countryNames.unshift({id: '-1', name: 'Select Country'})
+        countryNames.unshift({ id: "-1", name: "Select Country" });
         setCountries(countryNames);
     };
 
@@ -85,8 +84,8 @@ const Entry = ({ route, navigation }) => {
                 .filter((state) => state.country_id == countrySelected)
                 .map((state) => {
                     return { name: state.name, id: state.id };
-                })
-            stateNames.unshift({id: '-1', name: 'Select State'})
+                });
+            stateNames.unshift({ id: "-1", name: "Select State" });
             setStates(stateNames);
         } catch (error) {
             console.log(error);
@@ -110,7 +109,7 @@ const Entry = ({ route, navigation }) => {
                     id: distrinct.district_id,
                 };
             });
-            distrinctNames.unshift({id: '-1', name: 'Select District'})
+        distrinctNames.unshift({ id: "-1", name: "Select District" });
         setDistricts(distrinctNames);
     };
 
@@ -133,7 +132,7 @@ const Entry = ({ route, navigation }) => {
             .map((tehsil) => {
                 return { name: tehsil.tehsil_name, id: tehsil.tehsil_id };
             });
-            tehsilNames.unshift({id: '-1', name: 'Select Tehsil'})
+        tehsilNames.unshift({ id: "-1", name: "Select Tehsil" });
         setTehsils(tehsilNames);
     };
 
@@ -240,10 +239,10 @@ const Entry = ({ route, navigation }) => {
             headers: {
                 key: APPLICATION_KEY,
                 Accept: "application/json",
-                "X-CSRF-TOKEN": await AsyncStorage.getItem("token")
+                "X-CSRF-TOKEN": await AsyncStorage.getItem("token"),
             },
         };
-        console.log("Creating entry: ", config)
+        console.log("Creating entry: ", config);
         await executeRequest(requestURL, requestData, config)
             .then((response) => {
                 console.log("Satnam Entry create responsse: ", response);
@@ -261,7 +260,11 @@ const Entry = ({ route, navigation }) => {
      */
     const SARNAM_CREATE_ENTRY_REQUEST_URL =
         generateNaamEntryCreateRequestURL(SAARNAAM);
-    const createSaarnaamEntry = async (discipleId, selectedDate, remark = "ok") => {
+    const createSaarnaamEntry = async (
+        discipleId,
+        selectedDate,
+        remark = "ok"
+    ) => {
         const requestData = {
             disciple_id: discipleId,
             sarnam_date: formatDate(selectedDate),
@@ -272,7 +275,11 @@ const Entry = ({ route, navigation }) => {
 
     const PUNARUPDESH_CREATE_ENTRY_REQUEST_URL =
         generateNaamEntryCreateRequestURL(PUNARUPDESH);
-    const createReupdeshEntry = async (discipleId, selectedDate, remark = "ok") => {
+    const createReupdeshEntry = async (
+        discipleId,
+        selectedDate,
+        remark = "ok"
+    ) => {
         const requestData = {
             disciple_id: discipleId,
             reupdesh_date: formatDate(selectedDate),
@@ -281,16 +288,17 @@ const Entry = ({ route, navigation }) => {
         await createEntry(PUNARUPDESH_CREATE_ENTRY_REQUEST_URL, requestData);
     };
 
-    const SHUDDHI_KARAN_CREATE_ENTRY_REQUEST_URL = generateShuddhiKaranRequestURL()
+    const SHUDDHI_KARAN_CREATE_ENTRY_REQUEST_URL =
+        generateShuddhiKaranRequestURL();
     const createShuddhiKaranEntry = async (
-        discipleId, 
-        selectedDate, 
+        discipleId,
+        selectedDate,
         remark = "ok"
     ) => {
         const requestData = {
             disciple_id: discipleId,
             shuddhikaran_date: formatDate(selectedDate),
-            niyam_id: niyamSelectedForUpdesh
+            niyam_id: niyamSelectedForUpdesh,
         };
         await createEntry(SHUDDHI_KARAN_CREATE_ENTRY_REQUEST_URL, requestData);
     };
@@ -334,6 +342,9 @@ const Entry = ({ route, navigation }) => {
         fetchDistricts();
         fetchTehsils();
     }, []);
+    const onUserSelected = () => {
+        navigation.navigate("Profile");
+    };
 
     useEffect(() => {
         console.log("Person selected", personSelected);
@@ -352,11 +363,11 @@ const Entry = ({ route, navigation }) => {
         setPersonSelected(false);
         setInitiateSuccessNotice(true);
         setInitiateFailureNotice(false);
-        searchDisciples(search)
+        searchDisciples(search);
     };
 
     const generateNaamEntry = () => {
-        console.log("Entry type", entryType)
+        console.log("Entry type", entryType);
         switch (entryType) {
             case ATTENDANCE:
                 {
@@ -385,7 +396,7 @@ const Entry = ({ route, navigation }) => {
                 break;
             case SAARNAAM:
                 {
-                    console.log("Creating saarnaam entry")
+                    console.log("Creating saarnaam entry");
                     createSaarnaamEntry(personSelected.id, selectedDateForEntry)
                         .catch((error) => {
                             handleEntryAPIError();
@@ -395,8 +406,19 @@ const Entry = ({ route, navigation }) => {
                         });
                 }
                 break;
-            case PUNARUPDESH: {
-                createReupdeshEntry(personSelected.id, selectedDateForEntry)
+            case PUNARUPDESH:
+                {
+                    createReupdeshEntry(personSelected.id, selectedDateForEntry)
+                        .then(() => {
+                            handleEntryAPISuccess();
+                        })
+                        .catch(() => {
+                            handleEntryAPIError();
+                        });
+                }
+                break;
+            case SHUDDIKARAN: {
+                createShuddhiKaranEntry(personSelected.id, selectedDateForEntry)
                     .then(() => {
                         handleEntryAPISuccess();
                     })
@@ -404,35 +426,23 @@ const Entry = ({ route, navigation }) => {
                         handleEntryAPIError();
                     });
             }
-            break;
-            case SHUDDIKARAN: {
-                createShuddhiKaranEntry(personSelected.id, selectedDateForEntry).then(() => {
-                    handleEntryAPISuccess();
-                })
-                .catch(() => {
-                    handleEntryAPIError();
-                });
-                
-            }
         }
     };
 
     return (
-        <ScrollView
+        <View
             style={{
                 flex: 1,
-                backgroundColor: theme.colors.secondary,
-                height: '100%'
+                backgroundColor: theme.colors.white,
+                height: "100%",
             }}
         >
             <View
-                style={
-                    {
-                        flex: 1,
-                        height: '100%',
-                        width: '100%'
-                    }
-                }
+                style={{
+                    flex: 1,
+                    height: "100%",
+                    width: "100%",
+                }}
             >
                 <View
                     styl={{
@@ -447,24 +457,21 @@ const Entry = ({ route, navigation }) => {
                             placeholder="Type Here..."
                             onChangeText={(value) => {
                                 setSearch(value);
-                                if(value.length > 2){
+                                if (value.length > 2) {
                                     console.log("Searching: ", value);
                                     searchDisciples();
                                 }
-                                
                             }}
-                            onClear={
-                                () => {
-                                    setUsersSearched([])
-                                }
-                            }
+                            onClear={() => {
+                                setUsersSearched([]);
+                            }}
                             lightTheme={true}
                             showCancel={true}
                             containerStyle={{
                                 backgroundColor: theme.colors.secondary,
                                 borderBottomColor: "transparent",
-                                paddingBottom:0,
-                                
+                                paddingBottom: 0,
+
                                 borderTopColor: "transparent",
                             }}
                             inputStyle={{
@@ -529,20 +536,16 @@ const Entry = ({ route, navigation }) => {
                                     }}
                                 >
                                     <View
-                                        style={
-                                            {
-                                                width: '47.5%'
-                                            }
-                                        }
+                                        style={{
+                                            width: "47.5%",
+                                        }}
                                     >
                                         <Dropdown
-                                            inputStyles={
-                                                {
-                                                    dropdown: {
-                                                        width: '100%'
-                                                    }
-                                                }
-                                            }
+                                            inputStyles={{
+                                                dropdown: {
+                                                    width: "100%",
+                                                },
+                                            }}
                                             options={countries ? countries : []}
                                             label={"Country"}
                                             value={countrySelectedIndex}
@@ -555,20 +558,16 @@ const Entry = ({ route, navigation }) => {
                                         />
                                     </View>
                                     <View
-                                        style={
-                                            {
-                                                width: '47.5%'
-                                            }
-                                        }
+                                        style={{
+                                            width: "47.5%",
+                                        }}
                                     >
                                         <Dropdown
-                                            inputStyles={
-                                                {
-                                                    dropdown: {
-                                                        width: '100%'
-                                                    }
-                                                }
-                                            }
+                                            inputStyles={{
+                                                dropdown: {
+                                                    width: "100%",
+                                                },
+                                            }}
                                             options={states ? states : []}
                                             label={"State"}
                                             value={stateSelectedIndex || 0}
@@ -580,8 +579,8 @@ const Entry = ({ route, navigation }) => {
                                             }}
                                         />
                                     </View>
-                                    </View>
-                                    <View
+                                </View>
+                                <View
                                     style={{
                                         flexDirection: "row",
                                         width: "100%",
@@ -591,20 +590,16 @@ const Entry = ({ route, navigation }) => {
                                     }}
                                 >
                                     <View
-                                        style={
-                                            {
-                                                width: '47.5%'
-                                            }
-                                        }
+                                        style={{
+                                            width: "47.5%",
+                                        }}
                                     >
                                         <Dropdown
-                                            inputStyles={
-                                                {
-                                                    dropdown: {
-                                                        width: '100%'
-                                                    }
-                                                }
-                                            }
+                                            inputStyles={{
+                                                dropdown: {
+                                                    width: "100%",
+                                                },
+                                            }}
                                             options={districts ? districts : []}
                                             label={"District"}
                                             value={districtSelectedIndex}
@@ -616,21 +611,17 @@ const Entry = ({ route, navigation }) => {
                                             }}
                                         />
                                     </View>
-                                    <View 
-                                        style={
-                                            {
-                                                width: '47.5%'
-                                            }
-                                        }
+                                    <View
+                                        style={{
+                                            width: "47.5%",
+                                        }}
                                     >
                                         <Dropdown
-                                            inputStyles={
-                                                {
-                                                    dropdown: {
-                                                        width: '100%'
-                                                    }
-                                                }
-                                            }
+                                            inputStyles={{
+                                                dropdown: {
+                                                    width: "100%",
+                                                },
+                                            }}
                                             options={tehsils ? tehsils : []}
                                             label={"Tehsil"}
                                             value={tehsilSelectedIndex}
@@ -688,7 +679,7 @@ const Entry = ({ route, navigation }) => {
                             sourceImage={questionUserIcon}
                         />
                     }
-                    {personSelected ? (
+                    {/* {personSelected ? (
                         <UserInfoComponent
                             setIinitiateSelectDate={setIinitiateSelectDate}
                             isHajriListRequested={true}
@@ -703,14 +694,14 @@ const Entry = ({ route, navigation }) => {
                         />
                     ) : (
                         <View></View>
-                    )}
+                    )} */}
                     <View>
                         <ScrollView
                             style={{
                                 width: "100%",
                                 flexDirection: "column",
                                 marginTop: 10,
-                                paddingBottom: 20
+                                paddingBottom: 20,
                             }}
                         >
                             {initiateSelectDate ? (
@@ -723,16 +714,33 @@ const Entry = ({ route, navigation }) => {
                             ) : (
                                 <View></View>
                             )}
-
-                            <UserListComponent
-                                setPersonSelected={setPersonSelected}
+                            {usersSearched.map((user, index) => {
+                                return (
+                                    <View
+                                        key={index}
+                                        style={{
+                                            marginVertical: 6,
+                                            marginHorizontal: 20,
+                                        }}
+                                    >
+                                        <UserCard
+                                            user={user}
+                                            onPress={() =>
+                                                navigation.navigate("Profile")
+                                            }
+                                        />
+                                    </View>
+                                );
+                            })}
+                            {/* <UserListComponent
+                                setPersonSelected={onUserSelected}
                                 users={usersSearched}
-                            ></UserListComponent>
+                            ></UserListComponent> */}
                         </ScrollView>
                     </View>
                 </View>
             </View>
-        </ScrollView>
+        </View>
     );
 };
 
