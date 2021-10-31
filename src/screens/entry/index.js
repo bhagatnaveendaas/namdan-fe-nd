@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { View, AsyncStorage, Image, Dimensions } from "react-native";
-import { SearchBar } from "react-native-elements";
+import {
+    View,
+    AsyncStorage,
+    Image,
+    Dimensions,
+    ScrollView,
+    TouchableOpacity,
+} from "react-native";
+import SearchBar from "../../components/SearchBar";
 
 const { height } = Dimensions.get("window");
 
 import axios from "axios";
-import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import {
     ATTENDANCE,
     PUNARUPDESH,
@@ -36,7 +42,6 @@ const failedIcon = require("../../../assets/x-circlewrong.png");
 
 const POST_REQUEST_METHOD = "POST";
 const USER_SEARCH_REQUEST_URL = generateUserInfoRequestURL(USER_SEARCH_ACTION);
-console.log(USER_SEARCH_REQUEST_URL);
 const APPLICATION_KEY = "dsv213a213sfv21123fs31d3fd132c3dv31dsf33";
 
 const Entry = ({ route, navigation }) => {
@@ -189,6 +194,7 @@ const Entry = ({ route, navigation }) => {
         };
         executeRequest(USER_SEARCH_REQUEST_URL, searchData, config)
             .then((response) => {
+                console.log(response.data.data[0]);
                 setUsersSearched(response.data.data);
             })
             .catch((error) => {
@@ -367,7 +373,6 @@ const Entry = ({ route, navigation }) => {
     };
 
     const generateNaamEntry = () => {
-        console.log("Entry type", entryType);
         switch (entryType) {
             case ATTENDANCE:
                 {
@@ -437,309 +442,177 @@ const Entry = ({ route, navigation }) => {
                 height: "100%",
             }}
         >
+            <View style={{ paddingHorizontal: 15, marginTop: 15 }}>
+                <SearchBar
+                    value={search}
+                    setValue={(text) => {
+                        setSearch(text);
+                        searchDisciples();
+                    }}
+                    onCancel={() => {
+                        setSearch("");
+                        setUsersSearched([]);
+                    }}
+                />
+            </View>
             <View
                 style={{
-                    flex: 1,
-                    height: "100%",
+                    flexDirection: "row",
                     width: "100%",
+                    justifyContent: "center",
+                    marginBottom: 12,
+                    alignContent: "center",
+                    alignItems: "center",
+                    marginTop: 12,
+                    paddingHorizontal: 15,
                 }}
             >
-                <View
-                    styl={{
-                        flex: 1,
-                        width: "100%",
-                        height: "100%",
-                        flexDirection: "column",
-                    }}
+                <DateRangeFilter
+                    startDate={filterStartDate}
+                    endDate={filterEndDate}
+                    onStartDateChange={setFilterStartDate}
+                    onEndDateChange={setFilterEndDate}
+                />
+                <TouchableOpacity
+                    onPress={() => setShowFilters((prev) => !prev)}
                 >
-                    <View>
-                        <SearchBar
-                            placeholder="Type Here..."
-                            onChangeText={(value) => {
-                                setSearch(value);
-                                if (value.length > 2) {
-                                    console.log("Searching: ", value);
-                                    searchDisciples();
-                                }
-                            }}
-                            onClear={() => {
-                                setUsersSearched([]);
-                            }}
-                            lightTheme={true}
-                            showCancel={true}
-                            containerStyle={{
-                                backgroundColor: theme.colors.secondary,
-                                borderBottomColor: "transparent",
-                                paddingBottom: 0,
-
-                                borderTopColor: "transparent",
-                            }}
-                            inputStyle={{
-                                backgroundColor: "#EDEDEE",
-                                fontFamily: theme.fonts.poppins.regular,
-                                fontSize: 14,
-                            }}
-                            inputContainerStyle={{
-                                backgroundColor: "#EDEDEE",
-                                borderBottomColor: "transparent",
-                                borderTopColor: "transparent",
-                                borderRadius: 100,
-                            }}
-                            value={search}
-                        />
-                    </View>
+                    <Image
+                        style={{
+                            height: height * 0.03,
+                            width: height * 0.03,
+                        }}
+                        source={require("../../../assets/icons/FunnelSimple.png")}
+                    />
+                </TouchableOpacity>
+            </View>
+            {showFilters && (
+                <View style={{ paddingHorizontal: 15 }}>
                     <View
                         style={{
-                            flexDirection: "column",
+                            flexDirection: "row",
                             width: "100%",
-                            paddingHorizontal: theme.screenPadding.horizontal,
+                            alignContent: "center",
+                            marginBottom: 12,
+                            justifyContent: "space-between",
                         }}
                     >
                         <View
                             style={{
-                                flexDirection: "row",
-                                width: "100%",
-                                justifyContent: "center",
-                                marginBottom: 12,
-                                alignContent: "center",
-                                alignItems: "center",
-                                marginTop: 12,
+                                width: "47.5%",
                             }}
                         >
-                            <DateRangeFilter
-                                startDate={filterStartDate}
-                                endDate={filterEndDate}
-                                onStartDateChange={setFilterStartDate}
-                                onEndDateChange={setFilterEndDate}
+                            <Dropdown
+                                inputStyles={{
+                                    dropdown: {
+                                        width: "100%",
+                                    },
+                                }}
+                                options={countries ? countries : []}
+                                label={"Country"}
+                                value={countrySelectedIndex}
+                                changeFn={(value) => {
+                                    setCountrySelectedIndex(value);
+                                    setCountrySelected(countries[value].id);
+                                }}
                             />
-                            <TouchableOpacity
-                                onPress={() => setShowFilters((prev) => !prev)}
-                            >
-                                <Image
-                                    style={{
-                                        height: height * 0.03,
-                                        width: height * 0.03,
-                                    }}
-                                    source={require("../../../assets/icons/FunnelSimple.png")}
-                                />
-                            </TouchableOpacity>
                         </View>
-                        {showFilters && (
-                            <View>
-                                <View
-                                    style={{
-                                        flexDirection: "row",
-                                        width: "100%",
-                                        alignContent: "center",
-                                        marginBottom: 12,
-                                        justifyContent: "space-between",
-                                    }}
-                                >
-                                    <View
-                                        style={{
-                                            width: "47.5%",
-                                        }}
-                                    >
-                                        <Dropdown
-                                            inputStyles={{
-                                                dropdown: {
-                                                    width: "100%",
-                                                },
-                                            }}
-                                            options={countries ? countries : []}
-                                            label={"Country"}
-                                            value={countrySelectedIndex}
-                                            changeFn={(value) => {
-                                                setCountrySelectedIndex(value);
-                                                setCountrySelected(
-                                                    countries[value].id
-                                                );
-                                            }}
-                                        />
-                                    </View>
-                                    <View
-                                        style={{
-                                            width: "47.5%",
-                                        }}
-                                    >
-                                        <Dropdown
-                                            inputStyles={{
-                                                dropdown: {
-                                                    width: "100%",
-                                                },
-                                            }}
-                                            options={states ? states : []}
-                                            label={"State"}
-                                            value={stateSelectedIndex || 0}
-                                            changeFn={(value) => {
-                                                setStateSelectedIndex(value);
-                                                setStateSelected(
-                                                    states[value].id
-                                                );
-                                            }}
-                                        />
-                                    </View>
-                                </View>
-                                <View
-                                    style={{
-                                        flexDirection: "row",
-                                        width: "100%",
-                                        alignContent: "center",
-                                        marginBottom: 12,
-                                        justifyContent: "space-between",
-                                    }}
-                                >
-                                    <View
-                                        style={{
-                                            width: "47.5%",
-                                        }}
-                                    >
-                                        <Dropdown
-                                            inputStyles={{
-                                                dropdown: {
-                                                    width: "100%",
-                                                },
-                                            }}
-                                            options={districts ? districts : []}
-                                            label={"District"}
-                                            value={districtSelectedIndex}
-                                            changeFn={(value) => {
-                                                setDistrictSelectedIndex(value);
-                                                setDistrictSelected(
-                                                    districts[value].id
-                                                );
-                                            }}
-                                        />
-                                    </View>
-                                    <View
-                                        style={{
-                                            width: "47.5%",
-                                        }}
-                                    >
-                                        <Dropdown
-                                            inputStyles={{
-                                                dropdown: {
-                                                    width: "100%",
-                                                },
-                                            }}
-                                            options={tehsils ? tehsils : []}
-                                            label={"Tehsil"}
-                                            value={tehsilSelectedIndex}
-                                            changeFn={(value) => {
-                                                setTehsilSelectedIndex(value);
-                                                setTehsilsSelected(
-                                                    tehsils[value].id
-                                                );
-                                            }}
-                                        />
-                                    </View>
-                                </View>
-                            </View>
-                        )}
-                    </View>
-                    {
-                        <PopupNotice
-                            requireUserConsent={false}
-                            message={"Success Adding Entry"}
-                            isVisible={initiateSuccessNotice}
-                            clickHandler={() => {
-                                setInitiateSuccessNotice(false);
-                            }}
-                            sourceImage={successImageIcon}
-                        />
-                    }
-                    {
-                        <PopupNotice
-                            requireUserConsent={false}
-                            message={"Failure Adding Entry"}
-                            isVisible={initiateFailureNotice}
-                            clickHandler={() => {
-                                setInitiateFailureNotice(false);
-                            }}
-                            sourceImage={failedIcon}
-                        />
-                    }
-                    {
-                        <PopupNotice
-                            requireUserConsent={true}
-                            message={
-                                "Are you sure you want to continue adding entry ?"
-                            }
-                            cancelEntry={() => {
-                                setSelectedDateForEntry(undefined);
-                                setPersonSelected(false);
-                            }}
-                            confirmEntry={() => {
-                                generateNaamEntry();
-                            }}
-                            isVisible={
-                                personSelected &&
-                                selectedDateForEntry !== undefined
-                            }
-                            sourceImage={questionUserIcon}
-                        />
-                    }
-                    {/* {personSelected ? (
-                        <UserInfoComponent
-                            setIinitiateSelectDate={setIinitiateSelectDate}
-                            isHajriListRequested={true}
-                            hajriType={SATNAM}
-                            entryType={
-                                entryType
-                            }
-                            setNiyamSelectedForUpdesh={
-                                setNiyamSelectedForUpdesh
-                            }
-                            user={personSelected}
-                        />
-                    ) : (
-                        <View></View>
-                    )} */}
-                    <View>
-                        <ScrollView
+                        <View
                             style={{
-                                width: "100%",
-                                flexDirection: "column",
-                                marginTop: 10,
-                                paddingBottom: 20,
+                                width: "47.5%",
                             }}
                         >
-                            {initiateSelectDate ? (
-                                <DateSelectorComponent
-                                    onDateSelected={(date) => {
-                                        setIinitiateSelectDate(false);
-                                        setSelectedDateForEntry(date);
-                                    }}
-                                />
-                            ) : (
-                                <View></View>
-                            )}
-                            {usersSearched.map((user, index) => {
-                                return (
-                                    <View
-                                        key={index}
-                                        style={{
-                                            marginVertical: 6,
-                                            marginHorizontal: 20,
-                                        }}
-                                    >
-                                        <UserCard
-                                            user={user}
-                                            onPress={() =>
-                                                navigation.navigate("Profile")
-                                            }
-                                        />
-                                    </View>
-                                );
-                            })}
-                            {/* <UserListComponent
-                                setPersonSelected={onUserSelected}
-                                users={usersSearched}
-                            ></UserListComponent> */}
-                        </ScrollView>
+                            <Dropdown
+                                inputStyles={{
+                                    dropdown: {
+                                        width: "100%",
+                                    },
+                                }}
+                                options={states ? states : []}
+                                label={"State"}
+                                value={stateSelectedIndex || 0}
+                                changeFn={(value) => {
+                                    setStateSelectedIndex(value);
+                                    setStateSelected(states[value].id);
+                                }}
+                            />
+                        </View>
+                    </View>
+                    <View
+                        style={{
+                            flexDirection: "row",
+                            width: "100%",
+                            alignContent: "center",
+                            marginBottom: 12,
+                            justifyContent: "space-between",
+                        }}
+                    >
+                        <View
+                            style={{
+                                width: "47.5%",
+                            }}
+                        >
+                            <Dropdown
+                                inputStyles={{
+                                    dropdown: {
+                                        width: "100%",
+                                    },
+                                }}
+                                options={districts ? districts : []}
+                                label={"District"}
+                                value={districtSelectedIndex}
+                                changeFn={(value) => {
+                                    setDistrictSelectedIndex(value);
+                                    setDistrictSelected(districts[value].id);
+                                }}
+                            />
+                        </View>
+                        <View
+                            style={{
+                                width: "47.5%",
+                            }}
+                        >
+                            <Dropdown
+                                inputStyles={{
+                                    dropdown: {
+                                        width: "100%",
+                                    },
+                                }}
+                                options={tehsils ? tehsils : []}
+                                label={"Tehsil"}
+                                value={tehsilSelectedIndex}
+                                changeFn={(value) => {
+                                    setTehsilSelectedIndex(value);
+                                    setTehsilsSelected(tehsils[value].id);
+                                }}
+                            />
+                        </View>
                     </View>
                 </View>
-            </View>
+            )}
+            <ScrollView
+                showsVerticalScrollIndicator={false}
+                style={{ flex: 1 }}
+            >
+                <View style={{ paddingHorizontal: 15 }}>
+                    {usersSearched.map((user, index) => {
+                        return (
+                            <View
+                                key={index}
+                                style={{
+                                    marginVertical: 6,
+                                }}
+                            >
+                                <UserCard
+                                    user={user}
+                                    onPress={() =>
+                                        navigation.navigate("Profile", { user })
+                                    }
+                                />
+                            </View>
+                        );
+                    })}
+                </View>
+            </ScrollView>
         </View>
     );
 };

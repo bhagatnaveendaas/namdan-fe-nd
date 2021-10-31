@@ -1,8 +1,17 @@
-import React from "react";
-import { Image, StyleSheet, Text, View, ScrollView } from "react-native";
+import React, { useEffect } from "react";
+import {
+    Image,
+    StyleSheet,
+    Text,
+    View,
+    ScrollView,
+    AsyncStorage,
+} from "react-native";
 import theme from "../constants/theme";
 import Avatar from "../components/Avatar";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import axios from "axios";
+import { executeRequest } from "../helper/network/link";
 
 const userDefaultImage = require("../../assets/icons/user.png");
 const calenderImage = require("../../assets/icons/calendar.png");
@@ -76,7 +85,26 @@ const Field = ({ label, value, text }) => {
     );
 };
 
-const Profile = () => {
+const Profile = ({ route, navigation }) => {
+    const { user } = route.params;
+    const url = `https://drfapi.jagatgururampalji.org/v1/sarnam_attendance/detail/${user.id}`;
+
+    useEffect(() => {
+        const load = async () => {
+            const token = AsyncStorage.getItem("token");
+            executeRequest(url, undefined, {
+                method: "GET",
+            })
+                .then((response) => {
+                    console.log("Hajri list: ", response.data);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        };
+
+        load();
+    }, []);
     return (
         <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
             <View
@@ -110,7 +138,7 @@ const Profile = () => {
                                 lineHeight: 18,
                             }}
                         >
-                            Bhagat's Name
+                            {user.name}
                         </Text>
                         <Text
                             style={{
@@ -120,10 +148,10 @@ const Profile = () => {
                                 lineHeight: 18,
                             }}
                         >
-                            s/o Gaurdian's Name
+                            {user.relation} {user.guardian_name}
                         </Text>
                         <Text>
-                            Form No: <Text>12345</Text>
+                            Form No: <Text>{user.form_no}</Text>
                         </Text>
                         <Text>
                             Sadasyata No: <Text>12345</Text>
@@ -151,7 +179,7 @@ const Profile = () => {
                                     color: "black",
                                 }}
                             >
-                                12345
+                                {user.mobile_no}
                             </Text>
                         </View>
                         <View style={{ flexDirection: "row" }}>
@@ -170,9 +198,18 @@ const Profile = () => {
                                     fontFamily: theme.fonts.poppins.regular,
                                     fontSize: 14,
                                     color: "black",
+                                    textTransform: "capitalize",
+                                    width: 240,
                                 }}
                             >
-                                12345
+                                {user.address}
+                                {", "}
+                                {[
+                                    user.tehsil_name,
+                                    user.district_name,
+                                    user.state_name,
+                                    user.country_name,
+                                ].join(", ")}
                             </Text>
                         </View>
                     </View>
