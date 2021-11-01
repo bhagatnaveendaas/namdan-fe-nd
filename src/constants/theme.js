@@ -10,6 +10,7 @@ export default {
         yellow: "#FFBC00",
         green: "#21A500",
         darkgray: "#b1b1b1",
+        primaryLight: "#C8CEDB",
     },
     screenPadding: {
         horizontal: "4%",

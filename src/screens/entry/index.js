@@ -1,50 +1,41 @@
 import React, { useEffect, useState } from "react";
 import {
-    View,
     AsyncStorage,
-    Image,
     Dimensions,
+    Image,
     ScrollView,
     TouchableOpacity,
+    View,
 } from "react-native";
+import DateRangeFilter from "../../components/DateRangeFilter";
+import Dropdown from "../../components/DropdownV3";
 import SearchBar from "../../components/SearchBar";
+import { USER_SEARCH_ACTION } from "../../constants";
+import theme from "../../constants/theme";
+import { executeRequest } from "../../helper/network/link";
+import { generateUserInfoRequestURL } from "../../helper/router";
+import { dateInYYMMDDFormat } from "../../utilities/DateUtils";
+import UserCard from "./components/UserCard";
 
 const { height } = Dimensions.get("window");
-
-import axios from "axios";
-import {
-    ATTENDANCE,
-    PUNARUPDESH,
-    SAARNAAM,
-    SATNAM,
-    SHUDDIKARAN,
-    USER_SEARCH_ACTION,
-} from "../../constants";
-import {
-    generateAttendanceEntryRequestURL,
-    generateNaamEntryCreateRequestURL,
-    generateShuddhiKaranRequestURL,
-    generateUserInfoRequestURL,
-} from "../../helper/router";
-import { executeRequest } from "../../helper/network/link";
-import Dropdown from "../../components/DropdownV3";
-import DateRangeFilter from "../../components/DateRangeFilter";
-import { dateInYYMMDDFormat } from "../../utilities/DateUtils";
-import theme from "../../constants/theme";
-import DateSelectorComponent from "./components/naam-date-selector";
-import PopupNotice from "./components/notice";
-import UserInfoComponent from "./components/user";
-import UserListComponent from "./components/user-list";
-import UserCard from "./components/UserCard";
-const successImageIcon = require("../../../assets/check-circletick.png");
-const questionUserIcon = require("../../../assets/help-circle-outlinequestion-mark.png");
-const failedIcon = require("../../../assets/x-circlewrong.png");
 
 const POST_REQUEST_METHOD = "POST";
 const USER_SEARCH_REQUEST_URL = generateUserInfoRequestURL(USER_SEARCH_ACTION);
 const APPLICATION_KEY = "dsv213a213sfv21123fs31d3fd132c3dv31dsf33";
 
 const Entry = ({ route, navigation }) => {
+    const [location, setLocation] = useState({
+        countries: [],
+        states: [],
+        districts: [],
+        tehsils: [],
+    });
+    const [locationSelected, setLocationSelected] = useState({
+        countrySelected: -1,
+        stateSelected: -1,
+        districtSelected: -1,
+        tehsilSelected: -1,
+    });
     const [countries, setCountries] = useState();
     const [showFilters, setShowFilters] = useState(false);
 
@@ -69,8 +60,6 @@ const Entry = ({ route, navigation }) => {
     const [tehsilSelected, setTehsilsSelected] = useState();
 
     const [tehsilSelectedIndex, setTehsilSelectedIndex] = useState();
-
-    const [niyamSelectedForUpdesh, setNiyamSelectedForUpdesh] = useState();
 
     const fetchCountries = async () => {
         const response = await AsyncStorage.getItem("countries");
@@ -156,23 +145,6 @@ const Entry = ({ route, navigation }) => {
 
     const [filterEndDate, setFilterEndDate] = useState(new Date());
 
-    function formatDate(date) {
-        var d = new Date(date),
-            month = "" + (d.getMonth() + 1),
-            day = "" + d.getDate(),
-            year = d.getFullYear();
-
-        if (month.length < 2) month = "0" + month;
-        if (day.length < 2) day = "0" + day;
-
-        return [year, month, day].join("-");
-    }
-
-    /**
-     *
-     * @param {*} searchString
-     * Search disciple
-     */
     const searchDisciples = async () => {
         const searchData = {
             from_date: dateInYYMMDDFormat(filterStartDate),
@@ -203,141 +175,9 @@ const Entry = ({ route, navigation }) => {
             });
     };
 
-    /**
-     * Crate Attendance entry
-     */
-    const SATNAM_ATTENDANCE_ENTRY_REQUEST_URL =
-        generateAttendanceEntryRequestURL();
-    const createAttendanceEntry = async (discipleId, attendanceDate) => {
-        const satnamAttendanceRequstBody = {
-            disciple_id: discipleId,
-            attendance_date: formatDate(attendanceDate),
-            remark: "ok",
-        };
-        const config = {
-            method: POST_REQUEST_METHOD,
-            headers: {
-                key: APPLICATION_KEY,
-                Accept: "application/json",
-                "X-CSRF-TOKEN": await AsyncStorage.getItem("token"),
-                key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
-            },
-        };
-        executeRequest(
-            SATNAM_ATTENDANCE_ENTRY_REQUEST_URL,
-            satnamAttendanceRequstBody,
-            config
-        )
-            .then((response) => {
-                console.log(
-                    "Satnam Attendance Entry create responsse: ",
-                    response
-                );
-            })
-            .catch((error) => {
-                console.log("Error in creatin satnam entry: ", error);
-                throw new Error("Could not create entry");
-            });
-    };
-    const createEntry = async (requestURL, requestData) => {
-        const config = {
-            method: POST_REQUEST_METHOD,
-            headers: {
-                key: APPLICATION_KEY,
-                Accept: "application/json",
-                "X-CSRF-TOKEN": await AsyncStorage.getItem("token"),
-            },
-        };
-        console.log("Creating entry: ", config);
-        await executeRequest(requestURL, requestData, config)
-            .then((response) => {
-                console.log("Satnam Entry create responsse: ", response);
-            })
-            .catch((error) => {
-                console.log("Error in creatin satnam entry: ", error);
-                throw new Error("Could not create entry");
-            });
-    };
-    /**
-     *
-     * @param {*} discipleId
-     * @param {*} selectedDate
-     * Saarnaam entry
-     */
-    const SARNAM_CREATE_ENTRY_REQUEST_URL =
-        generateNaamEntryCreateRequestURL(SAARNAAM);
-    const createSaarnaamEntry = async (
-        discipleId,
-        selectedDate,
-        remark = "ok"
-    ) => {
-        const requestData = {
-            disciple_id: discipleId,
-            sarnam_date: formatDate(selectedDate),
-            remark: remark,
-        };
-        await createEntry(SARNAM_CREATE_ENTRY_REQUEST_URL, requestData);
-    };
-
-    const PUNARUPDESH_CREATE_ENTRY_REQUEST_URL =
-        generateNaamEntryCreateRequestURL(PUNARUPDESH);
-    const createReupdeshEntry = async (
-        discipleId,
-        selectedDate,
-        remark = "ok"
-    ) => {
-        const requestData = {
-            disciple_id: discipleId,
-            reupdesh_date: formatDate(selectedDate),
-            remark: remark,
-        };
-        await createEntry(PUNARUPDESH_CREATE_ENTRY_REQUEST_URL, requestData);
-    };
-
-    const SHUDDHI_KARAN_CREATE_ENTRY_REQUEST_URL =
-        generateShuddhiKaranRequestURL();
-    const createShuddhiKaranEntry = async (
-        discipleId,
-        selectedDate,
-        remark = "ok"
-    ) => {
-        const requestData = {
-            disciple_id: discipleId,
-            shuddhikaran_date: formatDate(selectedDate),
-            niyam_id: niyamSelectedForUpdesh,
-        };
-        await createEntry(SHUDDHI_KARAN_CREATE_ENTRY_REQUEST_URL, requestData);
-    };
-
-    /**
-     * Create satnam entry
-     */
-    const SATNAM_CREATE_ENTRY_REQUEST_URL =
-        generateNaamEntryCreateRequestURL(SATNAM);
-    const createSatnamEntry = async (
-        discipleId,
-        selectedDate,
-        remark = "ok"
-    ) => {
-        const requestData = {
-            disciple_id: discipleId,
-            satnam_date: formatDate(selectedDate),
-            remark: remark,
-        };
-        await createEntry(SATNAM_CREATE_ENTRY_REQUEST_URL, requestData);
-    };
-
-    const [initiateSuccessNotice, setInitiateSuccessNotice] = useState(false);
-
-    const [initiateFailureNotice, setInitiateFailureNotice] = useState(false);
-
     const [search, setSearch] = useState("");
-    const [personSelected, setPersonSelected] = useState(false);
     const [usersSearched, setUsersSearched] = useState([]);
-    const [selectedDateForEntry, setSelectedDateForEntry] = useState();
-    const handleSearchChange = (e) => {};
     const { entryType, title } = route.params;
-    const [initiateSelectDate, setIinitiateSelectDate] = useState(false);
     useEffect(() => {
         console.log(entryType);
         navigation.setOptions({
@@ -348,91 +188,6 @@ const Entry = ({ route, navigation }) => {
         fetchDistricts();
         fetchTehsils();
     }, []);
-    const onUserSelected = () => {
-        navigation.navigate("Profile");
-    };
-
-    useEffect(() => {
-        console.log("Person selected", personSelected);
-        console.log("Date for entry", selectedDateForEntry);
-    }, [personSelected]);
-
-    const handleEntryAPIError = () => {
-        setSelectedDateForEntry(undefined);
-        setPersonSelected(false);
-        setInitiateSuccessNotice(false);
-        setInitiateFailureNotice(true);
-    };
-
-    const handleEntryAPISuccess = () => {
-        setSelectedDateForEntry(undefined);
-        setPersonSelected(false);
-        setInitiateSuccessNotice(true);
-        setInitiateFailureNotice(false);
-        searchDisciples(search);
-    };
-
-    const generateNaamEntry = () => {
-        switch (entryType) {
-            case ATTENDANCE:
-                {
-                    createAttendanceEntry(
-                        personSelected.id,
-                        selectedDateForEntry
-                    )
-                        .catch((error) => {
-                            handleEntryAPIError();
-                        })
-                        .then(() => {
-                            handleEntryAPISuccess();
-                        });
-                }
-                break;
-            case SATNAM:
-                {
-                    createSatnamEntry(personSelected.id, selectedDateForEntry)
-                        .catch((error) => {
-                            handleEntryAPIError();
-                        })
-                        .then(() => {
-                            handleEntryAPISuccess();
-                        });
-                }
-                break;
-            case SAARNAAM:
-                {
-                    console.log("Creating saarnaam entry");
-                    createSaarnaamEntry(personSelected.id, selectedDateForEntry)
-                        .catch((error) => {
-                            handleEntryAPIError();
-                        })
-                        .then(() => {
-                            handleEntryAPISuccess();
-                        });
-                }
-                break;
-            case PUNARUPDESH:
-                {
-                    createReupdeshEntry(personSelected.id, selectedDateForEntry)
-                        .then(() => {
-                            handleEntryAPISuccess();
-                        })
-                        .catch(() => {
-                            handleEntryAPIError();
-                        });
-                }
-                break;
-            case SHUDDIKARAN: {
-                createShuddhiKaranEntry(personSelected.id, selectedDateForEntry)
-                    .then(() => {
-                        handleEntryAPISuccess();
-                    })
-                    .catch(() => {
-                        handleEntryAPIError();
-                    });
-            }
-        }
-    };
 
     return (
         <View
