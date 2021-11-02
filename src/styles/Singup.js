@@ -38,7 +38,7 @@ export default StyleSheet.create({
     mainContainer: {
         paddingHorizontal: theme.screenPadding.horizontal,
         paddingBottom: theme.screenPadding.bottom,
-        backgroundColor: theme.colors.secondary,
+        backgroundColor: theme.colors.white,
     },
     image: {
         width: 100,
@@ -52,5 +52,19 @@ export default StyleSheet.create({
     buttonContainer: { paddingVertical: "5%", paddingHorizontal: "1%" },
     placeholder: {
         color: "#A4A4A4",
+    },
+    appendIcon: {
+        width: 20,
+        height: 20,
+        tintColor: "#B1B1B1",
+    },
+    countryCodeBtn: {
+        width: 50,
+        height: 25,
+        alignItems: "center",
+        justifyContent: "center",
+        borderRightColor: theme.colors.primaryLight,
+        borderRightWidth: 2,
+        marginRight: 5,
     },
 });

@@ -15,14 +15,12 @@ export default StyleSheet.create({
         fontFamily: theme.fonts.poppins.regular,
     },
     dropdown: {
-        borderColor: theme.colors.grey,
-        borderWidth: 1,
         borderRadius: 30,
         alignSelf: "center",
-        backgroundColor: '#DCE7FF8A',
+        backgroundColor: "#DCE7FF8A",
         height: 40,
-        justifyContent: 'center',
-        alignContent: 'center'
+        justifyContent: "center",
+        alignContent: "center",
     },
     textInput: {
         borderColor: theme.colors.grey,

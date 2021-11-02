@@ -1,29 +1,36 @@
-import React, { useState, useEffect } from "react";
-import { Text, View, Button, Image, AsyncStorage } from "react-native";
+import axios from "axios";
+import _ from "lodash";
+import moment from "moment";
+import React, { useEffect, useRef, useState } from "react";
 import {
-    ScrollView,
-    TextInput,
+    AsyncStorage,
+    Image,
+    Text,
     TouchableOpacity,
-} from "react-native-gesture-handler";
-import DateTimePicker from "@react-native-community/datetimepicker";
+    View,
+    ScrollView,
+    Platform,
+} from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import AwesomeAlert from "react-native-awesome-alerts";
-import axios from "axios";
-import DropdownV2 from "../components/DropdownV2";
-import Dropdown from "../components/Dropdown";
-import InputFieldWithLabel from "../components/InputFieldWithLabel";
-import RoundButton from "../components/RoundButton";
-import styles from "../styles/Singup";
-import Constants from "../constants/text/Signup";
-import _, { fill } from "lodash";
-import { serialize } from "object-to-formdata";
-import appConfig from "../config";
-import moment from "moment";
-import theme from "../constants/theme";
-import { Platform } from "react-native";
-import CountryCodes from "../constants/CountryCode.json";
-import UploadButton from "../components/UploadButton";
+import CountryCodePicker from "../components/CountryCodePicker";
 import DatePicker from "../components/DatePicker";
+import FormTextInput from "../components/FormTextInput";
+import FormSelectInput from "../components/FormSelectInput";
+import RoundButton from "../components/RoundButton";
+import UploadButton from "../components/UploadButton";
+import appConfig from "../config";
+import Constants from "../constants/text/Signup";
+import theme from "../constants/theme";
+import styles from "../styles/Singup";
+const calendarIcon = require("../../assets/icons/calenderFilled.png");
+const checkIcon = require("../../assets/icons/check-circletick.png");
+const crossIcon = require("../../assets/icons/cross.png");
+const messageIcon = require("../../assets/icons/messageFilled.png");
+const mobileIcon = require("../../assets/icons/mobileFilled.png");
+const buildingIcon = require("../../assets/icons/building.png");
+const pinIcon = require("../../assets/icons/locationPin.png");
+const userIcon = require("../../assets/icons/userFilled.png");
 
 const fieldNames = {
     address: "Address",
@@ -34,25 +41,22 @@ const fieldNames = {
     mobile_no: "Mobile number",
     name: "Name",
     avatar: "Avatar",
+    aadhaar_card_front: "Aadhaar Card Front",
+    aadhaar_card_back: "Aadhaar Card Back",
     dob: "DOB",
     pincode: "Pincode",
     relation: "Relation",
     state_id: "State",
     tehsil_id: "Tehsil",
-    form_id: "Form ID",
     form_no: "Form Number",
     country_code: "Country Code",
     form_date: "Form Date",
-    area_type: "Area Type",
-    naamdanTaken: "Naamdan taken at",
+    namdan_taken: "Naamdan taken at",
     aadhaar_no: "Aadhar Number",
     occupation: "Your Occupation",
 };
 
 function SignUp({ navigation }) {
-    const getRequiredDateFormat = (dateObj) =>
-        moment(dateObj).format("YYYY-MM-DD");
-
     const createId = (length) => {
         const chars = "ABCDEFGHIJKLMNOPQRSTUFWXYZ1234567890";
         const pwd = _.sampleSize(chars, length || 12); // lodash v4: use _.sampleSize
@@ -71,27 +75,27 @@ function SignUp({ navigation }) {
         district_id: "",
         tehsil_id: "",
         form_no: "",
-        form_date: getRequiredDateFormat(new Date()),
+        form_date: moment(),
         mobile_no: "",
-        area_type: "",
-        avatar: "image file",
-
+        avatar: "avatar.jpg",
+        aadhaar_card_back: "aadhaar_card_back.jpg",
+        aadhaar_card_front: "aadhaar_card_front.jpg",
         email: "",
         pincode: "",
         occupation: "",
-        dob: new Date(),
-        naamdanTaken: "",
-        form_id: createId(14),
-        country_code: "+91 | IN",
+        dob: moment(),
+        namdan_taken: "",
+        country_code: "+91",
     };
-    const naamdanTakenAt = ["Online", "Naamdan Center"];
+
+    const [whatsapp_no, setWhatsapp_no] = useState("");
+    const namdan_takenAt = ["online", "offline"];
     const relations = ["S/O", "D/O", "NA"];
-    const area_types = ["rural", "urban"];
     const [states, setStates] = useState([]);
     const [districts, setDistricts] = useState([]);
     const [countries, setcountries] = useState([]);
     const [tehsils, setTehsils] = useState([]);
-
+    const [emailError, setEmailError] = useState("");
     const [showAlert, setShowAlert] = useState({
         show: false,
         showCancelButton: false,
@@ -102,42 +106,8 @@ function SignUp({ navigation }) {
 
     const [userData, setUserData] = useState(formFields);
     const [image, setImage] = useState(null);
-    const [mode, setMode] = useState("date");
     const [show, setShow] = useState(false);
-    const onNaamdanChange = (value) => {
-        const temp = { ...userData };
-        temp.naamdanTaken = value;
-        setUserData(temp);
-    };
-    const onCountryCodeChange = (value) => {
-        const temp = { ...userData };
-        temp.country_code = value;
-        setUserData(temp);
-    };
-
-    const onNameChange = (event) => {
-        const temp = { ...userData };
-        temp.name = event.nativeEvent.text;
-        setUserData(temp);
-    };
-
-    const onFormNoChange = (event) => {
-        const temp = { ...userData };
-        temp.form_no = event.nativeEvent.text;
-        setUserData(temp);
-    };
-    const onRelationChange = (value, index) => {
-        const temp = { ...userData };
-        temp.relation = value;
-
-        setUserData(temp);
-    };
-
-    const onGuardianNameChange = (event) => {
-        const temp = { ...userData };
-        temp.guardian_name = event.nativeEvent.text;
-        setUserData(temp);
-    };
+    const [showFormdate, setShowFormdate] = useState(false);
 
     const getCountries = async () => {
         const temp = JSON.parse(await AsyncStorage.getItem("countries"));
@@ -227,80 +197,21 @@ function SignUp({ navigation }) {
         }
     };
 
-    const onMobileChange = (event) => {
-        const temp = { ...userData };
-        temp.mobile_no = event.nativeEvent.text;
-        setUserData(temp);
+    const onChange = (value, key) => {
+        setUserData({ ...userData, [key]: value });
     };
 
-    const onCountryChange = (value) => {
-        const temp = { ...userData };
-        temp.country_id = value;
-        setUserData(temp);
-        getStates(value);
-    };
-    const onStateChange = (value) => {
-        const temp = { ...userData };
-        temp.state_id = value;
-        setUserData(temp);
-        getDistricts(value);
-    };
-    const onDistrictChange = (value) => {
-        const temp = { ...userData };
-        temp.district_id = value;
-        setUserData(temp);
-        getTehsils(value);
-    };
-
-    const onTehsilChange = (value) => {
-        const temp = { ...userData };
-        temp.tehsil_id = value;
-        setUserData(temp);
-    };
-
-    const onAreaChange = (value) => {
-        const temp = { ...userData };
-        temp.area_type = value;
-        setUserData(temp);
-    };
-
-    const onAddressChange = (event) => {
-        const temp = { ...userData };
-        temp.address = event.nativeEvent.text;
-        setUserData(temp);
-    };
-
-    const onPincodeChange = (event) => {
-        const temp = { ...userData };
-        temp.pincode = event.nativeEvent.text;
-        setUserData(temp);
-    };
-    const onAadharChange = (event) => {
-        const temp = { ...userData };
-        temp.aadhaar_no = event.nativeEvent.text;
-        setUserData(temp);
-    };
-
-    const onEmailChange = (event) => {
-        const temp = { ...userData };
-        temp.email = event.nativeEvent.text;
-        setUserData(temp);
-    };
-    const onOccupationChange = (event) => {
-        const temp = { ...userData };
-        temp.occupation = event.nativeEvent.text;
-        setUserData(temp);
-    };
-
-    const onChangeText = (text, name) => {
-        setUserData({ ...userData, [name]: text });
-    };
-
-    function validateEmail(email) {
+    function isValidEmail(email) {
         const re =
             /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(String(email).toLowerCase());
     }
+
+    const validateEmail = (value) => {
+        if (value === "") setEmailError("");
+        else if (isValidEmail(value)) setEmailError("");
+        else setEmailError("Invalid Email");
+    };
 
     const handleRegister = async () => {
         let notFilled = false;
@@ -309,10 +220,10 @@ function SignUp({ navigation }) {
                 notFilled = element;
                 return;
             }
-            if (
+            if  (
                 (element === "age" && userData[element] < 3) ||
-                (element === "email" && !validateEmail(userData[element]))
-            ) {
+                (element === "email" && !isValidEmail(userData[element]))
+            ){
                 notFilled = element;
                 return;
             }
@@ -326,20 +237,14 @@ function SignUp({ navigation }) {
             alert(alertMessage);
             return false;
         }
-        const temp = { ...userData };
-        temp.dob = getRequiredDateFormat(userData.dob);
-        temp.mobile_no = temp.country_code.split(" | ")[0] + temp.mobile_no;
+        const temp = { ...userData, whatsapp_no };
+        temp.form_date = userData.form_date.toISOString().split("T")[0];
+        temp.dob = userData.dob.toISOString().split("T")[0];
+        temp.mobile_no = temp.country_code + temp.mobile_no;
         delete temp.country_code;
-        delete temp.naamdanTaken;
-        delete temp.avatar;
 
-        delete temp.email;
-        delete temp.pincode;
-        delete temp.occupation;
-        delete temp.dob;
-        delete temp.form_id;
-        const data = serialize(temp);
         console.log(temp);
+
         const config = {
             method: "post",
             url: `${appConfig.api_url}/disciple/create`,
@@ -348,9 +253,8 @@ function SignUp({ navigation }) {
                 Accept: "multipart/form-data",
                 "X-CSRF-TOKEN": await AsyncStorage.getItem("token"),
             },
-            data,
+            data: temp,
         };
-        console.log({ config });
 
         axios(config)
             .then((response) => {
@@ -400,29 +304,24 @@ function SignUp({ navigation }) {
         })();
     }, []);
 
-    const pickImage = async () => {
-        const result = await ImagePicker.launchImageLibraryAsync({
+    const pickImage = () => {
+        ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
             aspect: [4, 3],
             quality: 1,
-        });
-
-        console.log(result);
-
-        if (!result.cancelled) {
-            const temp = {
-                ...userData,
-                avatar: {
-                    uri: result.uri,
-                    name: result.uri.split("/").pop(),
-                    type: "image",
-                },
-            };
-            setUserData(temp);
-        }
+        })
+            .then((result) => {
+                console.log(result);
+            })
+            .catch((err) => console.error(err));
+        // if (!result.cancelled) {
+        //     console.log(result.uri);
+        // }
     };
 
+    const mobileRef = useRef();
+    const whatRef = useRef();
     return (
         <ScrollView style={styles.mainContainer}>
             <AwesomeAlert
@@ -468,152 +367,266 @@ function SignUp({ navigation }) {
                     {Constants.uploadPhoto}
                 </Text>
             </TouchableOpacity>
-            <Dropdown
-                label="Naamdan Taken"
-                value={userData.naamdanTaken}
-                changeFn={onNaamdanChange}
-                options={naamdanTakenAt}
+            <DatePicker
+                label="Form Date"
+                show={showFormdate}
+                setShow={setShowFormdate}
+                date={moment(userData.form_date)}
+                setDate={(date) => onChange(date, "form_date")}
+                maximumDate={new Date()}
+                required={true}
+                appendComponent={
+                    <Image source={calendarIcon} style={styles.appendIcon} />
+                }
             />
-            <InputFieldWithLabel
+            <FormTextInput
+                label="Form No."
+                value={userData.form_no}
+                placeholder={"Enter Form Number"}
+                required={true}
+                onChangeText={(text) => onChange(text, "form_no")}
+            />
+            <FormSelectInput
+                label="Naamdan Taken"
+                value={userData.namdan_taken}
+                onValueChange={(value) => onChange(value, "namdan_taken")}
+                options={namdan_takenAt}
+                required={true}
+                placeholder="Select Option"
+            />
+            <FormTextInput
                 label="Name"
                 value={userData.name}
-                onChangeText={(text) => onChangeText(text, "name")}
-                placeholder="Enter Fullname"
+                placeholder={"Enter your name"}
+                onChangeText={(text) => onChange(text, "name")}
                 required={true}
+                appendComponent={
+                    <Image source={userIcon} style={styles.appendIcon} />
+                }
             />
-            <Dropdown
+            <FormSelectInput
                 label="Relation"
                 value={userData.relation}
-                changeFn={onRelationChange}
+                onValueChange={(value) => onChange(value, "relation")}
                 options={relations}
+                required={true}
+                placeholder="Select Relation"
             />
-            <InputFieldWithLabel
+            <FormTextInput
                 label="Guardian Name"
                 value={userData.guardian_name}
-                changeFn={onGuardianNameChange}
-                placeholder="Enter Guardian Name"
+                placeholder={"Enter your guardian_name"}
                 required={true}
+                onChangeText={(text) => onChange(text, "guardian_name")}
+                appendComponent={
+                    <Image source={userIcon} style={styles.appendIcon} />
+                }
             />
-            <InputFieldWithLabel
+            <FormTextInput
                 label="Occupation"
                 value={userData.occupation}
-                changeFn={onOccupationChange}
                 placeholder="Enter Your Occupation"
                 required={true}
+                onChangeText={(text) => onChange(text, "occupation")}
             />
+
             <DatePicker
-                label="Date of birth"
+                label="Date of Birth"
+                placeholder="Select Date of birth"
                 show={show}
                 setShow={setShow}
                 date={moment(userData.dob)}
                 setDate={(date) => onDobChange(date)}
+                maximumDate={new Date()}
+                required={true}
+                appendComponent={
+                    <Image source={calendarIcon} style={styles.appendIcon} />
+                }
             />
-            <View style={{ flexDirection: "row" }}>
-                <View style={{ width: "35%", paddingTop: "1.6%" }}>
-                    <Dropdown
-                        label="Mobile Number"
-                        value={userData.country_code}
-                        changeFn={onCountryCodeChange}
-                        required={true}
-                        options={CountryCodes.map(
-                            (country) =>
-                                country.dial_code + " | " + country.code
-                        )}
+            <FormTextInput
+                label="Mobile Number"
+                value={userData.mobile_no}
+                placeholder={"Enter your mobile number"}
+                required={true}
+                keyboardType={
+                    Platform.OS === "android" ? "numeric" : "number-pad"
+                }
+                maxLength={10}
+                onChangeText={(text) => onChange(text, "mobile_no")}
+                prependComponent={
+                    <TouchableOpacity
+                        onPress={() => mobileRef?.current.focus()}
+                        style={styles.countryCodeBtn}
+                    >
+                        <Text>{userData.country_code}</Text>
+                    </TouchableOpacity>
+                }
+                appendComponent={
+                    <Image
+                        source={mobileIcon}
+                        style={[styles.appendIcon, { width: 15 }]}
                     />
-                </View>
-                <InputFieldWithLabel
-                    label=""
-                    value={userData.mobile_no}
-                    changeFn={onMobileChange}
-                    placeholder="Enter Mobile Number"
-                    maxLength={10}
-                    keyboard={
-                        Platform.OS === "android" ? "numeric" : "number-pad"
-                    }
-                />
-            </View>
-            <DropdownV2
+                }
+            />
+            <FormTextInput
+                label="Whatsapp Number"
+                value={whatsapp_no}
+                placeholder={"Enter your mobile number"}
+                required={true}
+                keyboardType={
+                    Platform.OS === "android" ? "numeric" : "number-pad"
+                }
+                maxLength={10}
+                onChangeText={(text) => setWhatsapp_no(text)}
+                prependComponent={
+                    <TouchableOpacity
+                        onPress={() => mobileRef?.current.focus()}
+                        style={styles.countryCodeBtn}
+                    >
+                        <Text>{userData.country_code}</Text>
+                    </TouchableOpacity>
+                }
+                appendComponent={
+                    <Image
+                        source={mobileIcon}
+                        style={[styles.appendIcon, { width: 15 }]}
+                    />
+                }
+            />
+            <FormSelectInput
                 label="Country"
                 value={userData.country_id}
-                changeFn={onCountryChange}
+                onValueChange={(value) => {
+                    onChange(value, "country_id");
+                    getStates(value);
+                }}
                 options={countries}
+                placeholder="Select Country"
             />
             {states.length && userData.country_id ? (
-                <DropdownV2
+                <FormSelectInput
                     label="State"
                     value={userData.state_id}
-                    changeFn={onStateChange}
+                    onValueChange={(value) => {
+                        onChange(value, "state_id");
+                        getDistricts(value);
+                    }}
                     options={states}
+                    placeholder="Select State"
                 />
             ) : null}
             {districts.length && userData.state_id ? (
-                <DropdownV2
+                <FormSelectInput
                     label="District"
                     value={userData.district_id}
-                    changeFn={onDistrictChange}
+                    onValueChange={(value) => {
+                        onChange(value, "district_id");
+                        getTehsils(value);
+                    }}
                     options={districts}
+                    placeholder="Select District"
                 />
             ) : null}
             {tehsils.length && userData.district_id ? (
-                <DropdownV2
+                <FormSelectInput
                     label="Tehsil"
                     value={userData.tehsil_id}
-                    changeFn={onTehsilChange}
+                    onValueChange={(value) => {
+                        onChange(value, "tehsil_id");
+                    }}
                     options={tehsils}
+                    placeholder="Select Tehsil"
                 />
             ) : null}
-            <InputFieldWithLabel
+
+            <FormTextInput
                 label="Address"
                 value={userData.address}
-                changeFn={onAddressChange}
                 placeholder="Enter Address"
                 required={true}
+                onChangeText={(text) => onChange(text, "address")}
+                appendComponent={
+                    <Image source={buildingIcon} style={styles.appendIcon} />
+                }
             />
-            <InputFieldWithLabel
+            <FormTextInput
                 label="Pincode"
                 value={userData.pincode}
-                changeFn={onPincodeChange}
                 placeholder="Enter Pincode"
                 required={true}
-                keyboard={Platform.OS === "android" ? "numeric" : "number-pad"}
+                onChangeText={(text) => onChange(text, "pincode")}
+                keyboardType={
+                    Platform.OS === "android" ? "numeric" : "number-pad"
+                }
+                appendComponent={
+                    <Image source={pinIcon} style={styles.appendIcon} />
+                }
             />
-            <Dropdown
-                label="Is the area Rural or Urban?"
-                value={userData.area_type}
-                changeFn={onAreaChange}
-                options={area_types}
-            />
-            <InputFieldWithLabel
-                label="Email"
+            <FormTextInput
+                label="Email ID"
                 value={userData.email}
-                changeFn={onEmailChange}
-                validateEmail={validateEmail}
                 placeholder="Enter Email Address"
                 required={true}
+                onChangeText={(text) => {
+                    validateEmail(text);
+                    onChange(text, "email");
+                }}
+                keyboardType={"email-address"}
+                appendComponent={
+                    <View style={{ flexDirection: "row" }}>
+                        <Image
+                            source={
+                                userData.email == ""
+                                    ? null
+                                    : userData.email != "" && emailError == ""
+                                    ? checkIcon
+                                    : crossIcon
+                            }
+                            style={{
+                                width: 18,
+                                height: 18,
+                                tintColor:
+                                    userData.email != "" && emailError == ""
+                                        ? "#83e85a"
+                                        : "red",
+                                marginRight: 10,
+                            }}
+                        />
+                        <Image
+                            source={messageIcon}
+                            style={[styles.appendIcon, { height: 15 }]}
+                        />
+                    </View>
+                }
             />
-            <InputFieldWithLabel
-                label="Form Number"
-                value={userData.form_no}
-                changeFn={onFormNoChange}
-                placeholder="Enter Form Number"
-                required={true}
-            />
-            <InputFieldWithLabel
-                label="Aadhar Number"
+            <FormTextInput
+                label="Aadhar Card No."
                 value={userData.aadhaar_no}
-                changeFn={onAadharChange}
                 placeholder="Enter 12 digit aadhar number"
                 required={true}
-                keyboard={Platform.OS === "android" ? "numeric" : "number-pad"}
                 maxLength={12}
+                onChangeText={(text) => onChange(text, "aadhaar_no")}
+                keyboardType={
+                    Platform.OS === "android" ? "numeric" : "number-pad"
+                }
             />
             <UploadButton
-                label="Upload Aadhar Card"
+                label="Upload Aadhar Card (Front)"
+                onPressFn={() => console.log("Pressed")}
+            />
+            <UploadButton
+                label="Upload Aadhar Card (Back)"
                 onPressFn={() => console.log("Pressed")}
             />
             <View style={styles.buttonContainer}>
                 <RoundButton label="Register" handlePress={handleRegister} />
             </View>
+
+            <CountryCodePicker
+                ref={mobileRef}
+                onValueChange={(value) => onChange(value, "country_code")}
+                value={userData.country_code}
+            />
         </ScrollView>
     );
 }
