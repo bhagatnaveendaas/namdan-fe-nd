@@ -17,7 +17,7 @@ const FormTextInput = ({
             <Text
                 style={{
                     color: theme.colors.primary,
-                    fontFamily: theme.fonts.poppins.semiBold,
+                    fontFamily: theme.fonts.poppins.regular,
                     fontSize: 14,
                     marginBottom: -5,
                 }}
@@ -29,9 +29,8 @@ const FormTextInput = ({
                 style={{
                     flexDirection: "row",
                     alignItems: "center",
-                    // backgroundColor: "red",
                     borderBottomColor: theme.colors.primaryLight,
-                    borderBottomWidth: 2,
+                    borderBottomWidth: 1,
                     paddingRight: 10,
                     height: 40,
                 }}

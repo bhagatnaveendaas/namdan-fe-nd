@@ -20,20 +20,13 @@ const DatePicker = ({
         setShow(false);
         setDate(currentDate);
     };
-    const showPlaceholder = React.useCallback(() => {
-        return (
-            date.toISOString().split(":")[0] ===
-            new Date().toISOString().split(":")[0]
-        );
-    }, [date]);
-
     return (
         <View style={{ marginTop: 10 }}>
             {label && (
                 <Text
                     style={{
                         color: theme.colors.primary,
-                        fontFamily: theme.fonts.poppins.semiBold,
+                        fontFamily: theme.fonts.poppins.regular,
                         fontSize: 14,
                         marginBottom: 2,
                     }}
@@ -46,7 +39,7 @@ const DatePicker = ({
                 style={{
                     flexDirection: "row",
                     alignItems: "center",
-                    borderWidth: 2,
+                    borderWidth: 1,
                     borderColor: theme.colors.primaryLight,
                     paddingHorizontal: 15,
                     height: 40,

@@ -1,8 +1,6 @@
 import axios from "axios";
-import * as ImagePicker from "expo-image-picker";
 import _ from "lodash";
 import moment from "moment";
-import { serialize } from "object-to-formdata";
 import React, { useEffect, useRef, useState } from "react";
 import {
     AsyncStorage,
@@ -13,6 +11,7 @@ import {
     ScrollView,
     Platform,
 } from "react-native";
+import * as ImagePicker from "expo-image-picker";
 import AwesomeAlert from "react-native-awesome-alerts";
 import CountryCodePicker from "../components/CountryCodePicker";
 import DatePicker from "../components/DatePicker";
@@ -42,25 +41,22 @@ const fieldNames = {
     mobile_no: "Mobile number",
     name: "Name",
     avatar: "Avatar",
+    aadhaar_card_front: "Aadhaar Card Front",
+    aadhaar_card_back: "Aadhaar Card Back",
     dob: "DOB",
     pincode: "Pincode",
     relation: "Relation",
     state_id: "State",
     tehsil_id: "Tehsil",
-    form_id: "Form ID",
     form_no: "Form Number",
     country_code: "Country Code",
     form_date: "Form Date",
-    area_type: "Area Type",
-    naamdanTaken: "Naamdan taken at",
+    namdan_taken: "Naamdan taken at",
     aadhaar_no: "Aadhar Number",
     occupation: "Your Occupation",
 };
 
 function SignUp({ navigation }) {
-    const getRequiredDateFormat = (dateObj) =>
-        moment(dateObj).format("YYYY-MM-DD");
-
     const createId = (length) => {
         const chars = "ABCDEFGHIJKLMNOPQRSTUFWXYZ1234567890";
         const pwd = _.sampleSize(chars, length || 12); // lodash v4: use _.sampleSize
@@ -79,22 +75,22 @@ function SignUp({ navigation }) {
         district_id: "",
         tehsil_id: "",
         form_no: "",
-        form_date: new Date(),
+        form_date: moment(),
         mobile_no: "",
-        area_type: "",
-        avatar: "image file",
-
+        avatar: "avatar.jpg",
+        aadhaar_card_back: "aadhaar_card_back.jpg",
+        aadhaar_card_front: "aadhaar_card_front.jpg",
         email: "",
         pincode: "",
         occupation: "",
-        dob: new Date(),
-        naamdanTaken: "",
-        form_id: createId(14),
+        dob: moment(),
+        namdan_taken: "",
         country_code: "+91",
     };
-    const naamdanTakenAt = ["Online", "Naamdan Center"];
+
+    const [whatsapp_no, setWhatsapp_no] = useState("");
+    const namdan_takenAt = ["online", "offline"];
     const relations = ["S/O", "D/O", "NA"];
-    const area_types = ["rural", "urban"];
     const [states, setStates] = useState([]);
     const [districts, setDistricts] = useState([]);
     const [countries, setcountries] = useState([]);
@@ -110,11 +106,8 @@ function SignUp({ navigation }) {
 
     const [userData, setUserData] = useState(formFields);
     const [image, setImage] = useState(null);
-    const [mode, setMode] = useState("date");
     const [show, setShow] = useState(false);
     const [showFormdate, setShowFormdate] = useState(false);
-
-    // console.log(moment().format("DD-MM-YYYY"));
 
     const getCountries = async () => {
         const temp = JSON.parse(await AsyncStorage.getItem("countries"));
@@ -227,10 +220,10 @@ function SignUp({ navigation }) {
                 notFilled = element;
                 return;
             }
-            if (
+            if  (
                 (element === "age" && userData[element] < 3) ||
-                (element === "email" && !validateEmail(userData[element]))
-            ) {
+                (element === "email" && !isValidEmail(userData[element]))
+            ){
                 notFilled = element;
                 return;
             }
@@ -244,20 +237,14 @@ function SignUp({ navigation }) {
             alert(alertMessage);
             return false;
         }
-        const temp = { ...userData };
-        temp.form_date = moment(userData.form_date).format("YYYY-MM-DD");
+        const temp = { ...userData, whatsapp_no };
+        temp.form_date = userData.form_date.toISOString().split("T")[0];
+        temp.dob = userData.dob.toISOString().split("T")[0];
         temp.mobile_no = temp.country_code + temp.mobile_no;
         delete temp.country_code;
-        delete temp.naamdanTaken;
-        delete temp.avatar;
 
-        delete temp.email;
-        delete temp.pincode;
-        delete temp.occupation;
-        delete temp.dob;
-        delete temp.form_id;
-        const data = serialize(temp);
         console.log(temp);
+
         const config = {
             method: "post",
             url: `${appConfig.api_url}/disciple/create`,
@@ -266,7 +253,7 @@ function SignUp({ navigation }) {
                 Accept: "multipart/form-data",
                 "X-CSRF-TOKEN": await AsyncStorage.getItem("token"),
             },
-            data,
+            data: temp,
         };
 
         axios(config)
@@ -317,27 +304,20 @@ function SignUp({ navigation }) {
         })();
     }, []);
 
-    const pickImage = async () => {
-        const result = await ImagePicker.launchImageLibraryAsync({
+    const pickImage = () => {
+        ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
             aspect: [4, 3],
             quality: 1,
-        });
-
-        console.log(result);
-
-        if (!result.cancelled) {
-            const temp = {
-                ...userData,
-                avatar: {
-                    uri: result.uri,
-                    name: result.uri.split("/").pop(),
-                    type: "image",
-                },
-            };
-            setUserData(temp);
-        }
+        })
+            .then((result) => {
+                console.log(result);
+            })
+            .catch((err) => console.error(err));
+        // if (!result.cancelled) {
+        //     console.log(result.uri);
+        // }
     };
 
     const mobileRef = useRef();
@@ -389,7 +369,6 @@ function SignUp({ navigation }) {
             </TouchableOpacity>
             <DatePicker
                 label="Form Date"
-                placeholder="Select Date"
                 show={showFormdate}
                 setShow={setShowFormdate}
                 date={moment(userData.form_date)}
@@ -409,9 +388,9 @@ function SignUp({ navigation }) {
             />
             <FormSelectInput
                 label="Naamdan Taken"
-                value={userData.naamdanTaken}
-                onValueChange={(value) => onChange(value, "naamdanTaken")}
-                options={naamdanTakenAt}
+                value={userData.namdan_taken}
+                onValueChange={(value) => onChange(value, "namdan_taken")}
+                options={namdan_takenAt}
                 required={true}
                 placeholder="Select Option"
             />
@@ -491,14 +470,14 @@ function SignUp({ navigation }) {
             />
             <FormTextInput
                 label="Whatsapp Number"
-                value={userData.mobile_no}
+                value={whatsapp_no}
                 placeholder={"Enter your mobile number"}
                 required={true}
                 keyboardType={
                     Platform.OS === "android" ? "numeric" : "number-pad"
                 }
                 maxLength={10}
-                onChangeText={(text) => onChange(text, "mobile_no")}
+                onChangeText={(text) => setWhatsapp_no(text)}
                 prependComponent={
                     <TouchableOpacity
                         onPress={() => mobileRef?.current.focus()}
@@ -632,7 +611,11 @@ function SignUp({ navigation }) {
                 }
             />
             <UploadButton
-                label="Upload Aadhar Card"
+                label="Upload Aadhar Card (Front)"
+                onPressFn={() => console.log("Pressed")}
+            />
+            <UploadButton
+                label="Upload Aadhar Card (Back)"
                 onPressFn={() => console.log("Pressed")}
             />
             <View style={styles.buttonContainer}>

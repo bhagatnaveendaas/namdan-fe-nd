@@ -18,7 +18,7 @@ const FormSelectInput = ({
                 <Text
                     style={{
                         color: theme.colors.primary,
-                        fontFamily: theme.fonts.poppins.semiBold,
+                        fontFamily: theme.fonts.poppins.regular,
                         fontSize: 14,
                         marginBottom: 2,
                     }}
@@ -31,7 +31,7 @@ const FormSelectInput = ({
                 style={{
                     flexDirection: "row",
                     alignItems: "center",
-                    borderWidth: 2,
+                    borderWidth: 1,
                     borderColor: theme.colors.primaryLight,
                     paddingRight: 10,
                     height: 40,
