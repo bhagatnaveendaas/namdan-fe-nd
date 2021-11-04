@@ -149,9 +149,8 @@ function SignUp({ navigation }) {
         }
         const temp = JSON.parse(await AsyncStorage.getItem("states"));
         const reqStates = temp.filter(
-            (state) => state.country_id === countries[countryId].id
+            (state) => state.country_id === countryId
         );
-        console.log("data: ", countries[countryId]);
         setStates(reqStates);
     };
 
@@ -161,10 +160,11 @@ function SignUp({ navigation }) {
         }
         const temp = JSON.parse(await AsyncStorage.getItem("districts"));
         let reqDistricts = temp.filter(
-            (district) => district.state_id === states[stateId].id
+            (district) => district.state_id === stateId
         );
         reqDistricts = reqDistricts.map((item) => ({
             ...item,
+            id: item.district_id,
             name: item.district_name,
         }));
         setDistricts(reqDistricts);
@@ -176,11 +176,12 @@ function SignUp({ navigation }) {
         }
         const temp = JSON.parse(await AsyncStorage.getItem("tehsils"));
         let reqTehsils = temp.filter(
-            (tehsil) => tehsil.district_id === districts[districtId].district_id
+            (tehsil) => tehsil.district_id === districtId
         );
 
         reqTehsils = reqTehsils.map((item) => ({
             ...item,
+            id: item.tehsil_id,
             name: item.tehsil_name,
         }));
         setTehsils(reqTehsils);
@@ -220,10 +221,10 @@ function SignUp({ navigation }) {
                 notFilled = element;
                 return;
             }
-            if  (
+            if (
                 (element === "age" && userData[element] < 3) ||
                 (element === "email" && !isValidEmail(userData[element]))
-            ){
+            ) {
                 notFilled = element;
                 return;
             }
