@@ -62,7 +62,13 @@ const FormSelectInput = ({
                                       item.name.slice(1).toLowerCase()
                                     : item
                             }
-                            value={typeof item === "string" ? item : index}
+                            value={
+                                typeof item === "string"
+                                    ? item
+                                    : item?.id
+                                    ? item.id
+                                    : index
+                            }
                         />
                     ))}
                 </Picker>
