@@ -13,12 +13,15 @@ const DatePicker = ({
     setShow,
     required,
     appendComponent,
+    placeholder,
     ...props
 }) => {
+    const [showPlaceholder, setShowPlaceholder] = React.useState(true);
     const onChange = (_, selectedDate) => {
         const currentDate = moment(selectedDate) || date;
         setShow(false);
         setDate(currentDate);
+        setShowPlaceholder(false);
     };
     return (
         <View style={{ marginTop: 10 }}>
@@ -57,7 +60,13 @@ const DatePicker = ({
                         color: theme.colors.primary,
                     }}
                 >
-                    {date.format("DD-MM-YYYY")}
+                    {placeholder && showPlaceholder ? (
+                        <Text style={{ color: theme.colors.primaryLight }}>
+                            {placeholder}
+                        </Text>
+                    ) : (
+                        date.format("DD-MM-YYYY")
+                    )}
                 </Text>
                 {appendComponent}
                 {show && (

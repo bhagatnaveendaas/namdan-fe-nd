@@ -308,7 +308,6 @@ function SignUp({ navigation }) {
     const pickImage = () => {
         ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
             aspect: [4, 3],
             quality: 1,
         })
@@ -370,6 +369,7 @@ function SignUp({ navigation }) {
             </TouchableOpacity>
             <DatePicker
                 label="Form Date"
+                placeholder="Select Date"
                 show={showFormdate}
                 setShow={setShowFormdate}
                 date={moment(userData.form_date)}
