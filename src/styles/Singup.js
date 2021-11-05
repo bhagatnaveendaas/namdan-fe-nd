@@ -39,6 +39,7 @@ export default StyleSheet.create({
         paddingHorizontal: theme.screenPadding.horizontal,
         paddingBottom: theme.screenPadding.bottom,
         backgroundColor: theme.colors.white,
+        paddingTop: 10
     },
     image: {
         width: 100,

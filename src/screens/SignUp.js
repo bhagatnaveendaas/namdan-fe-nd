@@ -77,9 +77,9 @@ function SignUp({ navigation }) {
         form_no: "",
         form_date: moment(),
         mobile_no: "",
-        avatar: "avatar.jpg",
-        aadhaar_card_back: "aadhaar_card_back.jpg",
-        aadhaar_card_front: "aadhaar_card_front.jpg",
+        avatar: "",
+        aadhaar_card_back: "",
+        aadhaar_card_front: "",
         email: "",
         pincode: "",
         occupation: "",
@@ -293,31 +293,16 @@ function SignUp({ navigation }) {
         })();
     }, []);
 
-    useEffect(() => {
-        (async () => {
-            const { status } =
-                await ImagePicker.requestMediaLibraryPermissionsAsync();
-            if (status !== "granted") {
-                alert(
-                    "Sorry, we need camera roll permissions to make this work!"
-                );
-            }
-        })();
-    }, []);
-
-    const pickImage = () => {
-        ImagePicker.launchImageLibraryAsync({
+    const onImageChange = async (key) => {
+        const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            base64: true,
             aspect: [4, 3],
             quality: 1,
-        })
-            .then((result) => {
-                console.log(result);
-            })
-            .catch((err) => console.error(err));
-        // if (!result.cancelled) {
-        //     console.log(result.uri);
-        // }
+        });
+        if (!result.cancelled) {
+            onChange(result?.base64, key);
+        }
     };
 
     const mobileRef = useRef();
@@ -346,18 +331,16 @@ function SignUp({ navigation }) {
                     setShowAlert(temp);
                 }}
             />
-            <TouchableOpacity onPress={pickImage}>
-                {userData.avatar?.uri ? (
-                    <Image
-                        source={{ uri: userData.avatar?.uri }}
-                        style={styles.image}
-                    />
-                ) : (
-                    <Image
-                        source={{ uri: Constants.imagePlaceholder }}
-                        style={styles.image}
-                    />
-                )}
+            <TouchableOpacity onPress={() => onImageChange("avatar")}>
+                <Image
+                    source={{
+                        uri: userData?.avatar
+                            ? `data:image/png;base64,${userData.avatar}`
+                            : Constants.imagePlaceholder,
+                    }}
+                    style={styles.image}
+                />
+
                 <Text
                     style={{
                         textAlign: "center",
@@ -473,7 +456,6 @@ function SignUp({ navigation }) {
                 label="Whatsapp Number"
                 value={whatsapp_no}
                 placeholder={"Enter your mobile number"}
-                required={true}
                 keyboardType={
                     Platform.OS === "android" ? "numeric" : "number-pad"
                 }
@@ -496,6 +478,7 @@ function SignUp({ navigation }) {
             />
             <FormSelectInput
                 label="Country"
+                required={true}
                 value={userData.country_id}
                 onValueChange={(value) => {
                     onChange(value, "country_id");
@@ -507,6 +490,7 @@ function SignUp({ navigation }) {
             {states.length && userData.country_id ? (
                 <FormSelectInput
                     label="State"
+                    required={true}
                     value={userData.state_id}
                     onValueChange={(value) => {
                         onChange(value, "state_id");
@@ -519,6 +503,7 @@ function SignUp({ navigation }) {
             {districts.length && userData.state_id ? (
                 <FormSelectInput
                     label="District"
+                    required={true}
                     value={userData.district_id}
                     onValueChange={(value) => {
                         onChange(value, "district_id");
@@ -531,6 +516,7 @@ function SignUp({ navigation }) {
             {tehsils.length && userData.district_id ? (
                 <FormSelectInput
                     label="Tehsil"
+                    required={true}
                     value={userData.tehsil_id}
                     onValueChange={(value) => {
                         onChange(value, "tehsil_id");
@@ -613,11 +599,11 @@ function SignUp({ navigation }) {
             />
             <UploadButton
                 label="Upload Aadhar Card (Front)"
-                onPressFn={() => console.log("Pressed")}
+                onPressFn={() => onImageChange("aadhaar_card_front")}
             />
             <UploadButton
                 label="Upload Aadhar Card (Back)"
-                onPressFn={() => console.log("Pressed")}
+                onPressFn={() => onImageChange("aadhaar_card_back")}
             />
             <View style={styles.buttonContainer}>
                 <RoundButton label="Register" handlePress={handleRegister} />
