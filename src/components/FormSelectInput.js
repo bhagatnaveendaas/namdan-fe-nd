@@ -1,7 +1,7 @@
 import { Picker } from "@react-native-picker/picker";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
-import theme from "../constants/theme";
+import { Text, View } from "react-native";
+import styles from "../styles/FormInput";
 
 const FormSelectInput = ({
     options,
@@ -15,30 +15,12 @@ const FormSelectInput = ({
     return (
         <View style={{ marginTop: 10 }}>
             {label && (
-                <Text
-                    style={{
-                        color: theme.colors.primary,
-                        fontFamily: theme.fonts.poppins.regular,
-                        fontSize: 14,
-                        marginBottom: 2,
-                    }}
-                >
+                <Text style={[styles.label, { marginBottom: 2 }]}>
                     {label}
-                    {required && <Text style={{ color: "red" }}>{" *"}</Text>}
+                    {required && <Text style={styles.required}>{" *"}</Text>}
                 </Text>
             )}
-            <View
-                style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    borderWidth: 1,
-                    borderColor: theme.colors.primaryLight,
-                    paddingRight: 10,
-                    height: 40,
-                    borderRadius: 50,
-                    ...containerStyle,
-                }}
-            >
+            <View style={[styles.container, containerStyle]}>
                 <Picker
                     selectedValue={value}
                     onValueChange={onValueChange}
@@ -46,15 +28,12 @@ const FormSelectInput = ({
                 >
                     <Picker.Item
                         label={placeholder}
-                        style={{ color: theme.colors.primaryLight }}
+                        style={styles.firstPickerItem}
                         value={null}
                     />
                     {options.map((item, index) => (
                         <Picker.Item
-                            style={{
-                                color: theme.colors.primary,
-                                fontFamily: theme.fonts.poppins.regular,
-                            }}
+                            style={styles.pickerItem}
                             key={index}
                             label={
                                 item?.name
@@ -78,5 +57,3 @@ const FormSelectInput = ({
 };
 
 export default FormSelectInput;
-
-const styles = StyleSheet.create({});

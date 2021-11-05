@@ -2,7 +2,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import React from "react";
 import { TouchableOpacity, Text, View } from "react-native";
 import moment from "moment";
-import styles from "../styles/Singup";
+import styles from "../styles/FormInput";
 import theme from "../constants/theme";
 
 const DatePicker = ({
@@ -14,6 +14,7 @@ const DatePicker = ({
     required,
     appendComponent,
     placeholder,
+    containerStyle,
     ...props
 }) => {
     const [showPlaceholder, setShowPlaceholder] = React.useState(true);
@@ -26,42 +27,22 @@ const DatePicker = ({
     return (
         <View style={{ marginTop: 10 }}>
             {label && (
-                <Text
-                    style={{
-                        color: theme.colors.primary,
-                        fontFamily: theme.fonts.poppins.regular,
-                        fontSize: 14,
-                        marginBottom: 2,
-                    }}
-                >
+                <Text style={[styles.label, { marginBottom: 2 }]}>
                     {label}
-                    {required && <Text style={{ color: "red" }}>{" *"}</Text>}
+                    {required && <Text style={styles.required}>{" *"}</Text>}
                 </Text>
             )}
             <TouchableOpacity
-                style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    borderWidth: 1,
-                    borderColor: theme.colors.primaryLight,
-                    paddingHorizontal: 15,
-                    height: 40,
-                    borderRadius: 50,
-                }}
+                style={[
+                    styles.container,
+                    containerStyle
+                ]}
                 activeOpacity={1}
                 onPress={() => setShow(true)}
             >
-                <Text
-                    style={{
-                        flex: 1,
-                        fontSize: 15,
-                        lineHeight: 22,
-                        fontFamily: theme.fonts.poppins.regular,
-                        color: theme.colors.primary,
-                    }}
-                >
+                <Text style={styles.dateText}>
                     {placeholder && showPlaceholder ? (
-                        <Text style={{ color: theme.colors.primaryLight }}>
+                        <Text style={styles.placeholderColor}>
                             {placeholder}
                         </Text>
                     ) : (

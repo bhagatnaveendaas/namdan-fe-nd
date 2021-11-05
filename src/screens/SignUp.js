@@ -358,6 +358,7 @@ function SignUp({ navigation }) {
                 date={moment(userData.form_date)}
                 setDate={(date) => onChange(date, "form_date")}
                 maximumDate={new Date()}
+                containerStyle={styles.dateContainer}
                 required={true}
                 appendComponent={
                     <Image source={calendarIcon} style={styles.appendIcon} />
@@ -368,6 +369,7 @@ function SignUp({ navigation }) {
                 value={userData.form_no}
                 placeholder={"Enter Form Number"}
                 required={true}
+                containerStyle={styles.textFieldContainer}
                 onChangeText={(text) => onChange(text, "form_no")}
             />
             <FormSelectInput
@@ -376,6 +378,7 @@ function SignUp({ navigation }) {
                 onValueChange={(value) => onChange(value, "namdan_taken")}
                 options={namdan_takenAt}
                 required={true}
+                containerStyle={styles.selectFieldContainer}
                 placeholder="Select Option"
             />
             <FormTextInput
@@ -384,6 +387,7 @@ function SignUp({ navigation }) {
                 placeholder={"Enter your name"}
                 onChangeText={(text) => onChange(text, "name")}
                 required={true}
+                containerStyle={styles.textFieldContainer}
                 appendComponent={
                     <Image source={userIcon} style={styles.appendIcon} />
                 }
@@ -394,6 +398,7 @@ function SignUp({ navigation }) {
                 onValueChange={(value) => onChange(value, "relation")}
                 options={relations}
                 required={true}
+                containerStyle={styles.selectFieldContainer}
                 placeholder="Select Relation"
             />
             <FormTextInput
@@ -401,6 +406,7 @@ function SignUp({ navigation }) {
                 value={userData.guardian_name}
                 placeholder={"Enter your guardian_name"}
                 required={true}
+                containerStyle={styles.textFieldContainer}
                 onChangeText={(text) => onChange(text, "guardian_name")}
                 appendComponent={
                     <Image source={userIcon} style={styles.appendIcon} />
@@ -411,6 +417,7 @@ function SignUp({ navigation }) {
                 value={userData.occupation}
                 placeholder="Enter Your Occupation"
                 required={true}
+                containerStyle={styles.textFieldContainer}
                 onChangeText={(text) => onChange(text, "occupation")}
             />
 
@@ -422,6 +429,7 @@ function SignUp({ navigation }) {
                 date={moment(userData.dob)}
                 setDate={(date) => onDobChange(date)}
                 maximumDate={new Date()}
+                containerStyle={styles.dateContainer}
                 required={true}
                 appendComponent={
                     <Image source={calendarIcon} style={styles.appendIcon} />
@@ -436,6 +444,7 @@ function SignUp({ navigation }) {
                     Platform.OS === "android" ? "numeric" : "number-pad"
                 }
                 maxLength={10}
+                containerStyle={styles.textFieldContainer}
                 onChangeText={(text) => onChange(text, "mobile_no")}
                 prependComponent={
                     <TouchableOpacity
@@ -460,6 +469,7 @@ function SignUp({ navigation }) {
                     Platform.OS === "android" ? "numeric" : "number-pad"
                 }
                 maxLength={10}
+                containerStyle={styles.textFieldContainer}
                 onChangeText={(text) => setWhatsapp_no(text)}
                 prependComponent={
                     <TouchableOpacity
@@ -485,6 +495,7 @@ function SignUp({ navigation }) {
                     getStates(value);
                 }}
                 options={countries}
+                containerStyle={styles.selectFieldContainer}
                 placeholder="Select Country"
             />
             {states.length && userData.country_id ? (
@@ -497,6 +508,7 @@ function SignUp({ navigation }) {
                         getDistricts(value);
                     }}
                     options={states}
+                    containerStyle={styles.selectFieldContainer}
                     placeholder="Select State"
                 />
             ) : null}
@@ -510,6 +522,7 @@ function SignUp({ navigation }) {
                         getTehsils(value);
                     }}
                     options={districts}
+                    containerStyle={styles.selectFieldContainer}
                     placeholder="Select District"
                 />
             ) : null}
@@ -522,6 +535,7 @@ function SignUp({ navigation }) {
                         onChange(value, "tehsil_id");
                     }}
                     options={tehsils}
+                    containerStyle={styles.selectFieldContainer}
                     placeholder="Select Tehsil"
                 />
             ) : null}
@@ -531,6 +545,7 @@ function SignUp({ navigation }) {
                 value={userData.address}
                 placeholder="Enter Address"
                 required={true}
+                containerStyle={styles.textFieldContainer}
                 onChangeText={(text) => onChange(text, "address")}
                 appendComponent={
                     <Image source={buildingIcon} style={styles.appendIcon} />
@@ -541,6 +556,7 @@ function SignUp({ navigation }) {
                 value={userData.pincode}
                 placeholder="Enter Pincode"
                 required={true}
+                containerStyle={styles.textFieldContainer}
                 onChangeText={(text) => onChange(text, "pincode")}
                 keyboardType={
                     Platform.OS === "android" ? "numeric" : "number-pad"
@@ -558,6 +574,8 @@ function SignUp({ navigation }) {
                     validateEmail(text);
                     onChange(text, "email");
                 }}
+                containerStyle={styles.textFieldContainer}
+                containerStyle={styles.textFieldContainer}
                 keyboardType={"email-address"}
                 appendComponent={
                     <View style={{ flexDirection: "row" }}>
@@ -592,6 +610,7 @@ function SignUp({ navigation }) {
                 placeholder="Enter 12 digit aadhar number"
                 required={true}
                 maxLength={12}
+                containerStyle={styles.textFieldContainer}
                 onChangeText={(text) => onChange(text, "aadhaar_no")}
                 keyboardType={
                     Platform.OS === "android" ? "numeric" : "number-pad"
