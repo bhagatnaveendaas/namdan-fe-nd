@@ -15,6 +15,18 @@ export default StyleSheet.create({
         color: theme.colors.primary,
         fontFamily: theme.fonts.poppins.regular,
     },
+    textFieldContainer: {
+        borderBottomWidth: 1,
+    },
+    selectFieldContainer: {
+        borderWidth: 1,
+        borderRadius: 50,
+    },
+    dateContainer: {
+        borderWidth: 1,
+        paddingHorizontal: 15,
+        borderRadius: 50,
+    },
     dropdown: {
         width: "100%",
         borderColor: theme.colors.grey,
@@ -39,6 +51,7 @@ export default StyleSheet.create({
         paddingHorizontal: theme.screenPadding.horizontal,
         paddingBottom: theme.screenPadding.bottom,
         backgroundColor: theme.colors.white,
+        paddingTop: 10,
     },
     image: {
         width: 100,
