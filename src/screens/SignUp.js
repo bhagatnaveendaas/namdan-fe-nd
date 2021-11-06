@@ -23,6 +23,7 @@ import appConfig from "../config";
 import Constants from "../constants/text/Signup";
 import theme from "../constants/theme";
 import styles from "../styles/Singup";
+import { NewDiscipleSchema } from "../utilities/Validation";
 const calendarIcon = require("../../assets/icons/calenderFilled.png");
 const checkIcon = require("../../assets/icons/check-circletick.png");
 const crossIcon = require("../../assets/icons/cross.png");
@@ -31,30 +32,6 @@ const mobileIcon = require("../../assets/icons/mobileFilled.png");
 const buildingIcon = require("../../assets/icons/building.png");
 const pinIcon = require("../../assets/icons/locationPin.png");
 const userIcon = require("../../assets/icons/userFilled.png");
-
-const fieldNames = {
-    address: "Address",
-    country_id: "Country",
-    district_id: "District",
-    email: "Email",
-    guardian_name: "Guardian Name",
-    mobile_no: "Mobile number",
-    name: "Name",
-    avatar: "Avatar",
-    aadhaar_card_front: "Aadhaar Card Front",
-    aadhaar_card_back: "Aadhaar Card Back",
-    dob: "DOB",
-    pincode: "Pincode",
-    relation: "Relation",
-    state_id: "State",
-    tehsil_id: "Tehsil",
-    form_no: "Form Number",
-    country_code: "Country Code",
-    form_date: "Form Date",
-    namdan_taken: "Naamdan taken at",
-    aadhaar_no: "Aadhar Number",
-    occupation: "Your Occupation",
-};
 
 function SignUp({ navigation }) {
     const createId = (length) => {
@@ -66,17 +43,18 @@ function SignUp({ navigation }) {
     const formFields = {
         name: "",
         relation: "",
-        guardian_name: "",
+        guardianName: "", // TODO: gurardianName can be changed to guardian_name, validation sequence is not working for guardian_name
         age: "",
         address: "",
         aadhaar_no: "",
-        country_id: "",
-        state_id: "",
-        district_id: "",
-        tehsil_id: "",
+        country_id: 0,
+        state_id: 0,
+        district_id: 0,
+        tehsil_id: 0,
         form_no: "",
         form_date: moment(),
         mobile_no: "",
+        whatsapp_no: "",
         avatar: "",
         aadhaar_card_back: "",
         aadhaar_card_front: "",
@@ -86,11 +64,13 @@ function SignUp({ navigation }) {
         dob: moment(),
         namdan_taken: "",
         country_code: "+91",
+        whatsapp_country_code: "+91",
     };
 
-    const [whatsapp_no, setWhatsapp_no] = useState("");
-    const namdan_takenAt = ["online", "offline"];
-    const relations = ["S/O", "D/O", "NA"];
+    const [indian, setIndian] = useState(false);
+
+    const namdan_takenAt = ["Online", "Naamdan Center"];
+    const relations = ["S/O", "D/O", "W/O"];
     const [states, setStates] = useState([]);
     const [districts, setDistricts] = useState([]);
     const [countries, setcountries] = useState([]);
@@ -105,7 +85,6 @@ function SignUp({ navigation }) {
     });
 
     const [userData, setUserData] = useState(formFields);
-    const [image, setImage] = useState(null);
     const [show, setShow] = useState(false);
     const [showFormdate, setShowFormdate] = useState(false);
 
@@ -119,28 +98,19 @@ function SignUp({ navigation }) {
     }, []);
 
     useEffect(() => {
-        const temp = { ...userData };
-        temp.state_id = null;
-        temp.district_id = null;
-        // temp.tehsil_id = null;
-        setUserData(temp);
-        setDistricts([]);
-        setTehsils([]);
-    }, [states]);
+        getStates(userData.country_id);
+        setUserData({ ...userData, district_id: 0, state_id: 0, tehsil_id: 0 });
+    }, [userData.country_id]);
 
     useEffect(() => {
-        const temp = { ...userData };
-        temp.district_id = null;
-        // temp.tehsil_id = null;
-        setUserData(temp);
-        setTehsils([]);
-    }, [districts]);
+        getDistricts(userData.state_id);
+        setUserData({ ...userData, district_id: 0, tehsil_id: 0 });
+    }, [userData.state_id]);
 
     useEffect(() => {
-        const temp = { ...userData };
-        // temp.tehsil_id = null;
-        setUserData(temp);
-    }, [tehsils]);
+        getTehsils(userData.district_id);
+        setUserData({ ...userData, tehsil_id: 0 });
+    }, [userData.district_id]);
 
     const getStates = async (countryId) => {
         console.log({ countryId });
@@ -214,34 +184,25 @@ function SignUp({ navigation }) {
         else setEmailError("Invalid Email");
     };
 
-    const handleRegister = async () => {
-        let notFilled = false;
-        Object.keys(userData).forEach((element) => {
-            if (!userData[element]) {
-                notFilled = element;
-                return;
+    const handleSubmit = async () => {
+        try {
+            await NewDiscipleSchema.validate(userData, { abortEarly: false });
+            handleRegister();
+        } catch (err) {
+            if (err.name === "ValidationError") {
+                alert(err.errors[0]);
+            } else {
+                console.log(err);
             }
-            if (
-                (element === "age" && userData[element] < 3) ||
-                (element === "email" && !isValidEmail(userData[element]))
-            ) {
-                notFilled = element;
-                return;
-            }
-        });
-        if (notFilled) {
-            let alertMessage = `Please fill ${fieldNames[notFilled]}`;
-            if (notFilled === "age")
-                alertMessage = `Check DOB make sure age is greater than 3 years`;
-            if (notFilled === "email")
-                alertMessage = `Please enter valid email address`;
-            alert(alertMessage);
-            return false;
         }
-        const temp = { ...userData, whatsapp_no };
+    };
+
+    const handleRegister = async () => {
+        const temp = { ...userData, guardian_name: userData.guardianName };
         temp.form_date = userData.form_date.toISOString().split("T")[0];
         temp.dob = userData.dob.toISOString().split("T")[0];
         temp.mobile_no = temp.country_code + temp.mobile_no;
+        delete temp.guardianName;
         delete temp.country_code;
 
         console.log(temp);
@@ -281,6 +242,7 @@ function SignUp({ navigation }) {
             });
     };
 
+    //FIXME: User is able to upload photos even after denying for access.
     useEffect(() => {
         (async () => {
             const { status } =
@@ -294,6 +256,7 @@ function SignUp({ navigation }) {
     }, []);
 
     const onImageChange = async (key) => {
+        // FIXME: use image uri instead of base64
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             base64: true,
@@ -332,6 +295,7 @@ function SignUp({ navigation }) {
                 }}
             />
             <TouchableOpacity onPress={() => onImageChange("avatar")}>
+                {/* FIXME: use image uri instead of base64 */}
                 <Image
                     source={{
                         uri: userData?.avatar
@@ -371,6 +335,58 @@ function SignUp({ navigation }) {
                 required={true}
                 containerStyle={styles.textFieldContainer}
                 onChangeText={(text) => onChange(text, "form_no")}
+                appendComponent={
+                    <Image
+                        source={
+                            userData.form_no == ""
+                                ? null
+                                : userData.form_no?.length < 6
+                                ? crossIcon
+                                : checkIcon
+                        }
+                        style={{
+                            width: 18,
+                            height: 18,
+                            tintColor:
+                                userData.form_no?.length < 6
+                                    ? "red"
+                                    : "#83e85a",
+                            marginRight: 10,
+                        }}
+                    />
+                }
+            />
+            <FormTextInput
+                label="Aadhar Card No."
+                value={userData.aadhaar_no}
+                placeholder="Enter 12 digit aadhar number"
+                required={true}
+                maxLength={12}
+                containerStyle={styles.textFieldContainer}
+                onChangeText={(text) => onChange(text, "aadhaar_no")}
+                keyboardType={
+                    Platform.OS === "android" ? "numeric" : "number-pad"
+                }
+                appendComponent={
+                    <Image
+                        source={
+                            userData.aadhaar_no == ""
+                                ? null
+                                : userData.aadhaar_no?.length < 12
+                                ? crossIcon
+                                : checkIcon
+                        }
+                        style={{
+                            width: 18,
+                            height: 18,
+                            tintColor:
+                                userData.aadhaar_no?.length < 12
+                                    ? "red"
+                                    : "#83e85a",
+                            marginRight: 10,
+                        }}
+                    />
+                }
             />
             <FormSelectInput
                 label="Naamdan Taken"
@@ -403,11 +419,11 @@ function SignUp({ navigation }) {
             />
             <FormTextInput
                 label="Guardian Name"
-                value={userData.guardian_name}
-                placeholder={"Enter your guardian_name"}
+                value={userData.guardianName}
+                placeholder={"Enter your guardianName"}
                 required={true}
                 containerStyle={styles.textFieldContainer}
-                onChangeText={(text) => onChange(text, "guardian_name")}
+                onChangeText={(text) => onChange(text, "guardianName")}
                 appendComponent={
                     <Image source={userIcon} style={styles.appendIcon} />
                 }
@@ -420,7 +436,6 @@ function SignUp({ navigation }) {
                 containerStyle={styles.textFieldContainer}
                 onChangeText={(text) => onChange(text, "occupation")}
             />
-
             <DatePicker
                 label="Date of Birth"
                 placeholder="Select Date of birth"
@@ -455,35 +470,75 @@ function SignUp({ navigation }) {
                     </TouchableOpacity>
                 }
                 appendComponent={
-                    <Image
-                        source={mobileIcon}
-                        style={[styles.appendIcon, { width: 15 }]}
-                    />
+                    <View style={{ flexDirection: "row" }}>
+                        <Image
+                            source={
+                                userData.mobile_no == ""
+                                    ? null
+                                    : userData.mobile_no?.length < 10
+                                    ? crossIcon
+                                    : checkIcon
+                            }
+                            style={{
+                                width: 18,
+                                height: 18,
+                                tintColor:
+                                    userData.mobile_no?.length < 10
+                                        ? "red"
+                                        : "#83e85a",
+                                marginRight: 10,
+                            }}
+                        />
+                        <Image
+                            source={mobileIcon}
+                            style={[styles.appendIcon, { width: 15 }]}
+                        />
+                    </View>
                 }
             />
             <FormTextInput
                 label="Whatsapp Number"
-                value={whatsapp_no}
+                value={userData.whatsapp_no}
                 placeholder={"Enter your mobile number"}
                 keyboardType={
                     Platform.OS === "android" ? "numeric" : "number-pad"
                 }
                 maxLength={10}
                 containerStyle={styles.textFieldContainer}
-                onChangeText={(text) => setWhatsapp_no(text)}
+                onChangeText={(text) => onChange(text, "whatsapp_no")}
                 prependComponent={
                     <TouchableOpacity
-                        onPress={() => mobileRef?.current.focus()}
+                        onPress={() => whatRef?.current.focus()}
                         style={styles.countryCodeBtn}
                     >
-                        <Text>{userData.country_code}</Text>
+                        <Text>{userData.whatsapp_country_code}</Text>
                     </TouchableOpacity>
                 }
                 appendComponent={
-                    <Image
-                        source={mobileIcon}
-                        style={[styles.appendIcon, { width: 15 }]}
-                    />
+                    <View style={{ flexDirection: "row" }}>
+                        <Image
+                            source={
+                                userData.whatsapp_no == ""
+                                    ? null
+                                    : userData.whatsapp_no?.length < 10
+                                    ? crossIcon
+                                    : checkIcon
+                            }
+                            style={{
+                                width: 18,
+                                height: 18,
+                                tintColor:
+                                    userData.whatsapp_no?.length < 10
+                                        ? "red"
+                                        : "#83e85a",
+                                marginRight: 10,
+                            }}
+                        />
+                        <Image
+                            source={mobileIcon}
+                            style={[styles.appendIcon, { width: 15 }]}
+                        />
+                    </View>
                 }
             />
             <FormSelectInput
@@ -512,7 +567,7 @@ function SignUp({ navigation }) {
                     placeholder="Select State"
                 />
             ) : null}
-            {districts.length && userData.state_id ? (
+            {indian && districts.length && userData.state_id ? (
                 <FormSelectInput
                     label="District"
                     required={true}
@@ -526,7 +581,7 @@ function SignUp({ navigation }) {
                     placeholder="Select District"
                 />
             ) : null}
-            {tehsils.length && userData.district_id ? (
+            {indian && tehsils.length && userData.district_id ? (
                 <FormSelectInput
                     label="Tehsil"
                     required={true}
@@ -562,14 +617,33 @@ function SignUp({ navigation }) {
                     Platform.OS === "android" ? "numeric" : "number-pad"
                 }
                 appendComponent={
-                    <Image source={pinIcon} style={styles.appendIcon} />
+                    <View style={{ flexDirection: "row" }}>
+                        <Image
+                            source={
+                                userData.pincode == ""
+                                    ? null
+                                    : userData.pincode?.length < 6
+                                    ? crossIcon
+                                    : checkIcon
+                            }
+                            style={{
+                                width: 18,
+                                height: 18,
+                                tintColor:
+                                    userData.pincode?.length < 6
+                                        ? "red"
+                                        : "#83e85a",
+                                marginRight: 10,
+                            }}
+                        />
+                        <Image source={pinIcon} style={styles.appendIcon} />
+                    </View>
                 }
             />
             <FormTextInput
                 label="Email ID"
                 value={userData.email}
                 placeholder="Enter Email Address"
-                required={true}
                 onChangeText={(text) => {
                     validateEmail(text);
                     onChange(text, "email");
@@ -604,18 +678,6 @@ function SignUp({ navigation }) {
                     </View>
                 }
             />
-            <FormTextInput
-                label="Aadhar Card No."
-                value={userData.aadhaar_no}
-                placeholder="Enter 12 digit aadhar number"
-                required={true}
-                maxLength={12}
-                containerStyle={styles.textFieldContainer}
-                onChangeText={(text) => onChange(text, "aadhaar_no")}
-                keyboardType={
-                    Platform.OS === "android" ? "numeric" : "number-pad"
-                }
-            />
             <UploadButton
                 label="Upload Aadhar Card (Front)"
                 onPressFn={() => onImageChange("aadhaar_card_front")}
@@ -625,13 +687,20 @@ function SignUp({ navigation }) {
                 onPressFn={() => onImageChange("aadhaar_card_back")}
             />
             <View style={styles.buttonContainer}>
-                <RoundButton label="Register" handlePress={handleRegister} />
+                <RoundButton label="Register" handlePress={handleSubmit} />
             </View>
 
             <CountryCodePicker
                 ref={mobileRef}
                 onValueChange={(value) => onChange(value, "country_code")}
                 value={userData.country_code}
+            />
+            <CountryCodePicker
+                ref={whatRef}
+                onValueChange={(value) =>
+                    onChange(value, "whatsapp_country_code")
+                }
+                value={userData.whatsapp_country_code}
             />
         </ScrollView>
     );

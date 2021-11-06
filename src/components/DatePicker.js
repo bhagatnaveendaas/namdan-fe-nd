@@ -3,7 +3,6 @@ import React from "react";
 import { TouchableOpacity, Text, View } from "react-native";
 import moment from "moment";
 import styles from "../styles/FormInput";
-import theme from "../constants/theme";
 
 const DatePicker = ({
     date,
