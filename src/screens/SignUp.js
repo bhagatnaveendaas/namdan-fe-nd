@@ -33,13 +33,7 @@ const buildingIcon = require("../../assets/icons/building.png");
 const pinIcon = require("../../assets/icons/locationPin.png");
 const userIcon = require("../../assets/icons/userFilled.png");
 
-function SignUp({ navigation }) {
-    const createId = (length) => {
-        const chars = "ABCDEFGHIJKLMNOPQRSTUFWXYZ1234567890";
-        const pwd = _.sampleSize(chars, length || 12); // lodash v4: use _.sampleSize
-        return pwd.join("");
-    };
-
+const SignUp = ({ navigation }) => {
     const formFields = {
         name: "",
         relation: "",

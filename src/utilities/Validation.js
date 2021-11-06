@@ -14,9 +14,6 @@ export const NewDiscipleSchema = Yup.object().shape(
         form_no: Yup.string()
             .required("Please fill Form number.")
             .min(6, "Form number must be atleast of 6 characters."),
-        aadhaar_no: Yup.string()
-            .required("Please fill Aadhaar number")
-            .min(12, "Aadhar Card number must be 12 characters long."),
         namdan_taken: Yup.string().required("Please fill Namdan Taken at."),
         name: Yup.string()
             .required("Please fill Name.")
