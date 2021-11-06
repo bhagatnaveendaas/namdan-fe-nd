@@ -24,6 +24,7 @@ import Constants from "../constants/text/Signup";
 import theme from "../constants/theme";
 import styles from "../styles/Singup";
 import { NewDiscipleSchema } from "../utilities/Validation";
+import { useAuth } from "../context/AuthContext";
 const calendarIcon = require("../../assets/icons/calenderFilled.png");
 const checkIcon = require("../../assets/icons/check-circletick.png");
 const crossIcon = require("../../assets/icons/cross.png");
@@ -39,6 +40,9 @@ function SignUp({ navigation }) {
         const pwd = _.sampleSize(chars, length || 12); // lodash v4: use _.sampleSize
         return pwd.join("");
     };
+    const {
+        state: { user },
+    } = useAuth();
 
     const formFields = {
         name: "",
@@ -47,9 +51,9 @@ function SignUp({ navigation }) {
         age: "",
         address: "",
         aadhaar_no: "",
-        country_id: 0,
-        state_id: 0,
-        district_id: 0,
+        country_id: user?.country || 0,
+        state_id: user?.state || 0,
+        district_id: user?.district || 0,
         tehsil_id: 0,
         form_no: "",
         form_date: moment(),
@@ -67,7 +71,7 @@ function SignUp({ navigation }) {
         whatsapp_country_code: "+91",
     };
 
-    const [indian, setIndian] = useState(false);
+    const [indian] = useState(true);
 
     const namdan_takenAt = ["Online", "Naamdan Center"];
     const relations = ["S/O", "D/O", "W/O"];
