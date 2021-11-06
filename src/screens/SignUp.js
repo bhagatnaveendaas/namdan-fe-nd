@@ -250,15 +250,16 @@ const SignUp = ({ navigation }) => {
     }, []);
 
     const onImageChange = async (key) => {
-        // FIXME: use image uri instead of base64
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            base64: true,
             aspect: [4, 3],
-            quality: 1,
+            quality: 0,
         });
+
+        console.log(result);
+
         if (!result.cancelled) {
-            onChange(result?.base64, key);
+            onChange(result.uri, key);
         }
     };
 
@@ -289,12 +290,9 @@ const SignUp = ({ navigation }) => {
                 }}
             />
             <TouchableOpacity onPress={() => onImageChange("avatar")}>
-                {/* FIXME: use image uri instead of base64 */}
                 <Image
                     source={{
-                        uri: userData?.avatar
-                            ? `data:image/png;base64,${userData.avatar}`
-                            : Constants.imagePlaceholder,
+                        uri: userData?.avatar ? userData.avatar : Constants.imagePlaceholder,
                     }}
                     style={styles.image}
                 />
