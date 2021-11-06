@@ -143,10 +143,10 @@ function Login({ navigation }) {
         if (loggedIn) {
             console.log("Called2");
             if (!checkDataExist()) {
-                 await getCountries();
-                    await getStates();
-                    await getDistricts();
-                    await getTehsils();
+                await getCountries();
+                await getStates();
+                await getDistricts();
+                await getTehsils();
             }
 
             navigation.push("AshramDashboard");
@@ -154,7 +154,7 @@ function Login({ navigation }) {
     };
 
     useEffect(() => {
-        checkIfLoggedIn()
+        checkIfLoggedIn();
     }, []);
 
     const handleLogin = async () => {
@@ -200,6 +200,10 @@ function Login({ navigation }) {
                     console.log(response.data, "csrf", csrfKey);
                     await AsyncStorage.setItem("token", csrfKey);
                     await AsyncStorage.setItem("name", response.data.data.name);
+                    await AsyncStorage.setItem(
+                        "user",
+                        JSON.stringify(response.data.data)
+                    );
                     await AsyncStorage.setItem("role", response.data.data.role);
                     await AsyncStorage.setItem("loggedIn", "true");
                     await getCountries();
