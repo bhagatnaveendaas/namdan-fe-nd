@@ -61,7 +61,7 @@ const SignUp = ({ navigation }) => {
         whatsapp_country_code: "+91",
     };
 
-    const [indian, setIndian] = useState(false);
+    const [isIndian] = useState(true);
 
     const namdan_takenAt = ["Online", "Naamdan Center"];
     const relations = ["S/O", "D/O", "W/O"];
@@ -558,7 +558,7 @@ const SignUp = ({ navigation }) => {
                     placeholder="Select State"
                 />
             ) : null}
-            {indian && districts.length && userData.state_id ? (
+            {isIndian && districts.length && userData.state_id ? (
                 <FormSelectInput
                     label="District"
                     required={true}
@@ -572,7 +572,7 @@ const SignUp = ({ navigation }) => {
                     placeholder="Select District"
                 />
             ) : null}
-            {indian && tehsils.length && userData.district_id ? (
+            {isIndian && tehsils.length && userData.district_id ? (
                 <FormSelectInput
                     label="Tehsil"
                     required={true}
