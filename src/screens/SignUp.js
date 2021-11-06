@@ -24,6 +24,7 @@ import Constants from "../constants/text/Signup";
 import theme from "../constants/theme";
 import styles from "../styles/Singup";
 import { NewDiscipleSchema } from "../utilities/Validation";
+import { useAuth } from "../context/AuthContext";
 const calendarIcon = require("../../assets/icons/calenderFilled.png");
 const checkIcon = require("../../assets/icons/check-circletick.png");
 const crossIcon = require("../../assets/icons/cross.png");
@@ -34,6 +35,10 @@ const pinIcon = require("../../assets/icons/locationPin.png");
 const userIcon = require("../../assets/icons/userFilled.png");
 
 const SignUp = ({ navigation }) => {
+    const {
+        state: { user },
+    } = useAuth();
+
     const formFields = {
         name: "",
         relation: "",
@@ -41,9 +46,9 @@ const SignUp = ({ navigation }) => {
         age: "",
         address: "",
         aadhaar_no: "",
-        country_id: 0,
-        state_id: 0,
-        district_id: 0,
+        country_id: user?.country || 0,
+        state_id: user?.state || 0,
+        district_id: user?.district || 0,
         tehsil_id: 0,
         form_no: "",
         form_date: moment(),
@@ -279,7 +284,9 @@ const SignUp = ({ navigation }) => {
             <TouchableOpacity onPress={() => onImageChange("avatar")}>
                 <Image
                     source={{
-                        uri: userData?.avatar ? userData.avatar : Constants.imagePlaceholder,
+                        uri: userData?.avatar
+                            ? userData.avatar
+                            : Constants.imagePlaceholder,
                     }}
                     style={styles.image}
                 />
@@ -320,8 +327,8 @@ const SignUp = ({ navigation }) => {
                             userData.form_no == ""
                                 ? null
                                 : userData.form_no?.length < 6
-                                    ? crossIcon
-                                    : checkIcon
+                                ? crossIcon
+                                : checkIcon
                         }
                         style={{
                             width: 18,
@@ -351,8 +358,8 @@ const SignUp = ({ navigation }) => {
                             userData.aadhaar_no == ""
                                 ? null
                                 : userData.aadhaar_no?.length < 12
-                                    ? crossIcon
-                                    : checkIcon
+                                ? crossIcon
+                                : checkIcon
                         }
                         style={{
                             width: 18,
@@ -454,8 +461,8 @@ const SignUp = ({ navigation }) => {
                                 userData.mobile_no == ""
                                     ? null
                                     : userData.mobile_no?.length < 10
-                                        ? crossIcon
-                                        : checkIcon
+                                    ? crossIcon
+                                    : checkIcon
                             }
                             style={{
                                 width: 18,
@@ -499,8 +506,8 @@ const SignUp = ({ navigation }) => {
                                 userData.whatsapp_no == ""
                                     ? null
                                     : userData.whatsapp_no?.length < 10
-                                        ? crossIcon
-                                        : checkIcon
+                                    ? crossIcon
+                                    : checkIcon
                             }
                             style={{
                                 width: 18,
@@ -601,8 +608,8 @@ const SignUp = ({ navigation }) => {
                                 userData.pincode == ""
                                     ? null
                                     : userData.pincode?.length < 6
-                                        ? crossIcon
-                                        : checkIcon
+                                    ? crossIcon
+                                    : checkIcon
                             }
                             style={{
                                 width: 18,
@@ -636,8 +643,8 @@ const SignUp = ({ navigation }) => {
                                 userData.email == ""
                                     ? null
                                     : userData.email != "" && emailError == ""
-                                        ? checkIcon
-                                        : crossIcon
+                                    ? checkIcon
+                                    : crossIcon
                             }
                             style={{
                                 width: 18,
@@ -657,23 +664,23 @@ const SignUp = ({ navigation }) => {
                 }
             />
             <UploadButton
-                label={userData.aadhaar_card_front == "" ? "Upload Aadhar Card (Front)" : "Aadhar Card (Front)"}
-                tintColor={userData.aadhaar_card_front == ""
-                    ? ""
-                    : "#83e85a"}
-                icon={userData.aadhaar_card_front == ""
-                    ? ""
-                    : checkIcon}
+                label={
+                    userData.aadhaar_card_front == ""
+                        ? "Upload Aadhar Card (Front)"
+                        : "Aadhar Card (Front)"
+                }
+                tintColor={userData.aadhaar_card_front == "" ? "" : "#83e85a"}
+                icon={userData.aadhaar_card_front == "" ? "" : checkIcon}
                 onPressFn={() => onImageChange("aadhaar_card_front")}
             />
             <UploadButton
-                label={userData.aadhaar_card_back == "" ? "Upload Aadhar Card (Back)" : "Aadhar Card (Back)"}
-                tintColor={userData.aadhaar_card_back == ""
-                    ? ""
-                    : "#83e85a"}
-                icon={userData.aadhaar_card_back == ""
-                    ? ""
-                    : checkIcon}
+                label={
+                    userData.aadhaar_card_back == ""
+                        ? "Upload Aadhar Card (Back)"
+                        : "Aadhar Card (Back)"
+                }
+                tintColor={userData.aadhaar_card_back == "" ? "" : "#83e85a"}
+                icon={userData.aadhaar_card_back == "" ? "" : checkIcon}
                 onPressFn={() => onImageChange("aadhaar_card_back")}
             />
             <View style={styles.buttonContainer}>
@@ -694,6 +701,6 @@ const SignUp = ({ navigation }) => {
             />
         </ScrollView>
     );
-}
+};
 
 export default SignUp;

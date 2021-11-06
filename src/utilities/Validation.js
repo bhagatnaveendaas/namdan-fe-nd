@@ -20,7 +20,7 @@ export const NewDiscipleSchema = Yup.object().shape(
             .matches(/^[a-zA-Z ]*$/, "Name must contain alphabets only.")
             .min(3),
         relation: Yup.string().required("Please fill Relation."),
-        // TODO: gurardianName can be changed to guardian_name, 
+        // TODO: gurardianName can be changed to guardian_name,
         //validation sequence is not working for guardian_name
         guardianName: Yup.string()
             .required("Please fill Gaurdian Name.")
