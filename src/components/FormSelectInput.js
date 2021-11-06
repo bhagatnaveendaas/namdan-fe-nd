@@ -29,7 +29,7 @@ const FormSelectInput = ({
                     <Picker.Item
                         label={placeholder}
                         style={styles.firstPickerItem}
-                        value={null}
+                        value={0}
                     />
                     {options.map((item, index) => (
                         <Picker.Item
