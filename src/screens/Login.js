@@ -20,8 +20,10 @@ import textConstants from "../constants/text/Login";
 import theme from "../constants/theme";
 import styles from "../styles/Login";
 import appConfig from "../config";
+import { useAuth } from "../context/AuthContext";
 
 function Login({ navigation }) {
+    const { dispatch } = useAuth();
     const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
     const [showAlert, setShowAlert] = useState({
@@ -190,6 +192,11 @@ function Login({ navigation }) {
                         title: "Successful",
                         message: "You are successfully logged In",
                     };
+                    let user = response.data.data;
+                    dispatch({
+                        type: "LOGIN_USER",
+                        payload: { user },
+                    });
                     setShowAlert(temp);
                     let csrfKey = "";
 
