@@ -236,19 +236,6 @@ const SignUp = ({ navigation }) => {
             });
     };
 
-    //FIXME: User is able to upload photos even after denying for access.
-    useEffect(() => {
-        (async () => {
-            const { status } =
-                await ImagePicker.requestMediaLibraryPermissionsAsync();
-            if (status !== "granted") {
-                alert(
-                    "Sorry, we need camera roll permissions to make this work!"
-                );
-            }
-        })();
-    }, []);
-
     const onImageChange = async (key) => {
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -333,8 +320,8 @@ const SignUp = ({ navigation }) => {
                             userData.form_no == ""
                                 ? null
                                 : userData.form_no?.length < 6
-                                ? crossIcon
-                                : checkIcon
+                                    ? crossIcon
+                                    : checkIcon
                         }
                         style={{
                             width: 18,
@@ -364,8 +351,8 @@ const SignUp = ({ navigation }) => {
                             userData.aadhaar_no == ""
                                 ? null
                                 : userData.aadhaar_no?.length < 12
-                                ? crossIcon
-                                : checkIcon
+                                    ? crossIcon
+                                    : checkIcon
                         }
                         style={{
                             width: 18,
@@ -467,8 +454,8 @@ const SignUp = ({ navigation }) => {
                                 userData.mobile_no == ""
                                     ? null
                                     : userData.mobile_no?.length < 10
-                                    ? crossIcon
-                                    : checkIcon
+                                        ? crossIcon
+                                        : checkIcon
                             }
                             style={{
                                 width: 18,
@@ -512,8 +499,8 @@ const SignUp = ({ navigation }) => {
                                 userData.whatsapp_no == ""
                                     ? null
                                     : userData.whatsapp_no?.length < 10
-                                    ? crossIcon
-                                    : checkIcon
+                                        ? crossIcon
+                                        : checkIcon
                             }
                             style={{
                                 width: 18,
@@ -614,8 +601,8 @@ const SignUp = ({ navigation }) => {
                                 userData.pincode == ""
                                     ? null
                                     : userData.pincode?.length < 6
-                                    ? crossIcon
-                                    : checkIcon
+                                        ? crossIcon
+                                        : checkIcon
                             }
                             style={{
                                 width: 18,
@@ -649,8 +636,8 @@ const SignUp = ({ navigation }) => {
                                 userData.email == ""
                                     ? null
                                     : userData.email != "" && emailError == ""
-                                    ? checkIcon
-                                    : crossIcon
+                                        ? checkIcon
+                                        : crossIcon
                             }
                             style={{
                                 width: 18,
