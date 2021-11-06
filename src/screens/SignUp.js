@@ -657,11 +657,23 @@ const SignUp = ({ navigation }) => {
                 }
             />
             <UploadButton
-                label="Upload Aadhar Card (Front)"
+                label={userData.aadhaar_card_front == "" ? "Upload Aadhar Card (Front)" : "Aadhar Card (Front)"}
+                tintColor={userData.aadhaar_card_front == ""
+                    ? ""
+                    : "#83e85a"}
+                icon={userData.aadhaar_card_front == ""
+                    ? ""
+                    : checkIcon}
                 onPressFn={() => onImageChange("aadhaar_card_front")}
             />
             <UploadButton
-                label="Upload Aadhar Card (Back)"
+                label={userData.aadhaar_card_back == "" ? "Upload Aadhar Card (Back)" : "Aadhar Card (Back)"}
+                tintColor={userData.aadhaar_card_back == ""
+                    ? ""
+                    : "#83e85a"}
+                icon={userData.aadhaar_card_back == ""
+                    ? ""
+                    : checkIcon}
                 onPressFn={() => onImageChange("aadhaar_card_back")}
             />
             <View style={styles.buttonContainer}>

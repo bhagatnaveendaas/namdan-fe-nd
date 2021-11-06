@@ -1,7 +1,5 @@
-import { StatusBar, StyleSheet, Dimensions } from "react-native";
+import { StyleSheet } from "react-native";
 import theme from "../constants/theme";
-
-const { height, width } = Dimensions.get("window");
 
 export default StyleSheet.create({
     inputField: {
