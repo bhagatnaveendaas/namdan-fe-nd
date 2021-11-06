@@ -354,7 +354,6 @@ const SignUp = ({ navigation }) => {
                 label="Aadhar Card No."
                 value={userData.aadhaar_no}
                 placeholder="Enter 12 digit aadhar number"
-                required={true}
                 maxLength={12}
                 containerStyle={styles.textFieldContainer}
                 onChangeText={(text) => onChange(text, "aadhaar_no")}
