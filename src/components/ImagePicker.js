@@ -34,14 +34,7 @@ const ImagePicker = forwardRef(({ onImageSelected, onClose }, ref) => {
     const takePictureFromCamera = async () => {
         try {
             const granted = await PermissionsAndroid.request(
-                PermissionsAndroid.PERMISSIONS.CAMERA,
-                {
-                    title: "App Camera Permission",
-                    message: "App needs access to your camera ",
-                    buttonNeutral: "Ask Me Later",
-                    buttonNegative: "Cancel",
-                    buttonPositive: "OK",
-                }
+                PermissionsAndroid.PERMISSIONS.CAMERA
             );
             if (granted === PermissionsAndroid.RESULTS.GRANTED) {
                 launchCamera(
@@ -79,14 +72,7 @@ const ImagePicker = forwardRef(({ onImageSelected, onClose }, ref) => {
     const chooseImageFromGallery = async () => {
         try {
             const granted = await PermissionsAndroid.request(
-                PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-                {
-                    title: "App Camera Permission",
-                    message: "App needs access to your camera ",
-                    buttonNeutral: "Ask Me Later",
-                    buttonNegative: "Cancel",
-                    buttonPositive: "OK",
-                }
+                PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE
             );
             if (granted === PermissionsAndroid.RESULTS.GRANTED) {
                 launchImageLibrary(
