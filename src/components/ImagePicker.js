@@ -113,8 +113,6 @@ const ImagePicker = forwardRef(({ onImageSelected, onClose }, ref) => {
             closeOnDragDown={true}
             closeOnPressMask={true}
             animationType={"slide"}
-            openDuration={1000}
-            closeDuration={1000}
             customStyles={{
                 wrapper: {
                     backgroundColor: "rgba(60, 60, 60, 0.3)",
