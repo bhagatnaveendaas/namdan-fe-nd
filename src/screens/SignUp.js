@@ -10,8 +10,9 @@ import {
     View,
     ScrollView,
     Platform,
+    PermissionsAndroid,
 } from "react-native";
-import * as ImagePicker from "expo-image-picker";
+import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 import AwesomeAlert from "react-native-awesome-alerts";
 import CountryCodePicker from "../components/CountryCodePicker";
 import DatePicker from "../components/DatePicker";
@@ -242,16 +243,42 @@ const SignUp = ({ navigation }) => {
     };
 
     const onImageChange = async (key) => {
-        const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            aspect: [4, 3],
-            quality: 0,
-        });
-
-        console.log(result);
-
-        if (!result.cancelled) {
-            onChange(result.uri, key);
+        try {
+            const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+                {
+                    title: "App Camera Permission",
+                    message: "App needs access to your camera ",
+                    buttonNeutral: "Ask Me Later",
+                    buttonNegative: "Cancel",
+                    buttonPositive: "OK",
+                }
+            );
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                launchImageLibrary(
+                    {
+                        mediaType: "photo",
+                        quality: 1,
+                    },
+                    (response) => {
+                        if (response.didCancel) {
+                            console.log("User cancelled image picker");
+                        } else if (response.errorCode) {
+                            console.error(
+                                `Error with status ${response.errorCode} and message: ${response.errorMessage}`
+                            );
+                        } else {
+                            const uri = response.assets[0].uri;
+                            onChange(uri, key);
+                        }
+                    }
+                );
+                console.log("Camera permission granted");
+            } else {
+                console.log("Camera permission denied");
+            }
+        } catch (err) {
+            console.warn(err);
         }
     };
 
