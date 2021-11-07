@@ -1,5 +1,6 @@
 import axios from "axios";
 import _ from "lodash";
+import { serialize } from "object-to-formdata";
 import moment from "moment";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -27,6 +28,7 @@ import theme from "../constants/theme";
 import styles from "../styles/Singup";
 import { NewDiscipleSchema } from "../utilities/Validation";
 import { useAuth } from "../context/AuthContext";
+import FormData from "form-data";
 import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
 const calendarIcon = require("../../assets/icons/calenderFilled.png");
 const checkIcon = require("../../assets/icons/check-circletick.png");
@@ -58,8 +60,8 @@ const SignUp = ({ navigation }) => {
         mobile_no: "",
         whatsapp_no: "",
         avatar: "",
-        aadhaar_card_back: "",
-        aadhaar_card_front: "",
+        file2: "",
+        file1: "",
         email: "",
         pincode: "",
         occupation: "",
@@ -85,6 +87,10 @@ const SignUp = ({ navigation }) => {
         message: "",
         confirm: "Ok",
     });
+
+    let AvatarImage;
+    let AadharFrontImage;
+    let AadharBackImage;
 
     const [userData, setUserData] = useState(formFields);
     const [show, setShow] = useState(false);
@@ -200,15 +206,60 @@ const SignUp = ({ navigation }) => {
     };
 
     const handleRegister = async () => {
-        const temp = { ...userData, guardian_name: userData.guardianName };
-        temp.form_date = userData.form_date.toISOString().split("T")[0];
-        temp.dob = userData.dob.toISOString().split("T")[0];
-        temp.mobile_no = temp.country_code + temp.mobile_no;
-        delete temp.guardianName;
-        delete temp.country_code;
+        const dob = userData.dob.toISOString().split("T")[0];
+        const form_date = userData.form_date.toISOString().split("T")[0];
 
-        console.log(temp);
-
+        const formData = new FormData();
+        formData.append("namdan_center", 10);
+        formData.append("name", userData.name);
+        formData.append("relation", userData.relation);
+        formData.append("guardian_name", userData.guardianName);
+        formData.append("dob", dob);
+        formData.append("address", userData.address);
+        formData.append("country_id", userData.country_id);
+        formData.append("state_id", userData.state_id);
+        formData.append("district_id", userData.district_id);
+        formData.append("tehsil_id", userData.tehsil_id);
+        formData.append("pincode", userData.pincode);
+        formData.append(
+            "mobile_no",
+            userData.country_code + userData.mobile_no
+        );
+        formData.append(
+            "whatsapp_no",
+            userData.whatsapp_country_code + userData.whatsapp_no
+        );
+        formData.append("form_no", userData.form_no);
+        formData.append("form_date", form_date);
+        formData.append("occupation", userData.occupation);
+        formData.append("namdan_taken", userData.namdan_taken);
+        formData.append("email", userData.email);
+        formData.append("unique_id", userData.aadhaar_no);
+        formData.append("avatar", {
+            uri:
+                Platform.OS === "android"
+                    ? userData.avatar
+                    : userData.avatar.replace("file://", ""),
+            type: "image/jpeg",
+            name: "file1.jpg",
+        });
+        formData.append("file1", {
+            uri:
+                Platform.OS === "android"
+                    ? userData.file1
+                    : userData.file1.replace("file://", ""),
+            type: "image/jpeg",
+            name: "file1.jpg",
+        });
+        formData.append("file2", {
+            uri:
+                Platform.OS === "android"
+                    ? userData.file2
+                    : userData.file2.replace("file://", ""),
+            type: "image/jpeg",
+            name: "file2.jpg",
+        });
+        console.log(formData);
         const config = {
             method: "post",
             url: `${appConfig.api_url}/disciple/create`,
@@ -217,7 +268,7 @@ const SignUp = ({ navigation }) => {
                 Accept: "multipart/form-data",
                 "X-CSRF-TOKEN": await AsyncStorage.getItem("token"),
             },
-            data: temp,
+            data: formData,
         };
 
         axios(config)
@@ -281,19 +332,22 @@ const SignUp = ({ navigation }) => {
 
     const onAvatarSelected = (imageData) => {
         closeAvatarSheet();
+        AvatarImage = imageData;
         const { uri } = imageData;
         setUserData({ ...userData, avatar: uri });
     };
 
     const onAadhdarFrontSelected = (imageData) => {
         closeAadharFrontSheet();
+        AadharFrontImage = imageData;
         const { uri } = imageData;
-        setUserData({ ...userData, aadhaar_card_front: uri });
+        setUserData({ ...userData, file1: uri });
     };
     const onAadhdarBackSelected = (imageData) => {
         closeAadharBackSheet();
+        AadharBackImage = imageData;
         const { uri } = imageData;
-        setUserData({ ...userData, aadhaar_card_back: uri });
+        setUserData({ ...userData, file2: uri });
     };
 
     const mobileRef = useRef();
@@ -717,26 +771,22 @@ const SignUp = ({ navigation }) => {
                 />
                 <UploadButton
                     label={
-                        userData.aadhaar_card_front == ""
+                        userData.file1 == ""
                             ? "Upload Aadhar Card (Front)"
                             : "Aadhar Card (Front)"
                     }
-                    tintColor={
-                        userData.aadhaar_card_front == "" ? "" : "#83e85a"
-                    }
-                    icon={userData.aadhaar_card_front == "" ? "" : checkIcon}
+                    tintColor={userData.file1 == "" ? "" : "#83e85a"}
+                    icon={userData.file1 == "" ? "" : checkIcon}
                     onPressFn={openAadharFrontSheet}
                 />
                 <UploadButton
                     label={
-                        userData.aadhaar_card_back == ""
+                        userData.file2 == ""
                             ? "Upload Aadhar Card (Back)"
                             : "Aadhar Card (Back)"
                     }
-                    tintColor={
-                        userData.aadhaar_card_back == "" ? "" : "#83e85a"
-                    }
-                    icon={userData.aadhaar_card_back == "" ? "" : checkIcon}
+                    tintColor={userData.file2 == "" ? "" : "#83e85a"}
+                    icon={userData.file2 == "" ? "" : checkIcon}
                     onPressFn={openAadharBackSheet}
                 />
                 <View style={styles.buttonContainer}>
