@@ -20,6 +20,7 @@ import FormTextInput from "../components/FormTextInput";
 import FormSelectInput from "../components/FormSelectInput";
 import RoundButton from "../components/RoundButton";
 import UploadButton from "../components/UploadButton";
+import ImagePicker from "../components/ImagePicker";
 import appConfig from "../config";
 import Constants from "../constants/text/Signup";
 import theme from "../constants/theme";
@@ -242,44 +243,56 @@ const SignUp = ({ navigation }) => {
             });
     };
 
-    const onImageChange = async (key) => {
-        try {
-            const granted = await PermissionsAndroid.request(
-                PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-                {
-                    title: "App Camera Permission",
-                    message: "App needs access to your camera ",
-                    buttonNeutral: "Ask Me Later",
-                    buttonNegative: "Cancel",
-                    buttonPositive: "OK",
-                }
-            );
-            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                launchImageLibrary(
-                    {
-                        mediaType: "photo",
-                        quality: 1,
-                    },
-                    (response) => {
-                        if (response.didCancel) {
-                            console.log("User cancelled image picker");
-                        } else if (response.errorCode) {
-                            console.error(
-                                `Error with status ${response.errorCode} and message: ${response.errorMessage}`
-                            );
-                        } else {
-                            const uri = response.assets[0].uri;
-                            onChange(uri, key);
-                        }
-                    }
-                );
-                console.log("Camera permission granted");
-            } else {
-                console.log("Camera permission denied");
-            }
-        } catch (err) {
-            console.warn(err);
+    const avatarSheetRef = useRef(null);
+    const aadharFrontRef = useRef(null);
+    const aadharBackRef = useRef(null);
+
+    const closeAvatarSheet = () => {
+        if (avatarSheetRef.current) {
+            avatarSheetRef.current.close();
         }
+    };
+    const closeAadharFrontSheet = () => {
+        if (aadharFrontRef.current) {
+            aadharFrontRef.current.close();
+        }
+    };
+    const closeAadharBackSheet = () => {
+        if (aadharBackRef.current) {
+            aadharBackRef.current.close();
+        }
+    };
+    const openAvatarSheet = () => {
+        if (avatarSheetRef.current) {
+            avatarSheetRef.current.open();
+        }
+    };
+    const openAadharFrontSheet = () => {
+        if (aadharFrontRef.current) {
+            aadharFrontRef.current.open();
+        }
+    };
+    const openAadharBackSheet = () => {
+        if (aadharBackRef.current) {
+            aadharBackRef.current.open();
+        }
+    };
+
+    const onAvatarSelected = (imageData) => {
+        closeAvatarSheet();
+        const { uri } = imageData;
+        setUserData({ ...userData, avatar: uri });
+    };
+
+    const onAadhdarFrontSelected = (imageData) => {
+        closeAadharFrontSheet();
+        const { uri } = imageData;
+        setUserData({ ...userData, aadhaar_card_front: uri });
+    };
+    const onAadhdarBackSelected = (imageData) => {
+        closeAadharBackSheet();
+        const { uri } = imageData;
+        setUserData({ ...userData, aadhaar_card_back: uri });
     };
 
     const mobileRef = useRef();
@@ -308,7 +321,7 @@ const SignUp = ({ navigation }) => {
                     setShowAlert(temp);
                 }}
             />
-            <TouchableOpacity onPress={() => onImageChange("avatar")}>
+            <TouchableOpacity onPress={openAvatarSheet}>
                 <Image
                     source={{
                         uri: userData?.avatar
@@ -698,7 +711,7 @@ const SignUp = ({ navigation }) => {
                 }
                 tintColor={userData.aadhaar_card_front == "" ? "" : "#83e85a"}
                 icon={userData.aadhaar_card_front == "" ? "" : checkIcon}
-                onPressFn={() => onImageChange("aadhaar_card_front")}
+                onPressFn={openAadharFrontSheet}
             />
             <UploadButton
                 label={
@@ -708,7 +721,7 @@ const SignUp = ({ navigation }) => {
                 }
                 tintColor={userData.aadhaar_card_back == "" ? "" : "#83e85a"}
                 icon={userData.aadhaar_card_back == "" ? "" : checkIcon}
-                onPressFn={() => onImageChange("aadhaar_card_back")}
+                onPressFn={openAadharBackSheet}
             />
             <View style={styles.buttonContainer}>
                 <RoundButton label="Register" handlePress={handleSubmit} />
@@ -725,6 +738,21 @@ const SignUp = ({ navigation }) => {
                     onChange(value, "whatsapp_country_code")
                 }
                 value={userData.whatsapp_country_code}
+            />
+            <ImagePicker
+                ref={avatarSheetRef}
+                onImageSelected={onAvatarSelected}
+                onClose={closeAvatarSheet}
+            />
+            <ImagePicker
+                ref={aadharFrontRef}
+                onImageSelected={onAadhdarFrontSelected}
+                onClose={closeAadharFrontSheet}
+            />
+            <ImagePicker
+                ref={aadharBackRef}
+                onImageSelected={onAadhdarBackSelected}
+                onClose={closeAadharBackSheet}
             />
         </ScrollView>
     );
