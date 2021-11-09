@@ -14,6 +14,7 @@ import { USER_SEARCH_ACTION } from "../../constants";
 import theme from "../../constants/theme";
 import { executeRequest } from "../../helper/network/link";
 import { generateUserInfoRequestURL } from "../../helper/router";
+import { postJsonData } from "../../httpClient/apiRequest";
 import { dateInYYMMDDFormat } from "../../utilities/DateUtils";
 import UserCard from "./components/UserCard";
 
@@ -144,40 +145,51 @@ const Entry = ({ route, navigation }) => {
     const [filterStartDate, setFilterStartDate] = useState(new Date("1996"));
 
     const [filterEndDate, setFilterEndDate] = useState(new Date());
+    const searchBy = route.params.searchBy;
+    const text = route.params.text;
+    useEffect(() => {
+        if (text) {
+            searchDiscipleWithMobile(text);
+        }
+    }, []);
 
+    const searchDiscipleWithMobile = async (mobileNo) => {
+        try {
+            const { data } = await postJsonData("/disciple/search", {
+                search_by: "mobile_no",
+                search_value: mobileNo,
+            });
+            if (data?.data.length > 0) {
+                setUsersSearched(data.data);
+            }
+        } catch (error) {
+            console.log("Error", error);
+            setUsersSearched([]);
+        }
+    };
     const searchDisciples = async () => {
         const searchData = {
-            from_date: dateInYYMMDDFormat(filterStartDate),
-            to_date: dateInYYMMDDFormat(filterEndDate),
-            country_id: countrySelected,
-            tehsil_id: tehsilSelected,
-            state_id: stateSelected,
-            district_id: districtSelected,
-            term: search,
+            search_by: "mobile_no",
+            search_value: "+91" + search,
         };
-        const config = {
-            method: POST_REQUEST_METHOD,
-            headers: {
-                key: APPLICATION_KEY,
-                Accept: "application/json",
-                "X-CSRF-TOKEN": await AsyncStorage.getItem("token"),
-                key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
-            },
-        };
-        executeRequest(USER_SEARCH_REQUEST_URL, searchData, config)
-            .then((response) => {
-                console.log(response.data.data[0]);
-                setUsersSearched(response.data.data);
-            })
-            .catch((error) => {
-                console.log("Error: ", error);
-                setUsersSearched([]);
-            });
+        try {
+            const { data } = await postJsonData("/disciple/search", searchData);
+
+            console.log(searchBy);
+            console.log(text);
+            if (data?.data.length > 0) {
+                setUsersSearched(data.data);
+            }
+        } catch (error) {
+            console.log("Error", error);
+            setUsersSearched([]);
+        }
     };
 
-    const [search, setSearch] = useState("");
+    const [search, setSearch] = useState(route.params?.text || "");
     const [usersSearched, setUsersSearched] = useState([]);
     const { entryType, title } = route.params;
+
     useEffect(() => {
         console.log(entryType);
         navigation.setOptions({
@@ -199,11 +211,12 @@ const Entry = ({ route, navigation }) => {
         >
             <View style={{ paddingHorizontal: 15, marginTop: 15 }}>
                 <SearchBar
+                    placeholder={"Search by mobile Number"}
                     value={search}
                     setValue={(text) => {
                         setSearch(text);
-                        searchDisciples();
                     }}
+                    onPress={searchDisciples}
                     onCancel={() => {
                         setSearch("");
                         setUsersSearched([]);

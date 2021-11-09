@@ -12,7 +12,7 @@ import theme from "../constants/theme";
 const crossImage = require("../../assets/icons/cross.png");
 const searchImage = require("../../assets/icons/search.png");
 
-const SeachBar = ({ value, setValue, onCancel }) => {
+const SeachBar = ({ value, setValue, onCancel, onPress, placeholder }) => {
     return (
         <View
             style={{
@@ -27,10 +27,6 @@ const SeachBar = ({ value, setValue, onCancel }) => {
             <View
                 style={{ flex: 1, flexDirection: "row", alignItems: "center" }}
             >
-                <Image
-                    source={searchImage}
-                    style={{ height: 25, width: 25, tintColor: "white" }}
-                />
                 <TextInput
                     style={{
                         marginLeft: 5,
@@ -40,9 +36,23 @@ const SeachBar = ({ value, setValue, onCancel }) => {
                         fontFamily: theme.fonts.poppins.regular,
                     }}
                     value={value}
+                    placeholder={placeholder}
                     onChangeText={(text) => setValue(text)}
                 />
             </View>
+            {value >= 10 && (
+                <TouchableOpacity onPress={onPress}>
+                    <Image
+                        source={searchImage}
+                        style={{
+                            height: 20,
+                            width: 20,
+                            tintColor: "green",
+                            marginRight: 10,
+                        }}
+                    />
+                </TouchableOpacity>
+            )}
 
             {value !== "" && (
                 <TouchableOpacity onPress={onCancel}>

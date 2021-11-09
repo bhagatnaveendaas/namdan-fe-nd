@@ -200,11 +200,21 @@ const Home = ({ navigation }) => {
                             }}
                         >
                             <VerticalIconButton
-                                label={`Pratham${"\n"}Naam`}
+                                label={`Pratham Naam`}
                                 icon={require("../../assets/icons/pn.png")}
                                 pressHandler={() =>
                                     navigation.push("Pratham Naam")
                                 }
+                            />
+                            <VerticalIconButton
+                                label="Attendance"
+                                icon={require("../../assets/icons/at.png")}
+                                pressHandler={() => {
+                                    navigation.navigate("Entry", {
+                                        title: "Attendance",
+                                        entryType: ATTENDANCE,
+                                    });
+                                }}
                             />
                             <VerticalIconButton
                                 label="Satnaam"
@@ -213,6 +223,8 @@ const Home = ({ navigation }) => {
                                     navigation.navigate("Entry", {
                                         title: "Enter Satnaam",
                                         entryType: SATNAM,
+                                        searchBy: "mobile_no",
+                                        text: "",
                                     });
                                 }}
                             />
@@ -226,16 +238,7 @@ const Home = ({ navigation }) => {
                                     });
                                 }}
                             />
-                            <VerticalIconButton
-                                label={`Punar${"\n"}Updesh`}
-                                icon={require("../../assets/icons/pu.png")}
-                                pressHandler={() => {
-                                    navigation.navigate("Entry", {
-                                        title: "Enter Punar Updesh",
-                                        entryType: PUNARUPDESH,
-                                    });
-                                }}
-                            />
+                            
                             <VerticalIconButton
                                 label="Shudhikaran"
                                 icon={require("../../assets/icons/sk.png")}
@@ -247,12 +250,12 @@ const Home = ({ navigation }) => {
                                 }}
                             />
                             <VerticalIconButton
-                                label="Attendance"
-                                icon={require("../../assets/icons/at.png")}
+                                label={`Punar Updesh`}
+                                icon={require("../../assets/icons/pu.png")}
                                 pressHandler={() => {
                                     navigation.navigate("Entry", {
-                                        title: "Attendance",
-                                        entryType: ATTENDANCE,
+                                        title: "Enter Punar Updesh",
+                                        entryType: PUNARUPDESH,
                                     });
                                 }}
                             />

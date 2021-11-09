@@ -9,11 +9,9 @@ import {
     Text,
     TouchableOpacity,
     View,
-    ScrollView,
     Platform,
-    PermissionsAndroid,
+    ActivityIndicator,
 } from "react-native";
-import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 import AwesomeAlert from "react-native-awesome-alerts";
 import CountryCodePicker from "../components/CountryCodePicker";
 import DatePicker from "../components/DatePicker";
@@ -30,6 +28,7 @@ import { NewDiscipleSchema } from "../utilities/Validation";
 import { useAuth } from "../context/AuthContext";
 import FormData from "form-data";
 import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
+import { postJsonData } from "../httpClient/apiRequest";
 const calendarIcon = require("../../assets/icons/calenderFilled.png");
 const checkIcon = require("../../assets/icons/check-circletick.png");
 const crossIcon = require("../../assets/icons/cross.png");
@@ -352,6 +351,31 @@ const SignUp = ({ navigation }) => {
 
     const mobileRef = useRef();
     const whatRef = useRef();
+
+    const [mobileLoading, setmobileLoading] = useState(false);
+    const [showRef, setShowRef] = useState(false);
+
+    const onFetchingMobile = async (text) => {
+        onChange(text, "mobile_no");
+        if (text.length == 10) {
+            setmobileLoading(true);
+            try {
+                const { data } = await postJsonData("/disciple/search", {
+                    search_by: "mobile_no",
+                    search_value: userData.country_code + text,
+                });
+
+                if (data?.data.length > 0) {
+                    setShowRef(true);
+                }
+                setmobileLoading(false);
+            } catch (error) {
+                setmobileLoading(false);
+                console.log("Error", error);
+            }
+        }
+    };
+
     return (
         <KeyboardAvoidingWrapper>
             <>
@@ -413,6 +437,7 @@ const SignUp = ({ navigation }) => {
                         />
                     }
                 />
+
                 <FormTextInput
                     label="Form No."
                     value={userData.form_no}
@@ -547,7 +572,7 @@ const SignUp = ({ navigation }) => {
                     }
                     maxLength={10}
                     containerStyle={styles.textFieldContainer}
-                    onChangeText={(text) => onChange(text, "mobile_no")}
+                    onChangeText={onFetchingMobile}
                     prependComponent={
                         <TouchableOpacity
                             onPress={() => mobileRef?.current.focus()}
@@ -557,28 +582,54 @@ const SignUp = ({ navigation }) => {
                         </TouchableOpacity>
                     }
                     appendComponent={
-                        <View style={{ flexDirection: "row" }}>
-                            <Image
-                                source={
-                                    userData.mobile_no == ""
-                                        ? null
-                                        : userData.mobile_no?.length < 10
-                                        ? crossIcon
-                                        : checkIcon
-                                }
-                                style={{
-                                    width: 18,
-                                    height: 18,
-                                    tintColor:
-                                        userData.mobile_no?.length < 10
-                                            ? "red"
-                                            : "#83e85a",
-                                    marginRight: 10,
-                                }}
-                            />
+                        <View
+                            style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                            }}
+                        >
+                            {mobileLoading && (
+                                <ActivityIndicator
+                                    animating={mobileLoading}
+                                    style={{ width: 10, height: 10 }}
+                                    size="small"
+                                    color={theme.colors.primary}
+                                />
+                            )}
+                            {showRef && (
+                                <View>
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            navigation.navigate("Entry", {
+                                                title: "Search",
+                                                searchBy: "mobile_no",
+                                                text: `${userData.country_code}${userData.mobile_no}`,
+                                            });
+                                        }}
+                                        style={{
+                                            backgroundColor: "green",
+                                            paddingVertical: 2,
+                                            paddingHorizontal: 5,
+                                            borderRadius: 5,
+                                        }}
+                                    >
+                                        <Text
+                                            style={{
+                                                fontSize: 14,
+                                                color: "white",
+                                            }}
+                                        >
+                                            View Entry
+                                        </Text>
+                                    </TouchableOpacity>
+                                </View>
+                            )}
                             <Image
                                 source={mobileIcon}
-                                style={[styles.appendIcon, { width: 15 }]}
+                                style={[
+                                    styles.appendIcon,
+                                    { width: 15, marginLeft: 10 },
+                                ]}
                             />
                         </View>
                     }

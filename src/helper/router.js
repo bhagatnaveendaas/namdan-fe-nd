@@ -58,7 +58,7 @@ export const generateUserInfoRequestURL = (
         action
     ){
         case USER_SEARCH_ACTION: {
-            return `${SEVA_API_REQUEST_URL}/disciple/advance_search?page=1&limit=10`
+            return `${SEVA_API_REQUEST_URL}/disciple/search`
         }
         break;
     }
