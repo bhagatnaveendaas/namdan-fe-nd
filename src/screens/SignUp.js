@@ -213,7 +213,6 @@ const SignUp = ({ navigation }) => {
         const form_date = userData.form_date.toISOString().split("T")[0];
 
         const formData = new FormData();
-        formData.append("namdan_center", 10);
         formData.append("name", userData.name);
         formData.append("relation", userData.relation);
         formData.append("guardian_name", userData.guardianName);
