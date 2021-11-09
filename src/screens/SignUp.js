@@ -30,6 +30,7 @@ import { NewDiscipleSchema } from "../utilities/Validation";
 import { useAuth } from "../context/AuthContext";
 import FormData from "form-data";
 import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
+import SearchableFlatlist from "../components/SearchableFlatlist";
 const calendarIcon = require("../../assets/icons/calenderFilled.png");
 const checkIcon = require("../../assets/icons/check-circletick.png");
 const crossIcon = require("../../assets/icons/cross.png");
@@ -72,6 +73,8 @@ const SignUp = ({ navigation }) => {
     };
 
     const [isIndian] = useState(true);
+
+    const [searchTerm, setSearchTerm] = useState();
 
     const namdan_takenAt = ["Online", "Naamdan Center"];
     const relations = ["S/O", "D/O", "W/O"];
@@ -426,8 +429,8 @@ const SignUp = ({ navigation }) => {
                                 userData.form_no == ""
                                     ? null
                                     : userData.form_no?.length < 6
-                                    ? crossIcon
-                                    : checkIcon
+                                        ? crossIcon
+                                        : checkIcon
                             }
                             style={{
                                 width: 18,
@@ -457,8 +460,8 @@ const SignUp = ({ navigation }) => {
                                 userData.aadhaar_no == ""
                                     ? null
                                     : userData.aadhaar_no?.length < 12
-                                    ? crossIcon
-                                    : checkIcon
+                                        ? crossIcon
+                                        : checkIcon
                             }
                             style={{
                                 width: 18,
@@ -563,8 +566,8 @@ const SignUp = ({ navigation }) => {
                                     userData.mobile_no == ""
                                         ? null
                                         : userData.mobile_no?.length < 10
-                                        ? crossIcon
-                                        : checkIcon
+                                            ? crossIcon
+                                            : checkIcon
                                 }
                                 style={{
                                     width: 18,
@@ -608,8 +611,8 @@ const SignUp = ({ navigation }) => {
                                     userData.whatsapp_no == ""
                                         ? null
                                         : userData.whatsapp_no?.length < 10
-                                        ? crossIcon
-                                        : checkIcon
+                                            ? crossIcon
+                                            : checkIcon
                                 }
                                 style={{
                                     width: 18,
@@ -628,17 +631,16 @@ const SignUp = ({ navigation }) => {
                         </View>
                     }
                 />
-                <FormSelectInput
-                    label="Country"
-                    required={true}
-                    value={userData.country_id}
+                <SearchableFlatlist
+                    label={"Country"}
+                    placeholderText={"Select Country"}
+                    data={countries}
+                    searchTerm={searchTerm}
+                    onChangeOfSearchTerm={setSearchTerm}
                     onValueChange={(value) => {
-                        onChange(value, "country_id");
-                        getStates(value);
+                        onChange(value.id, "country_id");
+                        getStates(value.id);
                     }}
-                    options={countries}
-                    containerStyle={styles.selectFieldContainer}
-                    placeholder="Select Country"
                 />
                 {states.length && userData.country_id ? (
                     <FormSelectInput
@@ -713,8 +715,8 @@ const SignUp = ({ navigation }) => {
                                     userData.pincode == ""
                                         ? null
                                         : userData.pincode?.length < 6
-                                        ? crossIcon
-                                        : checkIcon
+                                            ? crossIcon
+                                            : checkIcon
                                 }
                                 style={{
                                     width: 18,
@@ -748,9 +750,9 @@ const SignUp = ({ navigation }) => {
                                     userData.email == ""
                                         ? null
                                         : userData.email != "" &&
-                                          emailError == ""
-                                        ? checkIcon
-                                        : crossIcon
+                                            emailError == ""
+                                            ? checkIcon
+                                            : crossIcon
                                 }
                                 style={{
                                     width: 18,
