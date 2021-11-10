@@ -369,12 +369,16 @@ const SignUp = ({ navigation }) => {
 
                 if (data?.data.length > 0) {
                     setShowRef(true);
+                } else {
+                    setShowRef(false);
                 }
                 setmobileLoading(false);
             } catch (error) {
                 setmobileLoading(false);
                 console.log("Error", error);
             }
+        } else {
+            setShowRef(false);
         }
     };
 
@@ -453,8 +457,8 @@ const SignUp = ({ navigation }) => {
                                 userData.form_no == ""
                                     ? null
                                     : userData.form_no?.length < 6
-                                        ? crossIcon
-                                        : checkIcon
+                                    ? crossIcon
+                                    : checkIcon
                             }
                             style={{
                                 width: 18,
@@ -484,8 +488,8 @@ const SignUp = ({ navigation }) => {
                                 userData.aadhaar_no == ""
                                     ? null
                                     : userData.aadhaar_no?.length < 12
-                                        ? crossIcon
-                                        : checkIcon
+                                    ? crossIcon
+                                    : checkIcon
                             }
                             style={{
                                 width: 18,
@@ -661,8 +665,8 @@ const SignUp = ({ navigation }) => {
                                     userData.whatsapp_no == ""
                                         ? null
                                         : userData.whatsapp_no?.length < 10
-                                            ? crossIcon
-                                            : checkIcon
+                                        ? crossIcon
+                                        : checkIcon
                                 }
                                 style={{
                                     width: 18,
@@ -765,8 +769,8 @@ const SignUp = ({ navigation }) => {
                                     userData.pincode == ""
                                         ? null
                                         : userData.pincode?.length < 6
-                                            ? crossIcon
-                                            : checkIcon
+                                        ? crossIcon
+                                        : checkIcon
                                 }
                                 style={{
                                     width: 18,
@@ -800,9 +804,9 @@ const SignUp = ({ navigation }) => {
                                     userData.email == ""
                                         ? null
                                         : userData.email != "" &&
-                                            emailError == ""
-                                            ? checkIcon
-                                            : crossIcon
+                                          emailError == ""
+                                        ? checkIcon
+                                        : crossIcon
                                 }
                                 style={{
                                     width: 18,
