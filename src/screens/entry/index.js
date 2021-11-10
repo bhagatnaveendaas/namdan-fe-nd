@@ -6,6 +6,7 @@ import {
     ScrollView,
     TouchableOpacity,
     View,
+    ActivityIndicator,
 } from "react-native";
 import DateRangeFilter from "../../components/DateRangeFilter";
 import Dropdown from "../../components/DropdownV3";
@@ -61,6 +62,8 @@ const Entry = ({ route, navigation }) => {
     const [tehsilSelected, setTehsilsSelected] = useState();
 
     const [tehsilSelectedIndex, setTehsilSelectedIndex] = useState();
+
+    const [loading, setLoading] = useState(false);
 
     const fetchCountries = async () => {
         const response = await AsyncStorage.getItem("countries");
@@ -155,13 +158,17 @@ const Entry = ({ route, navigation }) => {
 
     const searchDiscipleWithMobile = async (mobileNo) => {
         try {
+            setLoading(true);
             const { data } = await postJsonData("/disciple/search", {
                 search_by: "mobile_no",
-                search_value: mobileNo,
+                search_value: mobileNo.includes("+")
+                    ? mobileNo
+                    : `+91${mobileNo}`,
             });
             if (data?.data.length > 0) {
                 setUsersSearched(data.data);
             }
+            setLoading(false);
         } catch (error) {
             console.log("Error", error);
             setUsersSearched([]);
@@ -216,7 +223,8 @@ const Entry = ({ route, navigation }) => {
                     setValue={(text) => {
                         setSearch(text);
                     }}
-                    onPress={searchDisciples}
+                    onSubmitEditing={() => searchDiscipleWithMobile(search)}
+                    onPress={() => searchDiscipleWithMobile(search)}
                     onCancel={() => {
                         setSearch("");
                         setUsersSearched([]);
@@ -380,6 +388,14 @@ const Entry = ({ route, navigation }) => {
                         );
                     })}
                 </View>
+                {loading && (
+                    <ActivityIndicator
+                        color={theme.colors.primaryLight}
+                        size="large"
+                        style={{ marginTop: 30 }}
+                        animating={loading}
+                    />
+                )}
             </ScrollView>
         </View>
     );

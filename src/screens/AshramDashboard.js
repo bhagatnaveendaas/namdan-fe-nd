@@ -22,6 +22,7 @@ import appConfig from "../config";
 import {
     ATTENDANCE,
     PUNARUPDESH,
+    SAARSHABAD,
     SAARNAAM,
     SATNAM,
     SHUDDIKARAN,
@@ -238,7 +239,16 @@ const Home = ({ navigation }) => {
                                     });
                                 }}
                             />
-                            
+                            <VerticalIconButton
+                                label={`Sarshabd`}
+                                icon={require("../../assets/icons/sr2.png")}
+                                pressHandler={() => {
+                                    navigation.navigate("Entry", {
+                                        title: "SarShabd",
+                                        entryType: SAARSHABAD,
+                                    });
+                                }}
+                            />
                             <VerticalIconButton
                                 label="Shudhikaran"
                                 icon={require("../../assets/icons/sk.png")}

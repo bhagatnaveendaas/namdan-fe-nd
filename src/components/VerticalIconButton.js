@@ -7,34 +7,32 @@ import theme from "../constants/theme";
 const { height, width } = Dimensions.get("window");
 
 const VerticalIconButton = ({ label, icon, pressHandler }) => (
-    <View style={{ paddingBottom: "3%", width: "30%", height: "50%" }}>
-        <View style={[theme.card, { paddingVertical: "8%", flexGrow: 1 }]}>
-            <TouchableOpacity onPress={pressHandler}>
-                <View style={{ paddingBottom: "4%" }}>
-                    <Image
-                        style={{
-                            height: height * 0.07,
-                            width: height * 0.065,
-                            alignItems: "center",
-                            alignSelf: "center",
-                        }}
-                        source={icon}
-                    />
-                </View>
-                <Text
-                    style={{
-                        alignContent: "center",
-                        alignSelf: "center",
-                        alignItems: "center",
-                        ...theme.sizes.regular,
-                        textAlign: "center",
-                        fontFamily: theme.fonts.poppins.regular,
-                    }}
-                >
-                    {label}
-                </Text>
-            </TouchableOpacity>
-        </View>
+    <View
+        style={{
+            width: "30%",
+            elevation: 5,
+            marginBottom: 10,
+            backgroundColor: "white",
+            borderRadius: 15,
+            paddingVertical: 10,
+        }}
+    >
+        <TouchableOpacity
+            style={{ alignItems: "center", justifyContent: "center" }}
+            onPress={pressHandler}
+        >
+            <Image source={icon} style={{ width: 60, height: 60 }} />
+            <Text
+                style={{
+                    marginTop: 5,
+                    color: theme.colors.primary,
+                    fontFamily: theme.fonts.poppins.regular,
+                    fontSize: 13
+                }}
+            >
+                {label}
+            </Text>
+        </TouchableOpacity>
     </View>
 );
 

@@ -12,7 +12,7 @@ import theme from "../constants/theme";
 const crossImage = require("../../assets/icons/cross.png");
 const searchImage = require("../../assets/icons/search.png");
 
-const SeachBar = ({ value, setValue, onCancel, onPress, placeholder }) => {
+const SeachBar = ({ value, setValue, onCancel, onPress, placeholder, ...props }) => {
     return (
         <View
             style={{
@@ -38,6 +38,8 @@ const SeachBar = ({ value, setValue, onCancel, onPress, placeholder }) => {
                     value={value}
                     placeholder={placeholder}
                     onChangeText={(text) => setValue(text)}
+                    returnKeyType="search"
+                    {...props}
                 />
             </View>
             {value >= 10 && (
