@@ -12,7 +12,7 @@ import Avatar from "../components/Avatar";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import axios from "axios";
 import { executeRequest } from "../helper/network/link";
-import { postJsonData } from "../httpClient/apiRequest";
+import { getData } from "../httpClient/apiRequest";
 
 const userDefaultImage = require("../../assets/icons/user.png");
 const calenderImage = require("../../assets/icons/calendar.png");
@@ -88,11 +88,12 @@ const Field = ({ label, value, text }) => {
 
 const Profile = ({ route, navigation }) => {
     const { user } = route.params;
+    console.log(user.id);
 
     useEffect(() => {
         const load = async () => {
             try {
-                const { data } = await postJsonData(`disciple/${user.id}/show`);
+                const { data } = await getData(`/disciple/${user.id}/show`);
                 console.log(data.data);
             } catch (error) {
                 console.log(error);

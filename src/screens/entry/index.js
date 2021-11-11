@@ -242,8 +242,16 @@ const Entry = ({ route, navigation }) => {
                     setValue={(text) => {
                         setSearch(text);
                     }}
-                    onSubmitEditing={() => searchDiscipleWithMobile(search)}
-                    onPress={() => searchDiscipleWithMobile(search)}
+                    onSubmitEditing={() =>
+                        searchBy === "unique_id"
+                            ? searchDiscipleWithAadhar(search)
+                            : searchDiscipleWithMobile(search)
+                    }
+                    onPress={() =>
+                        searchBy === "mobile_id"
+                            ? searchDiscipleWithAadhar(search)
+                            : searchDiscipleWithMobile(search)
+                    }
                     onCancel={() => {
                         setSearch("");
                         setUsersSearched([]);
