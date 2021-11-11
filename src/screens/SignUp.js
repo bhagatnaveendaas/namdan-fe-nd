@@ -357,8 +357,34 @@ const SignUp = ({ navigation }) => {
     const whatRef = useRef();
 
     const [mobileLoading, setmobileLoading] = useState(false);
+    const [addharLoading, setaddharLoading] = useState(false);
     const [showRef, setShowRef] = useState(false);
+    const [showAadharRef, setShowAadharRef] = useState(false);
 
+    const onFetchingAadhar = async (text) => {
+        onChange(text, "aadhaar_no");
+        if (text.length == 12) {
+            setaddharLoading(true);
+            try {
+                const { data } = await postJsonData("/disciple/search", {
+                    search_by: "unique_id",
+                    search_value: text,
+                });
+
+                if (data?.data.length > 0) {
+                    setShowAadharRef(true);
+                } else {
+                    setaddharLoading(false);
+                }
+                setaddharLoading(false);
+            } catch (error) {
+                setaddharLoading(false);
+                console.log("Error", error);
+            }
+        } else {
+            setShowAadharRef(false);
+        }
+    };
     const onFetchingMobile = async (text) => {
         onChange(text, "mobile_no");
         if (text.length == 10) {
@@ -475,99 +501,78 @@ const SignUp = ({ navigation }) => {
                     }
                 />
                 <FormTextInput
-                    label="Aadhar Card No."
+                    label="Aadhar Card Number"
                     value={userData.aadhaar_no}
                     placeholder="Enter 12 digit aadhar number"
                     maxLength={12}
                     containerStyle={styles.textFieldContainer}
-                    onChangeText={(text) => onChange(text, "aadhaar_no")}
+                    onChangeText={onFetchingAadhar}
                     keyboardType={
                         Platform.OS === "android" ? "numeric" : "number-pad"
                     }
                     appendComponent={
-                        <Image
-                            source={
-                                userData.aadhaar_no == ""
-                                    ? null
-                                    : userData.aadhaar_no?.length < 12
-                                    ? crossIcon
-                                    : checkIcon
-                            }
+                        <View
                             style={{
-                                width: 18,
-                                height: 18,
-                                tintColor:
-                                    userData.aadhaar_no?.length < 12
-                                        ? "red"
-                                        : "#83e85a",
-                                marginRight: 10,
+                                flexDirection: "row",
+                                alignItems: "center",
                             }}
-                        />
-                    }
-                />
-                <FormSelectInput
-                    label="Naamdan Taken"
-                    value={userData.namdan_taken}
-                    onValueChange={(value) => onChange(value, "namdan_taken")}
-                    options={namdan_takenAt}
-                    required={true}
-                    containerStyle={styles.selectFieldContainer}
-                    placeholder="Select Option"
-                />
-                <FormTextInput
-                    label="Name"
-                    value={userData.name}
-                    placeholder={"Enter your name"}
-                    onChangeText={(text) => onChange(text, "name")}
-                    required={true}
-                    containerStyle={styles.textFieldContainer}
-                    appendComponent={
-                        <Image source={userIcon} style={styles.appendIcon} />
-                    }
-                />
-                <FormSelectInput
-                    label="Relation"
-                    value={userData.relation}
-                    onValueChange={(value) => onChange(value, "relation")}
-                    options={relations}
-                    required={true}
-                    containerStyle={styles.selectFieldContainer}
-                    placeholder="Select Relation"
-                />
-                <FormTextInput
-                    label="Guardian Name"
-                    value={userData.guardianName}
-                    placeholder={"Enter your guardianName"}
-                    required={true}
-                    containerStyle={styles.textFieldContainer}
-                    onChangeText={(text) => onChange(text, "guardianName")}
-                    appendComponent={
-                        <Image source={userIcon} style={styles.appendIcon} />
-                    }
-                />
-                <FormTextInput
-                    label="Occupation"
-                    value={userData.occupation}
-                    placeholder="Enter Your Occupation"
-                    required={true}
-                    containerStyle={styles.textFieldContainer}
-                    onChangeText={(text) => onChange(text, "occupation")}
-                />
-                <DatePicker
-                    label="Date of Birth"
-                    placeholder="Select Date of birth"
-                    show={show}
-                    setShow={setShow}
-                    date={moment(userData.dob)}
-                    setDate={(date) => onDobChange(date)}
-                    maximumDate={new Date()}
-                    containerStyle={styles.dateContainer}
-                    required={true}
-                    appendComponent={
-                        <Image
-                            source={calendarIcon}
-                            style={styles.appendIcon}
-                        />
+                        >
+                            {addharLoading && (
+                                <ActivityIndicator
+                                    animating={addharLoading}
+                                    style={{ width: 10, height: 10 }}
+                                    size="small"
+                                    color={theme.colors.primary}
+                                />
+                            )}
+                            {showAadharRef && (
+                                <View>
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            navigation.navigate("Entry", {
+                                                title: "Search",
+                                                searchBy: "unique_id",
+                                                text: `${userData.aadhaar_no}`,
+                                            });
+                                        }}
+                                        style={{
+                                            backgroundColor: "green",
+                                            paddingVertical: 2,
+                                            paddingHorizontal: 5,
+                                            borderRadius: 5,
+                                        }}
+                                    >
+                                        <Text
+                                            style={{
+                                                fontSize: 14,
+                                                color: "white",
+                                            }}
+                                        >
+                                            View Entry
+                                        </Text>
+                                    </TouchableOpacity>
+                                </View>
+                            )}
+                            <Image
+                                source={
+                                    userData.aadhaar_no == ""
+                                        ? null
+                                        : userData.aadhaar_no?.length < 12
+                                        ? crossIcon
+                                        : checkIcon
+                                }
+                                style={{
+                                    width: 18,
+                                    height: 18,
+                                    tintColor:
+                                        userData.aadhaar_no?.length < 12
+                                            ? "red"
+                                            : "#83e85a",
+                                    marginRight: 10,
+                                    marginLeft: 10,
+                                }}
+                            />
+                        </View>
                     }
                 />
                 <FormTextInput
@@ -642,6 +647,72 @@ const SignUp = ({ navigation }) => {
                         </View>
                     }
                 />
+                <FormSelectInput
+                    label="Naamdan Taken"
+                    value={userData.namdan_taken}
+                    onValueChange={(value) => onChange(value, "namdan_taken")}
+                    options={namdan_takenAt}
+                    required={true}
+                    containerStyle={styles.selectFieldContainer}
+                    placeholder="Select Option"
+                />
+                <FormTextInput
+                    label="Name"
+                    value={userData.name}
+                    placeholder={"Enter your name"}
+                    onChangeText={(text) => onChange(text, "name")}
+                    required={true}
+                    containerStyle={styles.textFieldContainer}
+                    appendComponent={
+                        <Image source={userIcon} style={styles.appendIcon} />
+                    }
+                />
+                <FormSelectInput
+                    label="Relation"
+                    value={userData.relation}
+                    onValueChange={(value) => onChange(value, "relation")}
+                    options={relations}
+                    required={true}
+                    containerStyle={styles.selectFieldContainer}
+                    placeholder="Select Relation"
+                />
+                <FormTextInput
+                    label="Guardian Name"
+                    value={userData.guardianName}
+                    placeholder={"Enter your guardianName"}
+                    required={true}
+                    containerStyle={styles.textFieldContainer}
+                    onChangeText={(text) => onChange(text, "guardianName")}
+                    appendComponent={
+                        <Image source={userIcon} style={styles.appendIcon} />
+                    }
+                />
+                <FormTextInput
+                    label="Occupation"
+                    value={userData.occupation}
+                    placeholder="Enter Your Occupation"
+                    required={true}
+                    containerStyle={styles.textFieldContainer}
+                    onChangeText={(text) => onChange(text, "occupation")}
+                />
+                <DatePicker
+                    label="Date of Birth"
+                    placeholder="Select Date of birth"
+                    show={show}
+                    setShow={setShow}
+                    date={moment(userData.dob)}
+                    setDate={(date) => onDobChange(date)}
+                    maximumDate={new Date()}
+                    containerStyle={styles.dateContainer}
+                    required={true}
+                    appendComponent={
+                        <Image
+                            source={calendarIcon}
+                            style={styles.appendIcon}
+                        />
+                    }
+                />
+
                 <FormTextInput
                     label="Whatsapp Number"
                     value={userData.whatsapp_no}

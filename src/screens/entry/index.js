@@ -151,11 +151,30 @@ const Entry = ({ route, navigation }) => {
     const searchBy = route.params.searchBy;
     const text = route.params.text;
     useEffect(() => {
-        if (text) {
+        if (searchBy === "unique_id") {
+            searchDiscipleWithAadhar(text);
+        }
+        if (searchBy === "mobile_id") {
             searchDiscipleWithMobile(text);
         }
     }, []);
 
+    const searchDiscipleWithAadhar = async (aadharno) => {
+        try {
+            setLoading(true);
+            const { data } = await postJsonData("/disciple/search", {
+                search_by: "unique_id",
+                search_value: aadharno,
+            });
+            if (data?.data.length > 0) {
+                setUsersSearched(data.data);
+            }
+            setLoading(false);
+        } catch (error) {
+            console.log("Error", error);
+            setUsersSearched([]);
+        }
+    };
     const searchDiscipleWithMobile = async (mobileNo) => {
         try {
             setLoading(true);

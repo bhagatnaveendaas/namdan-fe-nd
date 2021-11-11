@@ -12,6 +12,7 @@ import Avatar from "../components/Avatar";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import axios from "axios";
 import { executeRequest } from "../helper/network/link";
+import { postJsonData } from "../httpClient/apiRequest";
 
 const userDefaultImage = require("../../assets/icons/user.png");
 const calenderImage = require("../../assets/icons/calendar.png");
@@ -87,20 +88,15 @@ const Field = ({ label, value, text }) => {
 
 const Profile = ({ route, navigation }) => {
     const { user } = route.params;
-    const url = `https://drfapi.jagatgururampalji.org/v1/sarnam_attendance/detail/${user.id}`;
 
     useEffect(() => {
         const load = async () => {
-            const token = AsyncStorage.getItem("token");
-            executeRequest(url, undefined, {
-                method: "GET",
-            })
-                .then((response) => {
-                    console.log("Hajri list: ", response.data);
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
+            try {
+                const { data } = await postJsonData(`disciple/${user.id}/show`);
+                console.log(data.data);
+            } catch (error) {
+                console.log(error);
+            }
         };
 
         load();

@@ -67,7 +67,7 @@ const SearchableFlatlist = ({
                                 ? 50
                                 : sortedItems.length === 2
                                 ? 100
-                                : 150,
+                                : 200,
                         elevation: 5,
                         paddingVertical: 5,
                     }}
