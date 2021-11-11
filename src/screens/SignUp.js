@@ -290,8 +290,10 @@ const SignUp = ({ navigation }) => {
                     console.log(
                         `Signup: ${JSON.stringify(error.response.data)}`
                     );
+                    alert(error.response?.data);
                 } else {
                     console.log(`Signup: ${error}`);
+                    alert(error);
                 }
             });
     };
@@ -686,14 +688,14 @@ const SignUp = ({ navigation }) => {
                     }
                 />
                 <SearchableFlatlist
+                    containerStyle={styles.textFieldContainer}
                     label={"Country"}
                     placeholderText={"Select Country"}
                     data={countries}
-                    searchTerm={searchTerm}
-                    onChangeOfSearchTerm={setSearchTerm}
-                    onValueChange={(value) => {
-                        onChange(value.id, "country_id");
-                        getStates(value.id);
+                    required={true}
+                    onValueChagne={(value) => {
+                        onChange(value, "country_id");
+                        getDistricts(value);
                     }}
                 />
                 {states.length && userData.country_id ? (
