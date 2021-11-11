@@ -15,7 +15,7 @@ const SearchableFlatlist = ({
     placeholderText,
     required,
     containerStyle,
-    onValueChagne,
+    onValueChange,
 }) => {
     const [search, setSearch] = useState("");
     const [open, setOpen] = useState(false);
@@ -26,7 +26,7 @@ const SearchableFlatlist = ({
 
     const onItemSelected = (item) => {
         setOpen(false);
-        onValueChagne(item.id);
+        onValueChange(item.id);
         setSearch(item.name.toUpperCase());
     };
 

@@ -693,50 +693,47 @@ const SignUp = ({ navigation }) => {
                     placeholderText={"Select Country"}
                     data={countries}
                     required={true}
-                    onValueChagne={(value) => {
+                    onValueChange={(value) => {
                         onChange(value, "country_id");
                         getDistricts(value);
                     }}
                 />
                 {states.length && userData.country_id ? (
-                    <FormSelectInput
-                        label="State"
+                    <SearchableFlatlist
+                        containerStyle={styles.textFieldContainer}
+                        label={"State"}
+                        placeholderText={"Select State"}
+                        data={states}
                         required={true}
-                        value={userData.state_id}
                         onValueChange={(value) => {
                             onChange(value, "state_id");
                             getDistricts(value);
                         }}
-                        options={states}
-                        containerStyle={styles.selectFieldContainer}
-                        placeholder="Select State"
                     />
                 ) : null}
                 {isIndian && districts.length && userData.state_id ? (
-                    <FormSelectInput
+                    <SearchableFlatlist
                         label="District"
                         required={true}
-                        value={userData.district_id}
                         onValueChange={(value) => {
                             onChange(value, "district_id");
                             getTehsils(value);
                         }}
-                        options={districts}
-                        containerStyle={styles.selectFieldContainer}
-                        placeholder="Select District"
+                        data={districts}
+                        containerStyle={styles.textFieldContainer}
+                        placeholderText="Select District"
                     />
                 ) : null}
                 {isIndian && tehsils.length && userData.district_id ? (
-                    <FormSelectInput
+                    <SearchableFlatlist
                         label="Tehsil"
                         required={true}
-                        value={userData.tehsil_id}
                         onValueChange={(value) => {
                             onChange(value, "tehsil_id");
                         }}
-                        options={tehsils}
-                        containerStyle={styles.selectFieldContainer}
-                        placeholder="Select Tehsil"
+                        data={tehsils}
+                        containerStyle={styles.textFieldContainer}
+                        placeholderText="Select Tehsil"
                     />
                 ) : null}
 
