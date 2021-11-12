@@ -46,7 +46,6 @@ const SearchableFlatlist = ({
                     placeholderTextColor={styles.placeholderColor.color}
                     placeholder={placeholderText}
                     onChangeText={(text) => setSearch(text)}
-                    onBlur={() => setOpen(false)}
                 />
             </View>
             {open && (

@@ -329,20 +329,17 @@ const SignUp = ({ navigation }) => {
 
     const onAvatarSelected = (imageData) => {
         closeAvatarSheet();
-        AvatarImage = imageData;
         const { uri } = imageData;
         setUserData({ ...userData, avatar: uri });
     };
 
     const onAadhdarFrontSelected = (imageData) => {
         closeAadharFrontSheet();
-        AadharFrontImage = imageData;
         const { uri } = imageData;
         setUserData({ ...userData, file1: uri });
     };
     const onAadhdarBackSelected = (imageData) => {
         closeAadharBackSheet();
-        AadharBackImage = imageData;
         const { uri } = imageData;
         setUserData({ ...userData, file2: uri });
     };
