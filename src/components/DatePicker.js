@@ -8,8 +8,6 @@ const DatePicker = ({
     date,
     label,
     setDate,
-    show,
-    setShow,
     required,
     appendComponent,
     placeholder,
@@ -17,6 +15,7 @@ const DatePicker = ({
     ...props
 }) => {
     const [showPlaceholder, setShowPlaceholder] = React.useState(true);
+    const [show, setShow] = React.useState(false);
     const onChange = (_, selectedDate) => {
         const currentDate = moment(selectedDate) || date;
         setShow(false);
@@ -32,10 +31,7 @@ const DatePicker = ({
                 </Text>
             )}
             <TouchableOpacity
-                style={[
-                    styles.container,
-                    containerStyle
-                ]}
+                style={[styles.container, containerStyle]}
                 activeOpacity={1}
                 onPress={() => setShow(true)}
             >

@@ -39,6 +39,8 @@ const buildingIcon = require("../../assets/icons/building.png");
 const pinIcon = require("../../assets/icons/locationPin.png");
 const userIcon = require("../../assets/icons/userFilled.png");
 
+const threeYearsBack = new Date().setDate(new Date().getDate() - 365 * 3 - 1);
+
 const SignUp = ({ navigation }) => {
     const {
         state: { user },
@@ -65,15 +67,13 @@ const SignUp = ({ navigation }) => {
         email: "",
         pincode: "",
         occupation: "",
-        dob: moment(),
+        dob: moment(threeYearsBack),
         namdan_taken: "",
         country_code: "+91",
         whatsapp_country_code: "+91",
     };
 
     const [isIndian] = useState(true);
-
-    const [searchTerm, setSearchTerm] = useState();
 
     const namdan_takenAt = ["Online", "Naamdan Center"];
     const relations = ["S/O", "D/O", "W/O"];
@@ -90,13 +90,7 @@ const SignUp = ({ navigation }) => {
         confirm: "Ok",
     });
 
-    let AvatarImage;
-    let AadharFrontImage;
-    let AadharBackImage;
-
     const [userData, setUserData] = useState(formFields);
-    const [show, setShow] = useState(false);
-    const [showFormdate, setShowFormdate] = useState(false);
 
     const getCountries = async () => {
         const temp = JSON.parse(await AsyncStorage.getItem("countries"));
@@ -457,8 +451,6 @@ const SignUp = ({ navigation }) => {
                 <DatePicker
                     label="Form Date"
                     placeholder="Select Date"
-                    show={showFormdate}
-                    setShow={setShowFormdate}
                     date={moment(userData.form_date)}
                     setDate={(date) => onChange(date, "form_date")}
                     maximumDate={new Date()}
@@ -698,11 +690,9 @@ const SignUp = ({ navigation }) => {
                 <DatePicker
                     label="Date of Birth"
                     placeholder="Select Date of birth"
-                    show={show}
-                    setShow={setShow}
                     date={moment(userData.dob)}
                     setDate={(date) => onDobChange(date)}
-                    maximumDate={new Date()}
+                    maximumDate={new Date(threeYearsBack)}
                     containerStyle={styles.dateContainer}
                     required={true}
                     appendComponent={
