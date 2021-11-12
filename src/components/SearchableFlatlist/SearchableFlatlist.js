@@ -7,7 +7,6 @@ import {
     View,
 } from "react-native";
 import styles from "../../styles/FormInput";
-import theme from "../../constants/theme";
 import searchbleFlatlistStyles from "./SearchbleFlatlistStyles";
 
 const SearchableFlatlist = ({
@@ -59,22 +58,11 @@ const SearchableFlatlist = ({
                         return (
                             <View key={index}>
                                 <TouchableOpacity
-                                    style={{
-                                        padding: 10,
-                                        borderBottomColor:
-                                            theme.colors.primaryLight,
-                                        borderBottomWidth: 1,
-                                        marginBottom: 2,
-                                    }}
+                                    style={searchbleFlatlistStyles.dropdownItem}
                                     onPress={() => onItemSelected(item)}
                                 >
                                     <Text
-                                        style={{
-                                            fontFamily:
-                                                theme.fonts.poppins.regular,
-                                            color: theme.colors.primary,
-                                            fontSize: 15,
-                                        }}
+                                        style={searchbleFlatlistStyles.itemText}
                                     >
                                         {item.name}
                                     </Text>
