@@ -29,7 +29,7 @@ import { useAuth } from "../context/AuthContext";
 import FormData from "form-data";
 import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
 import { postJsonData } from "../httpClient/apiRequest";
-import SearchableFlatlist from "../components/SearchableFlatlist";
+import SearchableFlatlist from "../components/SearchableFlatlist/SearchableFlatlist";
 const calendarIcon = require("../../assets/icons/calenderFilled.png");
 const checkIcon = require("../../assets/icons/check-circletick.png");
 const crossIcon = require("../../assets/icons/cross.png");

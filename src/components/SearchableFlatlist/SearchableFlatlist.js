@@ -6,8 +6,9 @@ import {
     ScrollView,
     View,
 } from "react-native";
-import styles from "../styles/FormInput";
-import theme from "../constants/theme";
+import styles from "../../styles/FormInput";
+import theme from "../../constants/theme";
+import searchbleFlatlistStyles from "./SearchbleFlatlistStyles";
 
 const SearchableFlatlist = ({
     data,
@@ -53,25 +54,7 @@ const SearchableFlatlist = ({
                 <ScrollView
                     nestedScrollEnabled={true}
                     showsVerticalScrollIndicator={false}
-                    style={{
-                        position: "absolute",
-                        top: "110%",
-                        backgroundColor: theme.colors.white,
-                        borderWidth: 1,
-                        borderColor: theme.colors.primaryLight,
-                        width: "100%",
-                        zIndex: 10,
-                        borderRadius: 10,
-                        paddingHorizontal: 5,
-                        height:
-                            sortedItems.length === 1
-                                ? 50
-                                : sortedItems.length === 2
-                                ? 100
-                                : 200,
-                        elevation: 5,
-                        paddingVertical: 5,
-                    }}
+                    style={searchbleFlatlistStyles.dropdown}
                 >
                     {sortedItems.map((item, index) => {
                         return (
