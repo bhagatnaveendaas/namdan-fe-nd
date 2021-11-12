@@ -13,12 +13,6 @@ export default StyleSheet.create({
         zIndex: 10,
         borderRadius: 10,
         paddingHorizontal: 5,
-        height:
-            sortedItems.length === 1
-                ? 50
-                : sortedItems.length === 2
-                ? 100
-                : 200,
         elevation: 5,
         paddingVertical: 5,
     },

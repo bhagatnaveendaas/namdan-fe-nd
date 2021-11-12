@@ -52,7 +52,17 @@ const SearchableFlatlist = ({
                 <ScrollView
                     nestedScrollEnabled={true}
                     showsVerticalScrollIndicator={false}
-                    style={searchbleFlatlistStyles.dropdown}
+                    style={[
+                        searchbleFlatlistStyles.dropdown,
+                        {
+                            height:
+                                sortedItems.length === 1
+                                    ? 50
+                                    : sortedItems.length === 2
+                                    ? 100
+                                    : 200,
+                        },
+                    ]}
                 >
                     {sortedItems.map((item, index) => {
                         return (
