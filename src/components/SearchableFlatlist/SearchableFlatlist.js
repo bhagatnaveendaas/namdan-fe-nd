@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, memo } from "react";
 import {
     Text,
     TextInput,
@@ -16,18 +16,25 @@ const SearchableFlatlist = ({
     required,
     containerStyle,
     onValueChange,
+    setEnableSearch,
+    defaultValue,
 }) => {
+    const defaultOption = data.filter((item) => {
+        return item.id == defaultValue;
+    });
     const [search, setSearch] = useState("");
     const [open, setOpen] = useState(false);
+    const [selectedItem, setSelectedItem] = useState(defaultOption[0]);
 
     const sortedItems = data.filter((item) =>
         new RegExp(`${search}`, "gi").test(item.name)
     );
 
     const onItemSelected = (item) => {
-        setOpen(false);
+        setSelectedItem(item);
         onValueChange(item.id);
-        setSearch(item.name.toUpperCase());
+        setSearch("");
+        setOpen(false);
     };
 
     return (
@@ -39,30 +46,54 @@ const SearchableFlatlist = ({
                 </Text>
             )}
             <View style={[styles.container, containerStyle]}>
-                <TextInput
-                    onFocus={() => setOpen(true)}
-                    value={search}
-                    style={styles.input}
-                    placeholderTextColor={styles.placeholderColor.color}
-                    placeholder={placeholderText}
-                    onChangeText={(text) => setSearch(text)}
-                />
+                {open ? (
+                    <TextInput
+                        onFocus={() => {
+                            setEnableSearch(true);
+                        }}
+                        autoFocus={true}
+                        value={search}
+                        style={styles.input}
+                        placeholderTextColor={styles.placeholderColor.color}
+                        placeholder={placeholderText}
+                        onChangeText={(text) => setSearch(text)}
+                        onBlur={() => {
+                            setEnableSearch(false);
+                            setOpen(false);
+                        }}
+                    />
+                ) : (
+                    <TouchableOpacity
+                        onPress={() => setOpen(true)}
+                        style={{
+                            width: "100%",
+                            height: 40,
+                            justifyContent: "center",
+                        }}
+                    >
+                        <Text style={searchbleFlatlistStyles.itemText}>
+                            {selectedItem && defaultValue !== 0 ? (
+                                selectedItem?.name
+                            ) : (
+                                <Text
+                                    style={
+                                        searchbleFlatlistStyles.placeholderText
+                                    }
+                                >
+                                    {placeholderText}
+                                </Text>
+                            )}
+                        </Text>
+                    </TouchableOpacity>
+                )}
             </View>
             {open && (
                 <ScrollView
                     nestedScrollEnabled={true}
+                    keyboardDismissMode="on-drag"
+                    keyboardShouldPersistTaps="always"
                     showsVerticalScrollIndicator={false}
-                    style={[
-                        searchbleFlatlistStyles.dropdown,
-                        {
-                            height:
-                                sortedItems.length === 1
-                                    ? 50
-                                    : sortedItems.length === 2
-                                    ? 100
-                                    : 200,
-                        },
-                    ]}
+                    style={searchbleFlatlistStyles.dropdown}
                 >
                     {sortedItems.map((item, index) => {
                         return (
@@ -86,4 +117,4 @@ const SearchableFlatlist = ({
     );
 };
 
-export default SearchableFlatlist;
+export default memo(SearchableFlatlist);

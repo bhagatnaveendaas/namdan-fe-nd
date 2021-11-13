@@ -11,6 +11,7 @@ import {
     View,
     Platform,
     ActivityIndicator,
+    ScrollView,
 } from "react-native";
 import AwesomeAlert from "react-native-awesome-alerts";
 import CountryCodePicker from "../components/CountryCodePicker";
@@ -73,7 +74,7 @@ const SignUp = ({ navigation }) => {
         whatsapp_country_code: "+91",
     };
 
-    const [isIndian] = useState(user?.country === 2);
+    const [isIndian] = useState(true);
 
     const namdan_takenAt = ["Online", "Naamdan Center"];
     const relations = ["S/O", "D/O", "W/O"];
@@ -426,79 +427,153 @@ const SignUp = ({ navigation }) => {
         }
     };
 
-    return (
-        <KeyboardAvoidingWrapper>
-            <>
-                <AwesomeAlert
-                    show={showAlert.show}
-                    showProgress={false}
-                    title={showAlert.title}
-                    message={showAlert.message}
-                    closeOnTouchOutside={true}
-                    closeOnHardwareBackPress={false}
-                    showCancelButton={true}
-                    fieldNames
-                    showConfirmButton={true}
-                    cancelText={showAlert.cancel}
-                    confirmText={showAlert.confirm}
-                    confirmButtonColor="#DD6B55"
-                    onCancelPressed={() => {
-                        const temp = { ...showAlert, show: false };
-                        setShowAlert(temp);
-                    }}
-                    onConfirmPressed={() => {
-                        const temp = { ...showAlert, show: false };
-                        setShowAlert(temp);
-                    }}
-                />
-                <TouchableOpacity onPress={openAvatarSheet}>
-                    <Image
-                        source={{
-                            uri: userData?.avatar
-                                ? userData.avatar
-                                : Constants.imagePlaceholder,
-                        }}
-                        style={styles.image}
-                    />
+    const [enableSearch, setEnableSearch] = useState(false);
 
-                    <Text
+    return (
+        <ScrollView
+            style={styles.mainContainer}
+            keyboardShouldPersistTaps={enableSearch ? "always" : "never"}
+        >
+            <AwesomeAlert
+                show={showAlert.show}
+                showProgress={false}
+                title={showAlert.title}
+                message={showAlert.message}
+                closeOnTouchOutside={true}
+                closeOnHardwareBackPress={false}
+                showCancelButton={true}
+                fieldNames
+                showConfirmButton={true}
+                cancelText={showAlert.cancel}
+                confirmText={showAlert.confirm}
+                confirmButtonColor="#DD6B55"
+                onCancelPressed={() => {
+                    const temp = { ...showAlert, show: false };
+                    setShowAlert(temp);
+                }}
+                onConfirmPressed={() => {
+                    const temp = { ...showAlert, show: false };
+                    setShowAlert(temp);
+                }}
+            />
+            <TouchableOpacity onPress={openAvatarSheet}>
+                <Image
+                    source={{
+                        uri: userData?.avatar
+                            ? userData.avatar
+                            : Constants.imagePlaceholder,
+                    }}
+                    style={styles.image}
+                />
+
+                <Text
+                    style={{
+                        textAlign: "center",
+                        fontFamily: theme.fonts.poppins.regular,
+                    }}
+                >
+                    {Constants.uploadPhoto}
+                </Text>
+            </TouchableOpacity>
+            <DatePicker
+                label="Form Date"
+                placeholder="Select Date"
+                date={moment(userData.form_date)}
+                setDate={(date) => onChange(date, "form_date")}
+                maximumDate={new Date()}
+                containerStyle={styles.dateContainer}
+                required={true}
+                appendComponent={
+                    <Image source={calendarIcon} style={styles.appendIcon} />
+                }
+            />
+
+            <FormTextInput
+                label="Form No."
+                value={userData.form_no}
+                placeholder={"Enter Form Number"}
+                required={true}
+                containerStyle={styles.textFieldContainer}
+                onChangeText={(text) => onChange(text, "form_no")}
+                appendComponent={
+                    <Image
+                        source={
+                            userData.form_no == ""
+                                ? null
+                                : userData.form_no?.length < 6
+                                ? crossIcon
+                                : checkIcon
+                        }
                         style={{
-                            textAlign: "center",
-                            fontFamily: theme.fonts.poppins.regular,
+                            width: 18,
+                            height: 18,
+                            tintColor:
+                                userData.form_no?.length < 6
+                                    ? "red"
+                                    : "#83e85a",
+                            marginRight: 10,
+                        }}
+                    />
+                }
+            />
+            <FormTextInput
+                label="Aadhar Card Number"
+                value={userData.aadhaar_no}
+                placeholder="Enter 12 digit aadhar number"
+                maxLength={12}
+                containerStyle={styles.textFieldContainer}
+                onChangeText={onFetchingAadhar}
+                keyboardType={
+                    Platform.OS === "android" ? "numeric" : "number-pad"
+                }
+                appendComponent={
+                    <View
+                        style={{
+                            flexDirection: "row",
+                            alignItems: "center",
                         }}
                     >
-                        {Constants.uploadPhoto}
-                    </Text>
-                </TouchableOpacity>
-                <DatePicker
-                    label="Form Date"
-                    placeholder="Select Date"
-                    date={moment(userData.form_date)}
-                    setDate={(date) => onChange(date, "form_date")}
-                    maximumDate={new Date()}
-                    containerStyle={styles.dateContainer}
-                    required={true}
-                    appendComponent={
-                        <Image
-                            source={calendarIcon}
-                            style={styles.appendIcon}
-                        />
-                    }
-                />
-
-                <FormTextInput
-                    label="Form No."
-                    value={userData.form_no}
-                    placeholder={"Enter Form Number"}
-                    required={true}
-                    containerStyle={styles.textFieldContainer}
-                    onChangeText={(text) => onChange(text, "form_no")}
-                    appendComponent={
+                        {addharLoading && (
+                            <ActivityIndicator
+                                animating={addharLoading}
+                                style={{ width: 10, height: 10 }}
+                                size="small"
+                                color={theme.colors.primary}
+                            />
+                        )}
+                        {showAadharRef && (
+                            <View>
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        navigation.navigate("Entry", {
+                                            title: "Search",
+                                            searchBy: "unique_id",
+                                            text: `${userData.aadhaar_no}`,
+                                        });
+                                    }}
+                                    style={{
+                                        backgroundColor: "green",
+                                        paddingVertical: 2,
+                                        paddingHorizontal: 5,
+                                        borderRadius: 5,
+                                    }}
+                                >
+                                    <Text
+                                        style={{
+                                            fontSize: 14,
+                                            color: "white",
+                                        }}
+                                    >
+                                        View Entry
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
+                        )}
                         <Image
                             source={
-                                userData.form_no == ""
+                                userData.aadhaar_no == ""
                                     ? null
-                                    : userData.form_no?.length < 6
+                                    : userData.aadhaar_no?.length < 12
                                     ? crossIcon
                                     : checkIcon
                             }
@@ -506,474 +581,403 @@ const SignUp = ({ navigation }) => {
                                 width: 18,
                                 height: 18,
                                 tintColor:
-                                    userData.form_no?.length < 6
+                                    userData.aadhaar_no?.length < 12
+                                        ? "red"
+                                        : "#83e85a",
+                                marginRight: 10,
+                                marginLeft: 10,
+                            }}
+                        />
+                    </View>
+                }
+            />
+            <FormTextInput
+                label="Mobile Number"
+                value={userData.mobile_no}
+                placeholder={"Enter your mobile number"}
+                required={true}
+                keyboardType={
+                    Platform.OS === "android" ? "numeric" : "number-pad"
+                }
+                maxLength={10}
+                containerStyle={styles.textFieldContainer}
+                onChangeText={onFetchingMobile}
+                prependComponent={
+                    <TouchableOpacity
+                        onPress={() => mobileRef?.current.focus()}
+                        style={styles.countryCodeBtn}
+                    >
+                        <Text>{userData.country_code}</Text>
+                    </TouchableOpacity>
+                }
+                appendComponent={
+                    <View
+                        style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                        }}
+                    >
+                        {mobileLoading && (
+                            <ActivityIndicator
+                                animating={mobileLoading}
+                                style={{ width: 10, height: 10 }}
+                                size="small"
+                                color={theme.colors.primary}
+                            />
+                        )}
+                        {showRef && (
+                            <View>
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        navigation.navigate("Entry", {
+                                            title: "Search",
+                                            searchBy: "mobile_no",
+                                            text: `${userData.country_code}${userData.mobile_no}`,
+                                        });
+                                    }}
+                                    style={{
+                                        backgroundColor: "green",
+                                        paddingVertical: 2,
+                                        paddingHorizontal: 5,
+                                        borderRadius: 5,
+                                    }}
+                                >
+                                    <Text
+                                        style={{
+                                            fontSize: 14,
+                                            color: "white",
+                                        }}
+                                    >
+                                        View Entry
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
+                        )}
+                        <Image
+                            source={mobileIcon}
+                            style={[
+                                styles.appendIcon,
+                                { width: 15, marginLeft: 10 },
+                            ]}
+                        />
+                    </View>
+                }
+            />
+
+            <FormTextInput
+                label="Whatsapp Number"
+                value={userData.whatsapp_no}
+                placeholder={"Enter your mobile number"}
+                keyboardType={
+                    Platform.OS === "android" ? "numeric" : "number-pad"
+                }
+                maxLength={10}
+                containerStyle={styles.textFieldContainer}
+                onChangeText={(text) => onChange(text, "whatsapp_no")}
+                prependComponent={
+                    <TouchableOpacity
+                        onPress={() => whatRef?.current.focus()}
+                        style={styles.countryCodeBtn}
+                    >
+                        <Text>{userData.whatsapp_country_code}</Text>
+                    </TouchableOpacity>
+                }
+                appendComponent={
+                    <View style={{ flexDirection: "row" }}>
+                        <Image
+                            source={
+                                userData.whatsapp_no == ""
+                                    ? null
+                                    : userData.whatsapp_no?.length < 10
+                                    ? crossIcon
+                                    : checkIcon
+                            }
+                            style={{
+                                width: 18,
+                                height: 18,
+                                tintColor:
+                                    userData.whatsapp_no?.length < 10
                                         ? "red"
                                         : "#83e85a",
                                 marginRight: 10,
                             }}
                         />
-                    }
-                />
-                <FormTextInput
-                    label="Aadhar Card Number"
-                    value={userData.aadhaar_no}
-                    placeholder="Enter 12 digit aadhar number"
-                    maxLength={12}
-                    containerStyle={styles.textFieldContainer}
-                    onChangeText={onFetchingAadhar}
-                    keyboardType={
-                        Platform.OS === "android" ? "numeric" : "number-pad"
-                    }
-                    appendComponent={
-                        <View
-                            style={{
-                                flexDirection: "row",
-                                alignItems: "center",
-                            }}
-                        >
-                            {addharLoading && (
-                                <ActivityIndicator
-                                    animating={addharLoading}
-                                    style={{ width: 10, height: 10 }}
-                                    size="small"
-                                    color={theme.colors.primary}
-                                />
-                            )}
-                            {showAadharRef && (
-                                <View>
-                                    <TouchableOpacity
-                                        onPress={() => {
-                                            navigation.navigate("Entry", {
-                                                title: "Search",
-                                                searchBy: "unique_id",
-                                                text: `${userData.aadhaar_no}`,
-                                            });
-                                        }}
-                                        style={{
-                                            backgroundColor: "green",
-                                            paddingVertical: 2,
-                                            paddingHorizontal: 5,
-                                            borderRadius: 5,
-                                        }}
-                                    >
-                                        <Text
-                                            style={{
-                                                fontSize: 14,
-                                                color: "white",
-                                            }}
-                                        >
-                                            View Entry
-                                        </Text>
-                                    </TouchableOpacity>
-                                </View>
-                            )}
-                            <Image
-                                source={
-                                    userData.aadhaar_no == ""
-                                        ? null
-                                        : userData.aadhaar_no?.length < 12
-                                        ? crossIcon
-                                        : checkIcon
-                                }
-                                style={{
-                                    width: 18,
-                                    height: 18,
-                                    tintColor:
-                                        userData.aadhaar_no?.length < 12
-                                            ? "red"
-                                            : "#83e85a",
-                                    marginRight: 10,
-                                    marginLeft: 10,
-                                }}
-                            />
-                        </View>
-                    }
-                />
-                <FormTextInput
-                    label="Mobile Number"
-                    value={userData.mobile_no}
-                    placeholder={"Enter your mobile number"}
-                    required={true}
-                    keyboardType={
-                        Platform.OS === "android" ? "numeric" : "number-pad"
-                    }
-                    maxLength={10}
-                    containerStyle={styles.textFieldContainer}
-                    onChangeText={onFetchingMobile}
-                    prependComponent={
-                        <TouchableOpacity
-                            onPress={() => mobileRef?.current.focus()}
-                            style={styles.countryCodeBtn}
-                        >
-                            <Text>{userData.country_code}</Text>
-                        </TouchableOpacity>
-                    }
-                    appendComponent={
-                        <View
-                            style={{
-                                flexDirection: "row",
-                                alignItems: "center",
-                            }}
-                        >
-                            {mobileLoading && (
-                                <ActivityIndicator
-                                    animating={mobileLoading}
-                                    style={{ width: 10, height: 10 }}
-                                    size="small"
-                                    color={theme.colors.primary}
-                                />
-                            )}
-                            {showRef && (
-                                <View>
-                                    <TouchableOpacity
-                                        onPress={() => {
-                                            navigation.navigate("Entry", {
-                                                title: "Search",
-                                                searchBy: "mobile_no",
-                                                text: `${userData.country_code}${userData.mobile_no}`,
-                                            });
-                                        }}
-                                        style={{
-                                            backgroundColor: "green",
-                                            paddingVertical: 2,
-                                            paddingHorizontal: 5,
-                                            borderRadius: 5,
-                                        }}
-                                    >
-                                        <Text
-                                            style={{
-                                                fontSize: 14,
-                                                color: "white",
-                                            }}
-                                        >
-                                            View Entry
-                                        </Text>
-                                    </TouchableOpacity>
-                                </View>
-                            )}
-                            <Image
-                                source={mobileIcon}
-                                style={[
-                                    styles.appendIcon,
-                                    { width: 15, marginLeft: 10 },
-                                ]}
-                            />
-                        </View>
-                    }
-                />
-                <FormSelectInput
-                    label="Naamdan Taken"
-                    value={userData.namdan_taken}
-                    onValueChange={(value) => onChange(value, "namdan_taken")}
-                    options={namdan_takenAt}
-                    required={true}
-                    containerStyle={styles.selectFieldContainer}
-                    placeholder="Select Option"
-                />
-                <FormTextInput
-                    label="Name"
-                    value={userData.name}
-                    placeholder={"Enter your name"}
-                    onChangeText={(text) => onChange(text, "name")}
-                    required={true}
-                    containerStyle={styles.textFieldContainer}
-                    appendComponent={
-                        <Image source={userIcon} style={styles.appendIcon} />
-                    }
-                />
-                <FormSelectInput
-                    label="Relation"
-                    value={userData.relation}
-                    onValueChange={(value) => onChange(value, "relation")}
-                    options={relations}
-                    required={true}
-                    containerStyle={styles.selectFieldContainer}
-                    placeholder="Select Relation"
-                />
-                <FormTextInput
-                    label="Guardian Name"
-                    value={userData.guardianName}
-                    placeholder={"Enter your guardianName"}
-                    required={true}
-                    containerStyle={styles.textFieldContainer}
-                    onChangeText={(text) => onChange(text, "guardianName")}
-                    appendComponent={
-                        <Image source={userIcon} style={styles.appendIcon} />
-                    }
-                />
-                <FormTextInput
-                    label="Occupation"
-                    value={userData.occupation}
-                    placeholder="Enter Your Occupation"
-                    required={true}
-                    containerStyle={styles.textFieldContainer}
-                    onChangeText={(text) => onChange(text, "occupation")}
-                />
-                <DatePicker
-                    label="Date of Birth"
-                    placeholder="Select Date of birth"
-                    date={moment(userData.dob)}
-                    setDate={(date) => onDobChange(date)}
-                    maximumDate={new Date(threeYearsBack)}
-                    containerStyle={styles.dateContainer}
-                    required={true}
-                    appendComponent={
                         <Image
-                            source={calendarIcon}
-                            style={styles.appendIcon}
+                            source={mobileIcon}
+                            style={[styles.appendIcon, { width: 15 }]}
                         />
-                    }
-                />
-
-                <FormTextInput
-                    label="Whatsapp Number"
-                    value={userData.whatsapp_no}
-                    placeholder={"Enter your mobile number"}
-                    keyboardType={
-                        Platform.OS === "android" ? "numeric" : "number-pad"
-                    }
-                    maxLength={10}
-                    containerStyle={styles.textFieldContainer}
-                    onChangeText={(text) => onChange(text, "whatsapp_no")}
-                    prependComponent={
-                        <TouchableOpacity
-                            onPress={() => whatRef?.current.focus()}
-                            style={styles.countryCodeBtn}
-                        >
-                            <Text>{userData.whatsapp_country_code}</Text>
-                        </TouchableOpacity>
-                    }
-                    appendComponent={
-                        <View style={{ flexDirection: "row" }}>
-                            <Image
-                                source={
-                                    userData.whatsapp_no == ""
-                                        ? null
-                                        : userData.whatsapp_no?.length < 10
-                                        ? crossIcon
-                                        : checkIcon
-                                }
-                                style={{
-                                    width: 18,
-                                    height: 18,
-                                    tintColor:
-                                        userData.whatsapp_no?.length < 10
-                                            ? "red"
-                                            : "#83e85a",
-                                    marginRight: 10,
-                                }}
-                            />
-                            <Image
-                                source={mobileIcon}
-                                style={[styles.appendIcon, { width: 15 }]}
-                            />
-                        </View>
-                    }
-                />
+                    </View>
+                }
+            />
+            <FormSelectInput
+                label="Naamdan Taken"
+                value={userData.namdan_taken}
+                onValueChange={(value) => onChange(value, "namdan_taken")}
+                options={namdan_takenAt}
+                required={true}
+                containerStyle={styles.selectFieldContainer}
+                placeholder="Select Option"
+            />
+            <FormTextInput
+                label="Name"
+                value={userData.name}
+                placeholder={"Enter your name"}
+                onChangeText={(text) => onChange(text, "name")}
+                required={true}
+                containerStyle={styles.textFieldContainer}
+                appendComponent={
+                    <Image source={userIcon} style={styles.appendIcon} />
+                }
+            />
+            <FormSelectInput
+                label="Relation"
+                value={userData.relation}
+                onValueChange={(value) => onChange(value, "relation")}
+                options={relations}
+                required={true}
+                containerStyle={styles.selectFieldContainer}
+                placeholder="Select Relation"
+            />
+            <FormTextInput
+                label="Guardian Name"
+                value={userData.guardianName}
+                placeholder={"Enter your guardianName"}
+                required={true}
+                containerStyle={styles.textFieldContainer}
+                onChangeText={(text) => onChange(text, "guardianName")}
+                appendComponent={
+                    <Image source={userIcon} style={styles.appendIcon} />
+                }
+            />
+            <FormTextInput
+                label="Occupation"
+                value={userData.occupation}
+                placeholder="Enter Your Occupation"
+                required={true}
+                containerStyle={styles.textFieldContainer}
+                onChangeText={(text) => onChange(text, "occupation")}
+            />
+            <DatePicker
+                label="Date of Birth"
+                placeholder="Select Date of birth"
+                date={moment(userData.dob)}
+                setDate={(date) => onDobChange(date)}
+                maximumDate={new Date(threeYearsBack)}
+                containerStyle={styles.dateContainer}
+                required={true}
+                appendComponent={
+                    <Image source={calendarIcon} style={styles.appendIcon} />
+                }
+            />
+            <SearchableFlatlist
+                defaultValue={userData.country_id}
+                setEnableSearch={setEnableSearch}
+                containerStyle={styles.textFieldContainer}
+                label={"Country"}
+                placeholderText={"Select Country"}
+                data={countries}
+                required={true}
+                onValueChange={(value) => {
+                    onChange(value, "country_id");
+                    getStates(value);
+                }}
+            />
+            {states.length && userData.country_id ? (
                 <SearchableFlatlist
+                    defaultValue={userData.state_id}
+                    setEnableSearch={setEnableSearch}
                     containerStyle={styles.textFieldContainer}
-                    label={"Country"}
-                    placeholderText={"Select Country"}
-                    data={countries}
+                    label={"State"}
+                    placeholderText={"Select State"}
+                    data={states}
                     required={true}
                     onValueChange={(value) => {
-                        onChange(value, "country_id");
+                        onChange(value, "state_id");
                         getDistricts(value);
                     }}
                 />
-                {states.length && userData.country_id ? (
-                    <SearchableFlatlist
-                        containerStyle={styles.textFieldContainer}
-                        label={"State"}
-                        placeholderText={"Select State"}
-                        data={states}
-                        required={true}
-                        onValueChange={(value) => {
-                            onChange(value, "state_id");
-                            getDistricts(value);
-                        }}
-                    />
-                ) : null}
-                {!isIndian && cities.length && userData.state_id ? (
-                    <SearchableFlatlist
-                        label="City"
-                        required={true}
-                        onValueChange={(value) => {
-                            // onChange(value, "district_id");
-                            // getTehsils(value);
-                            console.log(value);
-                        }}
-                        data={cities}
-                        containerStyle={styles.textFieldContainer}
-                        placeholderText="Select City"
-                    />
-                ) : null}
-                {isIndian && districts.length && userData.state_id ? (
-                    <SearchableFlatlist
-                        label="District"
-                        required={true}
-                        onValueChange={(value) => {
-                            onChange(value, "district_id");
-                            getTehsils(value);
-                        }}
-                        data={districts}
-                        containerStyle={styles.textFieldContainer}
-                        placeholderText="Select District"
-                    />
-                ) : null}
-                {isIndian && tehsils.length && userData.district_id ? (
-                    <SearchableFlatlist
-                        label="Tehsil"
-                        required={true}
-                        onValueChange={(value) => {
-                            onChange(value, "tehsil_id");
-                        }}
-                        data={tehsils}
-                        containerStyle={styles.textFieldContainer}
-                        placeholderText="Select Tehsil"
-                    />
-                ) : null}
-
-                <FormTextInput
-                    label="Address"
-                    value={userData.address}
-                    placeholder="Enter Address"
+            ) : null}
+            {!isIndian && cities.length && userData.state_id ? (
+                <SearchableFlatlist
+                    defaultValue={0}
+                    setEnableSearch={setEnableSearch}
+                    label="City"
                     required={true}
-                    containerStyle={styles.textFieldContainer}
-                    onChangeText={(text) => onChange(text, "address")}
-                    appendComponent={
-                        <Image
-                            source={buildingIcon}
-                            style={styles.appendIcon}
-                        />
-                    }
-                />
-                <FormTextInput
-                    label="Pincode"
-                    value={userData.pincode}
-                    placeholder="Enter Pincode"
-                    required={true}
-                    containerStyle={styles.textFieldContainer}
-                    onChangeText={(text) => onChange(text, "pincode")}
-                    keyboardType={
-                        Platform.OS === "android" ? "numeric" : "number-pad"
-                    }
-                    appendComponent={
-                        <View style={{ flexDirection: "row" }}>
-                            <Image
-                                source={
-                                    userData.pincode == ""
-                                        ? null
-                                        : userData.pincode?.length < 6
-                                        ? crossIcon
-                                        : checkIcon
-                                }
-                                style={{
-                                    width: 18,
-                                    height: 18,
-                                    tintColor:
-                                        userData.pincode?.length < 6
-                                            ? "red"
-                                            : "#83e85a",
-                                    marginRight: 10,
-                                }}
-                            />
-                            <Image source={pinIcon} style={styles.appendIcon} />
-                        </View>
-                    }
-                />
-                <FormTextInput
-                    label="Email ID"
-                    value={userData.email}
-                    placeholder="Enter Email Address"
-                    onChangeText={(text) => {
-                        validateEmail(text);
-                        onChange(text, "email");
+                    onValueChange={(value) => {
+                        // onChange(value, "district_id");
+                        // getTehsils(value);
+                        console.log(value);
                     }}
+                    data={cities}
                     containerStyle={styles.textFieldContainer}
+                    placeholderText="Select City"
+                />
+            ) : null}
+            {isIndian && districts.length && userData.state_id ? (
+                <SearchableFlatlist
+                    defaultValue={userData.district_id}
+                    setEnableSearch={setEnableSearch}
+                    label="District"
+                    required={true}
+                    onValueChange={(value) => {
+                        onChange(value, "district_id");
+                        getTehsils(value);
+                    }}
+                    data={districts}
                     containerStyle={styles.textFieldContainer}
-                    keyboardType={"email-address"}
-                    appendComponent={
-                        <View style={{ flexDirection: "row" }}>
-                            <Image
-                                source={
-                                    userData.email == ""
-                                        ? null
-                                        : userData.email != "" &&
-                                          emailError == ""
-                                        ? checkIcon
-                                        : crossIcon
-                                }
-                                style={{
-                                    width: 18,
-                                    height: 18,
-                                    tintColor:
-                                        userData.email != "" && emailError == ""
-                                            ? "#83e85a"
-                                            : "red",
-                                    marginRight: 10,
-                                }}
-                            />
-                            <Image
-                                source={messageIcon}
-                                style={[styles.appendIcon, { height: 15 }]}
-                            />
-                        </View>
-                    }
+                    placeholderText="Select District"
                 />
-                <UploadButton
-                    label={
-                        userData.file1 == ""
-                            ? "Upload Aadhar Card (Front)"
-                            : "Aadhar Card (Front)"
-                    }
-                    tintColor={userData.file1 == "" ? "" : "#83e85a"}
-                    icon={userData.file1 == "" ? "" : checkIcon}
-                    onPressFn={openAadharFrontSheet}
+            ) : null}
+            {isIndian && tehsils.length && userData.district_id ? (
+                <SearchableFlatlist
+                    defaultValue={userData.tehsil_id}
+                    setEnableSearch={setEnableSearch}
+                    label="Tehsil"
+                    required={true}
+                    onValueChange={(value) => {
+                        onChange(value, "tehsil_id");
+                    }}
+                    data={tehsils}
+                    containerStyle={styles.textFieldContainer}
+                    placeholderText="Select Tehsil"
                 />
-                <UploadButton
-                    label={
-                        userData.file2 == ""
-                            ? "Upload Aadhar Card (Back)"
-                            : "Aadhar Card (Back)"
-                    }
-                    tintColor={userData.file2 == "" ? "" : "#83e85a"}
-                    icon={userData.file2 == "" ? "" : checkIcon}
-                    onPressFn={openAadharBackSheet}
-                />
-                <View style={styles.buttonContainer}>
-                    <RoundButton label="Register" handlePress={handleSubmit} />
-                </View>
+            ) : null}
 
-                <CountryCodePicker
-                    ref={mobileRef}
-                    onValueChange={(value) => onChange(value, "country_code")}
-                    value={userData.country_code}
-                />
-                <CountryCodePicker
-                    ref={whatRef}
-                    onValueChange={(value) =>
-                        onChange(value, "whatsapp_country_code")
-                    }
-                    value={userData.whatsapp_country_code}
-                />
-                <ImagePicker
-                    ref={avatarSheetRef}
-                    onImageSelected={onAvatarSelected}
-                    onClose={closeAvatarSheet}
-                />
-                <ImagePicker
-                    ref={aadharFrontRef}
-                    onImageSelected={onAadhdarFrontSelected}
-                    onClose={closeAadharFrontSheet}
-                />
-                <ImagePicker
-                    ref={aadharBackRef}
-                    onImageSelected={onAadhdarBackSelected}
-                    onClose={closeAadharBackSheet}
-                />
-            </>
-        </KeyboardAvoidingWrapper>
+            <FormTextInput
+                label="Address"
+                value={userData.address}
+                placeholder="Enter Address"
+                required={true}
+                containerStyle={styles.textFieldContainer}
+                onChangeText={(text) => onChange(text, "address")}
+                appendComponent={
+                    <Image source={buildingIcon} style={styles.appendIcon} />
+                }
+            />
+            <FormTextInput
+                label="Pincode"
+                value={userData.pincode}
+                placeholder="Enter Pincode"
+                required={true}
+                containerStyle={styles.textFieldContainer}
+                onChangeText={(text) => onChange(text, "pincode")}
+                keyboardType={
+                    Platform.OS === "android" ? "numeric" : "number-pad"
+                }
+                appendComponent={
+                    <View style={{ flexDirection: "row" }}>
+                        <Image
+                            source={
+                                userData.pincode == ""
+                                    ? null
+                                    : userData.pincode?.length < 6
+                                    ? crossIcon
+                                    : checkIcon
+                            }
+                            style={{
+                                width: 18,
+                                height: 18,
+                                tintColor:
+                                    userData.pincode?.length < 6
+                                        ? "red"
+                                        : "#83e85a",
+                                marginRight: 10,
+                            }}
+                        />
+                        <Image source={pinIcon} style={styles.appendIcon} />
+                    </View>
+                }
+            />
+            <FormTextInput
+                label="Email ID"
+                value={userData.email}
+                placeholder="Enter Email Address"
+                onChangeText={(text) => {
+                    validateEmail(text);
+                    onChange(text, "email");
+                }}
+                containerStyle={styles.textFieldContainer}
+                containerStyle={styles.textFieldContainer}
+                keyboardType={"email-address"}
+                appendComponent={
+                    <View style={{ flexDirection: "row" }}>
+                        <Image
+                            source={
+                                userData.email == ""
+                                    ? null
+                                    : userData.email != "" && emailError == ""
+                                    ? checkIcon
+                                    : crossIcon
+                            }
+                            style={{
+                                width: 18,
+                                height: 18,
+                                tintColor:
+                                    userData.email != "" && emailError == ""
+                                        ? "#83e85a"
+                                        : "red",
+                                marginRight: 10,
+                            }}
+                        />
+                        <Image
+                            source={messageIcon}
+                            style={[styles.appendIcon, { height: 15 }]}
+                        />
+                    </View>
+                }
+            />
+            <UploadButton
+                label={
+                    userData.file1 == ""
+                        ? "Upload Aadhar Card (Front)"
+                        : "Aadhar Card (Front)"
+                }
+                tintColor={userData.file1 == "" ? "" : "#83e85a"}
+                icon={userData.file1 == "" ? "" : checkIcon}
+                onPressFn={openAadharFrontSheet}
+            />
+            <UploadButton
+                label={
+                    userData.file2 == ""
+                        ? "Upload Aadhar Card (Back)"
+                        : "Aadhar Card (Back)"
+                }
+                tintColor={userData.file2 == "" ? "" : "#83e85a"}
+                icon={userData.file2 == "" ? "" : checkIcon}
+                onPressFn={openAadharBackSheet}
+            />
+            <View style={styles.buttonContainer}>
+                <RoundButton label="Register" handlePress={handleSubmit} />
+            </View>
+
+            <CountryCodePicker
+                ref={mobileRef}
+                onValueChange={(value) => onChange(value, "country_code")}
+                value={userData.country_code}
+            />
+            <CountryCodePicker
+                ref={whatRef}
+                onValueChange={(value) =>
+                    onChange(value, "whatsapp_country_code")
+                }
+                value={userData.whatsapp_country_code}
+            />
+            <ImagePicker
+                ref={avatarSheetRef}
+                onImageSelected={onAvatarSelected}
+                onClose={closeAvatarSheet}
+            />
+            <ImagePicker
+                ref={aadharFrontRef}
+                onImageSelected={onAadhdarFrontSelected}
+                onClose={closeAadharFrontSheet}
+            />
+            <ImagePicker
+                ref={aadharBackRef}
+                onImageSelected={onAadhdarBackSelected}
+                onClose={closeAadharBackSheet}
+            />
+        </ScrollView>
     );
 };
 

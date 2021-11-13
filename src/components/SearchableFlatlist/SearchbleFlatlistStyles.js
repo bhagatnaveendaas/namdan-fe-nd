@@ -14,17 +14,20 @@ export default StyleSheet.create({
         borderRadius: 10,
         paddingHorizontal: 5,
         elevation: 5,
-        paddingVertical: 5,
+        maxHeight: 190,
     },
     dropdownItem: {
         padding: 10,
         borderBottomColor: theme.colors.primaryLight,
         borderBottomWidth: 1,
-        marginBottom: 2,
     },
     itemText: {
         fontFamily: theme.fonts.poppins.regular,
         color: theme.colors.primary,
         fontSize: 15,
+        paddingLeft: 2,
+    },
+    placeholderText: {
+        color: theme.colors.primaryLight,
     },
 });
