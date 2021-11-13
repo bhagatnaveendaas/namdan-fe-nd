@@ -73,7 +73,7 @@ const SignUp = ({ navigation }) => {
         whatsapp_country_code: "+91",
     };
 
-    const [isIndian] = useState(true);
+    const [isIndian] = useState(user?.country === 2);
 
     const namdan_takenAt = ["Online", "Naamdan Center"];
     const relations = ["S/O", "D/O", "W/O"];
@@ -81,6 +81,7 @@ const SignUp = ({ navigation }) => {
     const [districts, setDistricts] = useState([]);
     const [countries, setcountries] = useState([]);
     const [tehsils, setTehsils] = useState([]);
+    const [cities, setCities] = useState([]);
     const [emailError, setEmailError] = useState("");
     const [showAlert, setShowAlert] = useState({
         show: false,
@@ -107,14 +108,38 @@ const SignUp = ({ navigation }) => {
     }, [userData.country_id]);
 
     useEffect(() => {
-        getDistricts(userData.state_id);
-        setUserData({ ...userData, district_id: 0, tehsil_id: 0 });
+        if (!isIndian) {
+            getCities(userData.state_id);
+            // setUserData({ ...userData, district_id: 0, tehsil_id: 0 });
+        }
+    }, [userData.state_id]);
+    useEffect(() => {
+        if (isIndian) {
+            getDistricts(userData.state_id);
+            setUserData({ ...userData, district_id: 0, tehsil_id: 0 });
+        }
     }, [userData.state_id]);
 
     useEffect(() => {
-        getTehsils(userData.district_id);
-        setUserData({ ...userData, tehsil_id: 0 });
+        if (isIndian) {
+            getTehsils(userData.district_id);
+            setUserData({ ...userData, tehsil_id: 0 });
+        }
     }, [userData.district_id]);
+
+    const getCities = async (stateId) => {
+        if (!stateId) {
+            return false;
+        }
+        const temp = JSON.parse(await AsyncStorage.getItem("cities"));
+        let reqCities = temp.filter((city) => city.state_id === stateId);
+        reqCities = reqCities.map((item) => ({
+            ...item,
+            id: item.district_id,
+            name: item.district_name,
+        }));
+        setCities(reqCities);
+    };
 
     const getStates = async (countryId) => {
         console.log({ countryId });
@@ -767,6 +792,20 @@ const SignUp = ({ navigation }) => {
                             onChange(value, "state_id");
                             getDistricts(value);
                         }}
+                    />
+                ) : null}
+                {!isIndian && cities.length && userData.state_id ? (
+                    <SearchableFlatlist
+                        label="City"
+                        required={true}
+                        onValueChange={(value) => {
+                            // onChange(value, "district_id");
+                            // getTehsils(value);
+                            console.log(value);
+                        }}
+                        data={cities}
+                        containerStyle={styles.textFieldContainer}
+                        placeholderText="Select City"
                     />
                 ) : null}
                 {isIndian && districts.length && userData.state_id ? (
