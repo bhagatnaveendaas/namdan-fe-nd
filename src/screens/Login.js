@@ -85,6 +85,28 @@ function Login({ navigation }) {
             console.log(error);
         }
     };
+    const getCities = async () => {
+        try {
+            const config = {
+                method: "get",
+                url: `${appConfig.api_url}/city/list?page=1&limit=100000`,
+                headers: {
+                    key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
+                    Accept: "application/json",
+                    "X-CSRF-TOKEN": await AsyncStorage.getItem("token"),
+                },
+            };
+
+            const response = await axios(config);
+
+            await AsyncStorage.setItem(
+                "cities",
+                JSON.stringify(response.data.data.cities)
+            );
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     const getDistricts = async () => {
         try {
@@ -137,7 +159,8 @@ function Login({ navigation }) {
         const states = await AsyncStorage.getItem("states");
         const districts = await AsyncStorage.getItem("districts");
         const tehsils = await AsyncStorage.getItem("tehsils");
-        return countries && states && districts && tehsils;
+        const cities = await AsyncStorage.getItem("cities");
+        return countries && states && districts && tehsils && cities;
     };
 
     const checkIfLoggedIn = async () => {
@@ -149,6 +172,7 @@ function Login({ navigation }) {
                 await getStates();
                 await getDistricts();
                 await getTehsils();
+                await getCities();
             }
 
             navigation.push("AshramDashboard");
