@@ -197,7 +197,7 @@ function Login({ navigation }) {
             data: {
                 username: userName,
                 password: password,
-                device_id: "fdsfsf",
+                device_id: "32123",
                 longitude: "20.000",
                 latitude: "30.555",
                 channel: "mobile",
