@@ -24,10 +24,12 @@ import appConfig from "../config";
 import Constants from "../constants/text/Signup";
 import theme from "../constants/theme";
 import styles from "../styles/Singup";
-import { NewDiscipleSchema } from "../utilities/Validation";
+import {
+    NewIndianDiscipleSchema,
+    NewNonIndianDiscipleSchema,
+} from "../utilities/Validation";
 import { useAuth } from "../context/AuthContext";
 import FormData from "form-data";
-import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
 import { postJsonData } from "../httpClient/apiRequest";
 import SearchableFlatlist from "../components/SearchableFlatlist/SearchableFlatlist";
 const calendarIcon = require("../../assets/icons/calenderFilled.png");
@@ -217,7 +219,15 @@ const SignUp = ({ navigation }) => {
 
     const handleSubmit = async () => {
         try {
-            await NewDiscipleSchema.validate(userData, { abortEarly: false });
+            if (isIndian) {
+                await NewIndianDiscipleSchema.validate(userData, {
+                    abortEarly: false,
+                });
+            } else {
+                await NewNonIndianDiscipleSchema.validate(userData, {
+                    abortEarly: false,
+                });
+            }
             handleRegister();
         } catch (err) {
             if (err.name === "ValidationError") {
@@ -522,9 +532,13 @@ const SignUp = ({ navigation }) => {
                 }
             />
             <FormTextInput
-                label="Aadhar Card Number"
+                label={isIndian ? "Aadhar Card Number" : "Personal ID Number"}
                 value={userData.aadhaar_no}
-                placeholder="Enter 12 digit aadhar number"
+                placeholder={
+                    isIndian
+                        ? "Enter 12 digit aadhar number"
+                        : "Enter your personal identification number"
+                }
                 maxLength={12}
                 containerStyle={styles.textFieldContainer}
                 onChangeText={onFetchingAadhar}
