@@ -89,7 +89,7 @@ function Login({ navigation }) {
         try {
             const config = {
                 method: "get",
-                url: `${appConfig.api_url}/city/list?page=1&limit=100000`,
+                url: `${appConfig.api_url}/city/list?page=1&limit=10000`,
                 headers: {
                     key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
                     Accept: "application/json",
@@ -204,7 +204,6 @@ function Login({ navigation }) {
                 device_token: "asdad",
             },
         };
-        console.log({ config });
 
         axios(config)
             .then(async (response) => {
@@ -241,6 +240,7 @@ function Login({ navigation }) {
                     await getStates();
                     await getDistricts();
                     await getTehsils();
+                    await getCities();
 
                     navigation.push("AshramDashboard");
                 } else {

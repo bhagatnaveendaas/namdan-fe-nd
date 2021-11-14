@@ -58,6 +58,7 @@ const SignUp = ({ navigation }) => {
         state_id: user?.state || 0,
         district_id: user?.district || 0,
         tehsil_id: 0,
+        city_id: 0,
         form_no: "",
         form_date: moment(),
         mobile_no: "",
@@ -74,7 +75,7 @@ const SignUp = ({ navigation }) => {
         whatsapp_country_code: "+91",
     };
 
-    const [isIndian] = useState(true);
+    const isIndian = user?.country === 2;
 
     const namdan_takenAt = ["Online", "Naamdan Center"];
     const relations = ["S/O", "D/O", "W/O"];
@@ -110,8 +111,8 @@ const SignUp = ({ navigation }) => {
 
     useEffect(() => {
         if (!isIndian) {
-            getCities(userData.state_id);
-            // setUserData({ ...userData, district_id: 0, tehsil_id: 0 });
+            getCities(userData.city_id);
+            setUserData({ ...userData, district_id: 0, tehsil_id: 0 });
         }
     }, [userData.state_id]);
     useEffect(() => {
@@ -136,9 +137,10 @@ const SignUp = ({ navigation }) => {
         let reqCities = temp.filter((city) => city.state_id === stateId);
         reqCities = reqCities.map((item) => ({
             ...item,
-            id: item.district_id,
-            name: item.district_name,
+            id: item.city_id,
+            name: item.city_name,
         }));
+        // console.log(reqCities);
         setCities(reqCities);
     };
 
@@ -239,8 +241,12 @@ const SignUp = ({ navigation }) => {
         formData.append("address", userData.address);
         formData.append("country_id", userData.country_id);
         formData.append("state_id", userData.state_id);
-        formData.append("district_id", userData.district_id);
-        formData.append("tehsil_id", userData.tehsil_id);
+        if (isIndian) {
+            formData.append("district_id", userData.district_id);
+            formData.append("tehsil_id", userData.tehsil_id);
+        } else {
+            formData.append("city_id", userData.city_id);
+        }
         formData.append("pincode", userData.pincode);
         formData.append(
             "mobile_no",
@@ -793,20 +799,22 @@ const SignUp = ({ navigation }) => {
                     required={true}
                     onValueChange={(value) => {
                         onChange(value, "state_id");
-                        getDistricts(value);
+                        if (isIndian) {
+                            getDistricts(value);
+                        } else {
+                            getCities(value);
+                        }
                     }}
                 />
             ) : null}
             {!isIndian && cities.length && userData.state_id ? (
                 <SearchableFlatlist
-                    defaultValue={0}
+                    defaultValue={userData.city_id}
                     setEnableSearch={setEnableSearch}
                     label="City"
                     required={true}
                     onValueChange={(value) => {
-                        // onChange(value, "district_id");
-                        // getTehsils(value);
-                        console.log(value);
+                        onChange(value, "city_id");
                     }}
                     data={cities}
                     containerStyle={styles.textFieldContainer}
