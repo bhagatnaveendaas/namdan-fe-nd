@@ -833,7 +833,6 @@ const SignUp = ({ navigation }) => {
                     defaultValue={userData.tehsil_id}
                     setEnableSearch={setEnableSearch}
                     label="Tehsil"
-                    required={true}
                     onValueChange={(value) => {
                         onChange(value, "tehsil_id");
                     }}
