@@ -30,7 +30,7 @@ import {
 } from "../utilities/Validation";
 import { useAuth } from "../context/AuthContext";
 import FormData from "form-data";
-import { postJsonData } from "../httpClient/apiRequest";
+import { getData, postJsonData } from "../httpClient/apiRequest";
 import SearchableFlatlist from "../components/SearchableFlatlist/SearchableFlatlist";
 const calendarIcon = require("../../assets/icons/calenderFilled.png");
 const checkIcon = require("../../assets/icons/check-circletick.png");
@@ -93,6 +93,24 @@ const SignUp = ({ navigation }) => {
         message: "",
         confirm: "Ok",
     });
+    const [fields, setFields] = useState({
+        uniqueNoField: "",
+        file1Field: "",
+        file2Field: "",
+    });
+    const getFields = async (countryId) => {
+        try {
+            const { data } = await getData(`/country_id/${countryId}/id`);
+            setFields({
+                ...fields,
+                uniqueNoField: data?.data.id_name,
+                file1Field: data?.data.file1_name,
+                file2Field: data?.data.file2_name,
+            });
+        } catch (error) {
+            console.log("error", error);
+        }
+    };
 
     const [userData, setUserData] = useState(formFields);
 
@@ -109,7 +127,9 @@ const SignUp = ({ navigation }) => {
         getStates(userData.country_id);
         setUserData({ ...userData, district_id: 0, state_id: 0, tehsil_id: 0 });
     }, [userData.country_id]);
-
+    useEffect(() => {
+        getFields(userData.country_id);
+    }, [userData.country_id]);
     useEffect(() => {
         if (!isIndian) {
             getCities(userData.city_id);
@@ -534,13 +554,9 @@ const SignUp = ({ navigation }) => {
                 }
             />
             <FormTextInput
-                label={isIndian ? "Aadhar Card Number" : "Personal ID Number"}
+                label={`${fields.uniqueNoField} Number`}
                 value={userData.aadhaar_no}
-                placeholder={
-                    isIndian
-                        ? "Enter 12 digit aadhar number"
-                        : "Enter your personal identification number"
-                }
+                placeholder={`Enter your ${fields.uniqueNoField.toLocaleLowerCase()} number`}
                 maxLength={12}
                 containerStyle={styles.textFieldContainer}
                 onChangeText={onFetchingAadhar}
@@ -951,23 +967,25 @@ const SignUp = ({ navigation }) => {
             <UploadButton
                 label={
                     userData.file1 == ""
-                        ? "Upload Aadhar Card (Front)"
-                        : "Aadhar Card (Front)"
+                        ? `Upload ${fields.file1Field}`
+                        : `Uploaded ${fields.file1Field}`
                 }
                 tintColor={userData.file1 == "" ? "" : "#83e85a"}
                 icon={userData.file1 == "" ? "" : checkIcon}
                 onPressFn={openAadharFrontSheet}
             />
-            <UploadButton
-                label={
-                    userData.file2 == ""
-                        ? "Upload Aadhar Card (Back)"
-                        : "Aadhar Card (Back)"
-                }
-                tintColor={userData.file2 == "" ? "" : "#83e85a"}
-                icon={userData.file2 == "" ? "" : checkIcon}
-                onPressFn={openAadharBackSheet}
-            />
+            {fields.file2Field !== "" && (
+                <UploadButton
+                    label={
+                        userData.file2 == ""
+                            ? `Upload ${fields.file2Field}`
+                            : `Uploaded ${fields.file2Field}`
+                    }
+                    tintColor={userData.file2 == "" ? "" : "#83e85a"}
+                    icon={userData.file2 == "" ? "" : checkIcon}
+                    onPressFn={openAadharBackSheet}
+                />
+            )}
             <View style={styles.buttonContainer}>
                 <RoundButton label="Register" handlePress={handleSubmit} />
             </View>
