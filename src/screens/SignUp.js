@@ -287,14 +287,16 @@ const SignUp = ({ navigation }) => {
             type: "image/jpeg",
             name: "file1.jpg",
         });
-        formData.append("file2", {
-            uri:
-                Platform.OS === "android"
-                    ? userData.file2
-                    : userData.file2.replace("file://", ""),
-            type: "image/jpeg",
-            name: "file2.jpg",
-        });
+        if (userData.file2 !== "") {
+            formData.append("file2", {
+                uri:
+                    Platform.OS === "android"
+                        ? userData.file2
+                        : userData.file2.replace("file://", ""),
+                type: "image/jpeg",
+                name: "file2.jpg",
+            });
+        }
         console.log(formData);
         const config = {
             method: "post",
