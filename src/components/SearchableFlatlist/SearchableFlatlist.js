@@ -72,8 +72,8 @@ const SearchableFlatlist = ({
                         }}
                     >
                         <Text style={searchbleFlatlistStyles.itemText}>
-                            {selectedItem && defaultValue !== 0 ? (
-                                selectedItem?.name
+                            {defaultValue !== 0 ? (
+                                defaultOption[0]?.name
                             ) : (
                                 <Text
                                     style={
