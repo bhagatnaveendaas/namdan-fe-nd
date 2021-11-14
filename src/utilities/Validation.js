@@ -59,7 +59,7 @@ export const NewNonIndianDiscipleSchema = Yup.object().shape({
     state_id: Yup.number()
         .required("Please fill State")
         .min(1, "Please fill State."),
-   city_id: Yup.number()
+    city_id: Yup.number()
         .required("Please fill City.")
         .min(1, "Please fill City."),
     address: Yup.string()
@@ -69,6 +69,7 @@ export const NewNonIndianDiscipleSchema = Yup.object().shape({
         .required("Please fill Pincode")
         .min(6, "Enter valid pin code, it must be 6 characters long"),
     email: Yup.string().email("Enter a valid email address."),
+    file1: Yup.string().required("Please provide indentity proof picture."),
 });
 export const NewIndianDiscipleSchema = Yup.object().shape({
     avatar: Yup.string().required("Please provide profile picture."),
@@ -133,4 +134,6 @@ export const NewIndianDiscipleSchema = Yup.object().shape({
         .required("Please fill Pincode")
         .min(6, "Enter valid pin code, it must be 6 characters long"),
     email: Yup.string().email("Enter a valid email address."),
+    file1: Yup.string().required("Please provide aadhaar card front picture."),
+    file2: Yup.string().required("Please provide aadhaar card back picture."),
 });
