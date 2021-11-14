@@ -254,6 +254,9 @@ function Login({ navigation }) {
                 }
             })
             .catch((error) => {
+                if (error && error.response) {
+                    alert(error.response?.data.error);
+                }
                 console.error(error.response);
             });
     };

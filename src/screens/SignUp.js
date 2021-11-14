@@ -1,6 +1,5 @@
 import axios from "axios";
 import _ from "lodash";
-import { serialize } from "object-to-formdata";
 import moment from "moment";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -316,7 +315,7 @@ const SignUp = ({ navigation }) => {
                     console.log(
                         `Signup: ${JSON.stringify(error.response.data)}`
                     );
-                    alert(error.response?.data);
+                    alert(error.response?.data.error);
                 } else {
                     console.log(`Signup: ${error}`);
                     alert(error);
