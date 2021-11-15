@@ -27,6 +27,7 @@ import styles from "../styles/Singup";
 import {
     NewIndianDiscipleSchema,
     NewNonIndianDiscipleSchema,
+    file2Schema,
 } from "../utilities/Validation";
 import { useAuth } from "../context/AuthContext";
 import FormData from "form-data";
@@ -248,6 +249,9 @@ const SignUp = ({ navigation }) => {
                     abortEarly: false,
                 });
             }
+            if (fields.file2Field !== "" && fields.file2Field !== null) {
+                await file2Schema.validate(userData, { abortEarly: false });
+            }
             handleRegister();
         } catch (err) {
             if (err.name === "ValidationError") {
@@ -281,7 +285,7 @@ const SignUp = ({ navigation }) => {
             "mobile_no",
             userData.country_code + userData.mobile_no
         );
-        if(userData.whatsapp_no !== "" && userData.whatsapp_no >= 10){
+        if (userData.whatsapp_no !== "" && userData.whatsapp_no >= 10) {
             formData.append(
                 "whatsapp_no",
                 userData.whatsapp_country_code + userData.whatsapp_no
