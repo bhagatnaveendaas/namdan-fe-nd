@@ -59,7 +59,7 @@ const SignUp = ({ navigation }) => {
         state_id: user?.state || 0,
         district_id: user?.district || 0,
         tehsil_id: 0,
-        city_id: 0,
+        city_id: user?.city || 0,
         form_no: "",
         form_date: moment(),
         mobile_no: "",
@@ -115,7 +115,8 @@ const SignUp = ({ navigation }) => {
     const [userData, setUserData] = useState(formFields);
 
     const getCountries = async () => {
-        const temp = JSON.parse(await AsyncStorage.getItem("countries"));
+        const { data } = await getData("/country/list?page=1&limit=1000");
+        const temp = data?.data.countries;
         setcountries(temp ? temp : []);
     };
 
@@ -132,7 +133,7 @@ const SignUp = ({ navigation }) => {
     }, [userData.country_id]);
     useEffect(() => {
         if (!isIndian) {
-            getCities(userData.city_id);
+            getCities(userData.state_id);
             setUserData({ ...userData, district_id: 0, tehsil_id: 0 });
         }
     }, [userData.state_id]);
@@ -154,43 +155,39 @@ const SignUp = ({ navigation }) => {
         if (!stateId) {
             return false;
         }
-        const temp = JSON.parse(await AsyncStorage.getItem("cities"));
-        let reqCities = temp.filter((city) => city.state_id === stateId);
-        reqCities = reqCities.map((item) => ({
-            ...item,
-            id: item.city_id,
-            name: item.city_name,
-        }));
-        // console.log(reqCities);
-        setCities(reqCities);
+        try {
+            const { data } = await getData(`state/${stateId}/city`);
+            reqCities = data?.data;
+            setCities(reqCities);
+        } catch (error) {
+            console.log(`Unable to fectch cities for stateId = ${stateId}`);
+        }
     };
 
     const getStates = async (countryId) => {
-        console.log({ countryId });
         if (!countryId) {
             return false;
         }
-        const temp = JSON.parse(await AsyncStorage.getItem("states"));
-        const reqStates = temp.filter(
-            (state) => state.country_id === countryId
-        );
-        setStates(reqStates);
+        try {
+            const { data } = await getData(`country/${countryId}/state`);
+            const reqStates = data?.data;
+            setStates(reqStates);
+        } catch (error) {
+            console.log(`Unable to fectch states for countryId = ${countryId}`);
+        }
     };
 
     const getDistricts = async (stateId) => {
         if (!stateId) {
             return false;
         }
-        const temp = JSON.parse(await AsyncStorage.getItem("districts"));
-        let reqDistricts = temp.filter(
-            (district) => district.state_id === stateId
-        );
-        reqDistricts = reqDistricts.map((item) => ({
-            ...item,
-            id: item.district_id,
-            name: item.district_name,
-        }));
-        setDistricts(reqDistricts);
+        try {
+            const { data } = await getData(`state/${stateId}/district`);
+            let reqDistricts = data?.data;
+            setDistricts(reqDistricts);
+        } catch (error) {
+            console.log(`Unable to fectch districts for stateId = ${stateId}`);
+        }
     };
 
     const getTehsils = async (districtId) => {

@@ -51,15 +51,15 @@ const MainStackNavigator = () => {
                     options={{ header: () => {} }}
                 />
             )}
-            <Stack.Screen name="Entry" component={Entry} />
-            <Stack.Screen name="Profile" component={Profile} />
-            <Stack.Screen name="SearchScreen" component={SearchScreen} />
-            <Stack.Screen name="verifyOtp" component={verifyOtp} />
             <Stack.Screen
                 name="AshramDashboard"
                 component={AshramDashboard}
                 options={{ headerShown: false }}
             />
+            <Stack.Screen name="Entry" component={Entry} />
+            <Stack.Screen name="Profile" component={Profile} />
+            <Stack.Screen name="SearchScreen" component={SearchScreen} />
+            <Stack.Screen name="verifyOtp" component={verifyOtp} />
             <Stack.Screen name="Pratham Naam" component={SignUp} />
             <Stack.Screen
                 name="CountryDashboard"
