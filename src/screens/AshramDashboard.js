@@ -272,7 +272,7 @@ const Home = ({ navigation }) => {
                         </View>
                     </View>
                 )}
-                {(role !== "Namdan Sewadar" || role !== "District Admin") && (
+                {/* {(role !== "Namdan Sewadar" || role !== "District Admin") && (
                     <>
                         <DashboardHeading label="Features" />
                         <View style={{ paddingHorizontal: "1.3%" }}>
@@ -324,7 +324,7 @@ const Home = ({ navigation }) => {
 
                         <DashboardHeading label="Reports" />
                     </>
-                )}
+                )} */}
                 {/* {role === "Namdan Sewadar" && ( */}
 
                 {role !== "Namdan Sewadar" && (
@@ -401,7 +401,7 @@ const Home = ({ navigation }) => {
                                 justifyContent: "center",
                                 width: "100%",
                                 borderRadius: 10,
-                                backgroundColor: "#E9FCFF",
+                                backgroundColor: theme.colors.primary,
                                 elevation: 5,
                                 flexDirection: "row",
                                 paddingVertical: 7,
@@ -420,13 +420,17 @@ const Home = ({ navigation }) => {
                             >
                                 <Image
                                     source={require("../../assets/icons/message.png")}
-                                    style={{ height: 40, width: 40 }}
+                                    style={{
+                                        height: 40,
+                                        width: 40,
+                                        tintColor: theme.colors.white,
+                                    }}
                                 />
                                 <Text
                                     style={{
                                         fontFamily:
                                             theme.fonts.poppins.semiBold,
-                                        color: theme.colors.primary,
+                                        color: theme.colors.white,
                                         fontSize: 14,
                                         paddingLeft: 10,
                                     }}
