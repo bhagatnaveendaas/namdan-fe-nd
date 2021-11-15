@@ -160,6 +160,7 @@ const SignUp = ({ navigation }) => {
             reqCities = data?.data;
             setCities(reqCities);
         } catch (error) {
+            console.error(error.message);
             console.log(`Unable to fectch cities for stateId = ${stateId}`);
         }
     };
@@ -173,6 +174,7 @@ const SignUp = ({ navigation }) => {
             const reqStates = data?.data;
             setStates(reqStates);
         } catch (error) {
+            console.error(error.message);
             console.log(`Unable to fectch states for countryId = ${countryId}`);
         }
     };
@@ -186,6 +188,7 @@ const SignUp = ({ navigation }) => {
             let reqDistricts = data?.data;
             setDistricts(reqDistricts);
         } catch (error) {
+            console.error(error.message);
             console.log(`Unable to fectch districts for stateId = ${stateId}`);
         }
     };
@@ -287,7 +290,9 @@ const SignUp = ({ navigation }) => {
         formData.append("occupation", userData.occupation);
         formData.append("namdan_taken", userData.namdan_taken);
         formData.append("email", userData.email);
-        formData.append("unique_id", userData.aadhaar_no);
+        if (userData.aadhaar_no !== "" && userData.aadhaar_no.length >= 12) {
+            formData.append("unique_id", userData.aadhaar_no);
+        }
         formData.append("avatar", {
             uri:
                 Platform.OS === "android"
@@ -296,14 +301,16 @@ const SignUp = ({ navigation }) => {
             type: "image/jpeg",
             name: "file1.jpg",
         });
-        formData.append("file1", {
-            uri:
-                Platform.OS === "android"
-                    ? userData.file1
-                    : userData.file1.replace("file://", ""),
-            type: "image/jpeg",
-            name: "file1.jpg",
-        });
+        if (userData.file1 !== "") {
+            formData.append("file1", {
+                uri:
+                    Platform.OS === "android"
+                        ? userData.file1
+                        : userData.file1.replace("file://", ""),
+                type: "image/jpeg",
+                name: "file1.jpg",
+            });
+        }
         if (userData.file2 !== "") {
             formData.append("file2", {
                 uri:
@@ -961,27 +968,31 @@ const SignUp = ({ navigation }) => {
                     </View>
                 }
             />
-            <UploadButton
-                label={
-                    userData.file1 == ""
-                        ? `Upload ${fields.file1Field}`
-                        : `Uploaded ${fields.file1Field}`
-                }
-                tintColor={userData.file1 == "" ? "" : "#83e85a"}
-                icon={userData.file1 == "" ? "" : checkIcon}
-                onPressFn={openAadharFrontSheet}
-            />
-            {fields.file2Field !== "" && (
-                <UploadButton
-                    label={
-                        userData.file2 == ""
-                            ? `Upload ${fields.file2Field}`
-                            : `Uploaded ${fields.file2Field}`
-                    }
-                    tintColor={userData.file2 == "" ? "" : "#83e85a"}
-                    icon={userData.file2 == "" ? "" : checkIcon}
-                    onPressFn={openAadharBackSheet}
-                />
+            {userData.aadhaar_no !== "" && userData.aadhaar_no.length >= 12 && (
+                <>
+                    <UploadButton
+                        label={
+                            userData.file1 == ""
+                                ? `Upload ${fields.file1Field}`
+                                : `Uploaded ${fields.file1Field}`
+                        }
+                        tintColor={userData.file1 == "" ? "" : "#83e85a"}
+                        icon={userData.file1 == "" ? "" : checkIcon}
+                        onPressFn={openAadharFrontSheet}
+                    />
+                    {fields.file2Field !== "" && fields.file2Field !== null && (
+                        <UploadButton
+                            label={
+                                userData.file2 == ""
+                                    ? `Upload ${fields.file2Field}`
+                                    : `Uploaded ${fields.file2Field}`
+                            }
+                            tintColor={userData.file2 == "" ? "" : "#83e85a"}
+                            icon={userData.file2 == "" ? "" : checkIcon}
+                            onPressFn={openAadharBackSheet}
+                        />
+                    )}
+                </>
             )}
             <View style={styles.buttonContainer}>
                 <RoundButton label="Register" handlePress={handleSubmit} />
