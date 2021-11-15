@@ -3,7 +3,7 @@ import moment from "moment";
 
 const tommorow = moment(new Date().setDate(new Date().getDate() + 1));
 const threeYears = moment(
-    new Date().setDate(new Date().getDate() - (365 * 3 + 1))
+    new Date().setDate(new Date().getDate() - 365 * 3)
 );
 
 // const threeYearDateText = threeYears.format("DD-MM-YYYY");
@@ -77,14 +77,7 @@ export const NewNonIndianDiscipleSchema = Yup.object().shape({
                 "Please provide identity card front picture."
             ),
         }),
-    file2: Yup.string()
-        .ensure()
-        .when("aadhaar_no", {
-            is: (aadhaar_no) => aadhaar_no !== "" && aadhaar_no.length >= 12,
-            then: Yup.string().required(
-                "Please provide identity card back picture."
-            ),
-        }),
+    file2: Yup.string(),
 });
 export const NewIndianDiscipleSchema = Yup.object().shape({
     avatar: Yup.string().required("Please provide profile picture."),
@@ -157,12 +150,5 @@ export const NewIndianDiscipleSchema = Yup.object().shape({
                 "Please provide aadhaar card front picture."
             ),
         }),
-    file2: Yup.string()
-        .ensure()
-        .when("aadhaar_no", {
-            is: (aadhaar_no) => aadhaar_no !== "" && aadhaar_no.length >= 12,
-            then: Yup.string().required(
-                "Please provide aadhaar card back picture."
-            ),
-        }),
+    file2: Yup.string(),
 });

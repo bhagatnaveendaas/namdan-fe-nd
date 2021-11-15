@@ -157,7 +157,7 @@ const SignUp = ({ navigation }) => {
         }
         try {
             const { data } = await getData(`state/${stateId}/city`);
-            reqCities = data?.data;
+            const reqCities = data?.data;
             setCities(reqCities);
         } catch (error) {
             console.error(error.message);
@@ -281,10 +281,12 @@ const SignUp = ({ navigation }) => {
             "mobile_no",
             userData.country_code + userData.mobile_no
         );
-        formData.append(
-            "whatsapp_no",
-            userData.whatsapp_country_code + userData.whatsapp_no
-        );
+        if(userData.whatsapp_no !== "" && userData.whatsapp_no >= 10){
+            formData.append(
+                "whatsapp_no",
+                userData.whatsapp_country_code + userData.whatsapp_no
+            );
+        }
         formData.append("form_no", userData.form_no);
         formData.append("form_date", form_date);
         formData.append("occupation", userData.occupation);
@@ -332,7 +334,7 @@ const SignUp = ({ navigation }) => {
             },
             data: formData,
         };
-
+        console.log(formData);
         axios(config)
             .then((response) => {
                 console.log(response.data);
