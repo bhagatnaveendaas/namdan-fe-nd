@@ -69,7 +69,22 @@ export const NewNonIndianDiscipleSchema = Yup.object().shape({
         .required("Please fill Pincode")
         .min(6, "Enter valid pin code, it must be 6 characters long"),
     email: Yup.string().email("Enter a valid email address."),
-    file1: Yup.string().required("Please provide indentity proof picture."),
+    file1: Yup.string()
+        .ensure()
+        .when("aadhaar_no", {
+            is: (aadhaar_no) => aadhaar_no !== "" && aadhaar_no.length >= 12,
+            then: Yup.string().required(
+                "Please provide identity card front picture."
+            ),
+        }),
+    file2: Yup.string()
+        .ensure()
+        .when("aadhaar_no", {
+            is: (aadhaar_no) => aadhaar_no !== "" && aadhaar_no.length >= 12,
+            then: Yup.string().required(
+                "Please provide identity card back picture."
+            ),
+        }),
 });
 export const NewIndianDiscipleSchema = Yup.object().shape({
     avatar: Yup.string().required("Please provide profile picture."),
@@ -134,6 +149,20 @@ export const NewIndianDiscipleSchema = Yup.object().shape({
         .required("Please fill Pincode")
         .min(6, "Enter valid pin code, it must be 6 characters long"),
     email: Yup.string().email("Enter a valid email address."),
-    file1: Yup.string().required("Please provide aadhaar card front picture."),
-    file2: Yup.string().required("Please provide aadhaar card back picture."),
+    file1: Yup.string()
+        .ensure()
+        .when("aadhaar_no", {
+            is: (aadhaar_no) => aadhaar_no !== "" && aadhaar_no.length >= 12,
+            then: Yup.string().required(
+                "Please provide aadhaar card front picture."
+            ),
+        }),
+    file2: Yup.string()
+        .ensure()
+        .when("aadhaar_no", {
+            is: (aadhaar_no) => aadhaar_no !== "" && aadhaar_no.length >= 12,
+            then: Yup.string().required(
+                "Please provide aadhaar card back picture."
+            ),
+        }),
 });
