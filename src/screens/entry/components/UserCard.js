@@ -22,8 +22,16 @@ const UserCard = ({ user, onPress }) => {
         >
             <View style={styles.container}>
                 <Avatar imageSource={userDefaultImage} status={"Active"} />
-                <View style={{ flex: 1, padding: 10 }}>
+                <View
+                    style={{
+                        flex: 1,
+                        paddingHorizontal: 10,
+                    }}
+                >
                     <Text style={styles.name}>{user.name.trim()}</Text>
+                    <Text style={styles.address}>
+                        {user.relation.trim()} {user.guardian_name.trim()}
+                    </Text>
                     <Text style={styles.address}>
                         {[
                             tehsil_name,

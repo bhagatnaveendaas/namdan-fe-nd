@@ -27,6 +27,7 @@ import {
     SATNAM,
     SHUDDIKARAN,
 } from "../constants";
+import { useAuth } from "../context/AuthContext";
 
 const Home = ({ navigation }) => {
     const [kpiCounts, setKpiCounts] = useState({});
@@ -38,6 +39,12 @@ const Home = ({ navigation }) => {
     });
 
     const [role, setRole] = useState("");
+    const {
+        state: { user },
+    } = useAuth();
+
+    const permissions = user?.permissions;
+    // console.log(permissions);
 
     const getInitialProps = async () => {
         // const countries = await AsyncStorage.getItem("districts");
@@ -200,75 +207,89 @@ const Home = ({ navigation }) => {
                                 justifyContent: "space-evenly",
                             }}
                         >
-                            <VerticalIconButton
-                                label={`Pratham Naam`}
-                                icon={require("../../assets/icons/pn.png")}
-                                pressHandler={() =>
-                                    navigation.push("Pratham Naam")
-                                }
-                            />
-                            <VerticalIconButton
-                                label="Attendance"
-                                icon={require("../../assets/icons/at.png")}
-                                pressHandler={() => {
-                                    navigation.navigate("Entry", {
-                                        title: "Attendance",
-                                        entryType: ATTENDANCE,
-                                    });
-                                }}
-                            />
-                            <VerticalIconButton
-                                label="Satnaam"
-                                icon={require("../../assets/icons/sn.png")}
-                                pressHandler={() => {
-                                    navigation.navigate("Entry", {
-                                        title: "Enter Satnaam",
-                                        entryType: SATNAM,
-                                        searchBy: "mobile_no",
-                                        text: "",
-                                    });
-                                }}
-                            />
-                            <VerticalIconButton
-                                label="Sarnaam"
-                                icon={require("../../assets/icons/srn.png")}
-                                pressHandler={() => {
-                                    navigation.navigate("Entry", {
-                                        title: "Enter SaarNaam",
-                                        entryType: SAARNAAM,
-                                    });
-                                }}
-                            />
-                            <VerticalIconButton
-                                label={`Sarshabd`}
-                                icon={require("../../assets/icons/sr2.png")}
-                                pressHandler={() => {
-                                    navigation.navigate("Entry", {
-                                        title: "SarShabd",
-                                        entryType: SAARSHABAD,
-                                    });
-                                }}
-                            />
-                            <VerticalIconButton
-                                label="Shudhikaran"
-                                icon={require("../../assets/icons/sk.png")}
-                                pressHandler={() => {
-                                    navigation.navigate("Entry", {
-                                        title: "Enter Shudhikaran",
-                                        entryType: SHUDDIKARAN,
-                                    });
-                                }}
-                            />
-                            <VerticalIconButton
-                                label={`Punar Updesh`}
-                                icon={require("../../assets/icons/pu.png")}
-                                pressHandler={() => {
-                                    navigation.navigate("Entry", {
-                                        title: "Enter Punar Updesh",
-                                        entryType: PUNARUPDESH,
-                                    });
-                                }}
-                            />
+                            {permissions.includes("pratham_mantra") && (
+                                <VerticalIconButton
+                                    label={`Pratham Naam`}
+                                    icon={require("../../assets/icons/pn.png")}
+                                    pressHandler={() =>
+                                        navigation.push("Pratham Naam")
+                                    }
+                                />
+                            )}
+                            {permissions.includes("attendance") && (
+                                <VerticalIconButton
+                                    label="Attendance"
+                                    icon={require("../../assets/icons/at.png")}
+                                    // pressHandler={() => {
+                                    //     navigation.navigate("Entry", {
+                                    //         title: "Attendance",
+                                    //         entryType: ATTENDANCE,
+                                    //     });
+                                    // }}
+                                />
+                            )}
+                            {permissions.includes("satnam") && (
+                                <VerticalIconButton
+                                    label="Satnaam"
+                                    icon={require("../../assets/icons/sn.png")}
+                                    // pressHandler={() => {
+                                    //     navigation.navigate("Entry", {
+                                    //         title: "Enter Satnaam",
+                                    //         entryType: SATNAM,
+                                    //         searchBy: "mobile_no",
+                                    //         text: "",
+                                    //     });
+                                    // }}
+                                />
+                            )}
+                            {permissions.includes("sarnam") && (
+                                <VerticalIconButton
+                                    label="Sarnaam"
+                                    icon={require("../../assets/icons/srn.png")}
+                                    // pressHandler={() => {
+                                    //     navigation.navigate("Entry", {
+                                    //         title: "Enter SaarNaam",
+                                    //         entryType: SAARNAAM,
+                                    //     });
+                                    // }}
+                                />
+                            )}
+                            {permissions.includes("sarshabd") && (
+                                <VerticalIconButton
+                                    label={`Sarshabd`}
+                                    icon={require("../../assets/icons/sr2.png")}
+                                    // pressHandler={() => {
+                                    //     navigation.navigate("Entry", {
+                                    //         title: "SarShabd",
+                                    //         entryType: SAARSHABAD,
+                                    //     });
+                                    // }}
+                                />
+                            )}
+                            {permissions.includes("shudhikaran") && (
+                                <VerticalIconButton
+                                    label="Shudhikaran"
+                                    icon={require("../../assets/icons/sk.png")}
+                                    // pressHandler={() => {
+                                    //     navigation.navigate("Entry", {
+                                    //         title: "Enter Shudhikaran",
+                                    //         entryType: SHUDDIKARAN,
+                                    //     });
+                                    // }}
+                                />
+                            )}
+                            {permissions.includes("punar_updesh") && (
+                                <VerticalIconButton
+                                    label={`Punar Updesh`}
+                                    icon={require("../../assets/icons/pu.png")}
+                                    // pressHandler={() => {
+                                    //     navigation.navigate("Entry", {
+                                    //         title: "Enter Punar Updesh",
+                                    //         entryType: PUNARUPDESH,
+                                    //     });
+                                    // }}
+                                />
+                            )}
                         </View>
                     </View>
                 )}
