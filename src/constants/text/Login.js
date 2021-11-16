@@ -1,5 +1,5 @@
 export default {
-    appName:"Naamdan App",
+    appName:"Namdan App",
     login: "login",
     signUpLine:"Don’t have an account?   Sign Up"
 }

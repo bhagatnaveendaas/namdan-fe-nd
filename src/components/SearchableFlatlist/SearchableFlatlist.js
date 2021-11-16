@@ -40,7 +40,10 @@ const SearchableFlatlist = ({
     return (
         <View style={[styles.wrapper, { position: "relative" }]}>
             {label && (
-                <Text style={[styles.label, { marginBottom: -4 }]}>
+                <Text
+                    allowFontScaling={false}
+                    style={[styles.label, { marginBottom: -4 }]}
+                >
                     {label}
                     {required && <Text style={styles.required}>{" *"}</Text>}
                 </Text>
@@ -48,6 +51,7 @@ const SearchableFlatlist = ({
             <View style={[styles.container, containerStyle]}>
                 {open ? (
                     <TextInput
+                        allowFontScaling={false}
                         onFocus={() => {
                             setEnableSearch(true);
                         }}
@@ -71,7 +75,10 @@ const SearchableFlatlist = ({
                             justifyContent: "center",
                         }}
                     >
-                        <Text style={searchbleFlatlistStyles.itemText}>
+                        <Text
+                            allowFontScaling={false}
+                            style={searchbleFlatlistStyles.itemText}
+                        >
                             {defaultValue !== 0 ? (
                                 defaultOption[0]?.name
                             ) : (

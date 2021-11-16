@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text } from "react-native";
 import styles from "../styles/AshramDashboard";
 import theme from "../constants/theme";
+import {FONTS} from '../constants/fonts'
 
 const ScoreBoard = (props) => (
     <View style={{ paddingHorizontal: "1%" }}>
@@ -14,19 +15,19 @@ const ScoreBoard = (props) => (
                     ]}
                 >
                     <Text
+                        allowFontScaling={false}
                         style={{
-                            fontFamily: theme.fonts.lora.bold,
+                            ...FONTS.h2,
                             color: theme.colors.white,
                             textAlign: "center",
-
-                            fontSize: 25,
                         }}
                     >
                         {props.prathams}
                     </Text>
                     <Text
+                        allowFontScaling={false}
                         style={{
-                            fontFamily: theme.fonts.lora.bold,
+                            ...FONTS.h4,
                             color: theme.colors.white,
                             textAlign: "center",
 
@@ -66,19 +67,20 @@ const ScoreBoard = (props) => (
                             ]}
                         >
                             <Text
+                                allowFontScaling={false}
                                 style={{
-                                    fontFamily: theme.fonts.lora.bold,
+                                    ...FONTS.h2,
                                     color: theme.colors.white,
 
-                                    fontSize: 20,
                                     textAlign: "center",
                                 }}
                             >
                                 {props.satnams}
                             </Text>
                             <Text
+                                allowFontScaling={false}
                                 style={{
-                                    fontFamily: theme.fonts.lora.bold,
+                                    ...FONTS.h4,
                                     color: theme.colors.white,
                                     textAlign: "center",
 
@@ -95,22 +97,21 @@ const ScoreBoard = (props) => (
                             ]}
                         >
                             <Text
+                                allowFontScaling={false}
                                 style={{
-                                    fontFamily: theme.fonts.lora.bold,
+                                    ...FONTS.h2,
                                     color: theme.colors.white,
-
-                                    fontSize: 20,
                                     textAlign: "center",
                                 }}
                             >
                                 {props.prathamVsSatnam}
                             </Text>
                             <Text
+                                allowFontScaling={false}
                                 style={{
-                                    fontFamily: theme.fonts.lora.bold,
+                                    ...FONTS.h4,
                                     color: theme.colors.white,
                                     textAlign: "center",
-
                                     paddingTop: "1%",
                                 }}
                             >
@@ -139,22 +140,21 @@ const ScoreBoard = (props) => (
                             ]}
                         >
                             <Text
+                                allowFontScaling={false}
                                 style={{
-                                    fontFamily: theme.fonts.lora.bold,
+                                    ...FONTS.h2,
                                     color: theme.colors.white,
-
-                                    fontSize: 20,
                                     textAlign: "center",
                                 }}
                             >
                                 {props.sarnams}
                             </Text>
                             <Text
+                                allowFontScaling={false}
                                 style={{
-                                    fontFamily: theme.fonts.lora.bold,
+                                    ...FONTS.h4,
                                     color: theme.colors.white,
                                     textAlign: "center",
-
                                     paddingTop: "1%",
                                 }}
                             >
@@ -168,19 +168,19 @@ const ScoreBoard = (props) => (
                             ]}
                         >
                             <Text
+                                allowFontScaling={false}
                                 style={{
-                                    fontFamily: theme.fonts.lora.bold,
+                                    ...FONTS.h2,
                                     color: theme.colors.white,
-
-                                    fontSize: 20,
                                     textAlign: "center",
                                 }}
                             >
                                 {props.punarUpdesh}
                             </Text>
                             <Text
+                                allowFontScaling={false}
                                 style={{
-                                    fontFamily: theme.fonts.lora.bold,
+                                    ...FONTS.h4,
                                     color: theme.colors.white,
                                     textAlign: "center",
 

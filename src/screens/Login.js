@@ -1,28 +1,25 @@
 import { Feather } from "@expo/vector-icons";
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
-    AsyncStorage,
     Image,
     SafeAreaView,
-    Text,
-    View,
-    StatusBar,
-} from "react-native";
-import AwesomeAlert from "react-native-awesome-alerts";
-import {
     ScrollView,
+    StatusBar,
+    Text,
     TextInput,
     TouchableOpacity,
-} from "react-native-gesture-handler";
+    View,
+    AsyncStorage,
+} from "react-native";
+import AwesomeAlert from "react-native-awesome-alerts";
 import RoundButton from "../components/RoundButton";
 import textConstants from "../constants/text/Login";
 import theme from "../constants/theme";
-import styles from "../styles/Login";
-import appConfig from "../config";
 import { useAuth } from "../context/AuthContext";
+import { postJsonData } from "../httpClient/apiRequest";
+import styles from "../styles/Login";
 
-function Login({ navigation }) {
+const Login = ({ navigation }) => {
     const { dispatch } = useAuth();
     const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
@@ -32,233 +29,54 @@ function Login({ navigation }) {
         message: "",
         confirm: "Ok",
     });
-
-    const handleUserNameChange = (value) => {
-        setUserName(value);
-    };
-    const handlePasswordChange = (value) => {
-        setPassword(value);
-    };
-    const getCountries = async () => {
-        try {
-            console.log("Called");
-            const config = {
-                method: "get",
-                url: `${appConfig.api_url}/country/list?page=1&limit=1000`,
-                headers: {
-                    key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
-                    Accept: "application/json",
-                    "X-CSRF-TOKEN": await AsyncStorage.getItem("token"),
-                },
-            };
-
-            const response = await axios(config);
-
-            await AsyncStorage.setItem(
-                "countries",
-                JSON.stringify(response.data.data.countries)
-            );
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
-    const getStates = async () => {
-        try {
-            const config = {
-                method: "get",
-                url: `${appConfig.api_url}/state/list?page=1&limit=100000`,
-                headers: {
-                    key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
-                    Accept: "application/json",
-                    "X-CSRF-TOKEN": await AsyncStorage.getItem("token"),
-                },
-            };
-
-            const response = await axios(config);
-
-            await AsyncStorage.setItem(
-                "states",
-                JSON.stringify(response.data.data.states)
-            );
-        } catch (error) {
-            console.log(error);
-        }
-    };
-    const getCities = async () => {
-        try {
-            const config = {
-                method: "get",
-                url: `${appConfig.api_url}/city/list?page=1&limit=10000`,
-                headers: {
-                    key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
-                    Accept: "application/json",
-                    "X-CSRF-TOKEN": await AsyncStorage.getItem("token"),
-                },
-            };
-
-            const response = await axios(config);
-
-            await AsyncStorage.setItem(
-                "cities",
-                JSON.stringify(response.data.data.cities)
-            );
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
-    const getDistricts = async () => {
-        try {
-            const config = {
-                method: "get",
-                url: `${appConfig.api_url}/district/list?page=1&limit=1000000`,
-                headers: {
-                    key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
-                    Accept: "application/json",
-                    "X-CSRF-TOKEN": await AsyncStorage.getItem("token"),
-                },
-            };
-
-            const response = await axios(config);
-
-            await AsyncStorage.setItem(
-                "districts",
-                JSON.stringify(response.data.data.districts)
-            );
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
-    const getTehsils = async () => {
-        try {
-            const config = {
-                method: "get",
-                url: `${appConfig.api_url}/tehsil/list?page=1&limit=100000`,
-                headers: {
-                    key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
-                    Accept: "application/json",
-                    "X-CSRF-TOKEN": await AsyncStorage.getItem("token"),
-                },
-            };
-
-            const response = await axios(config);
-
-            await AsyncStorage.setItem(
-                "tehsils",
-                JSON.stringify(response.data.data.tehsil_list)
-            );
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
-    const checkDataExist = async () => {
-        const countries = await AsyncStorage.getItem("countries");
-        const states = await AsyncStorage.getItem("states");
-        const districts = await AsyncStorage.getItem("districts");
-        const tehsils = await AsyncStorage.getItem("tehsils");
-        const cities = await AsyncStorage.getItem("cities");
-        return countries && states && districts && tehsils && cities;
-    };
-
-    const checkIfLoggedIn = async () => {
-        const loggedIn = await AsyncStorage.getItem("token");
-        if (loggedIn) {
-            console.log("Called2");
-            if (!checkDataExist()) {
-                await getCountries();
-                await getStates();
-                await getDistricts();
-                await getTehsils();
-                await getCities();
-            }
-
-            navigation.push("AshramDashboard");
-        }
-    };
-
-    useEffect(() => {
-        checkIfLoggedIn();
-    }, []);
-
     const handleLogin = async () => {
         // TODO: If I uncomment the following line, it's giving No identifiers allowed directly after numeric literal
         // const deviceToken = Math.random() * 1_00_00_000;
-
-        const config = {
-            method: "post",
-            url: `${appConfig.api_url}/auth/login`,
-            headers: {
-                key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
-                Accept: "application/json",
-            },
-            data: {
-                username: userName,
-                password: password,
-                device_id: "32123",
-                longitude: "20.000",
-                latitude: "30.555",
-                channel: "mobile",
-                device_token: "asdad",
-            },
+        const loginData = {
+            username: userName,
+            password: password,
+            device_id: "32123",
+            longitude: "20.000",
+            latitude: "30.555",
+            channel: "mobile",
+            device_token: "asdad",
         };
 
-        axios(config)
-            .then(async (response) => {
-                console.log({ response });
-                if (response.data.success) {
-                    const temp = {
-                        ...showAlert,
-                        show: true,
-                        title: "Successful",
-                        message: "You are successfully logged In",
-                    };
-                    let user = response.data.data;
-                    dispatch({
-                        type: "LOGIN_USER",
-                        payload: { user },
-                    });
-                    setShowAlert(temp);
-                    let csrfKey = "";
+        try {
+            const { data, headers } = await postJsonData(
+                "/auth/login",
+                loginData
+            );
 
-                    let cookies = response.headers["set-cookie"];
-                    cookies = cookies[0].split(" namdan_csrf_key=");
-                    // eslint-disable-next-line prefer-destructuring
-                    csrfKey = cookies[1].split(";")[0];
-                    console.log(response.data, "csrf", csrfKey);
-                    await AsyncStorage.setItem("token", csrfKey);
-                    await AsyncStorage.setItem("name", response.data.data.name);
-                    await AsyncStorage.setItem(
-                        "user",
-                        JSON.stringify(response.data.data)
-                    );
-                    await AsyncStorage.setItem("role", response.data.data.role);
-                    await AsyncStorage.setItem("loggedIn", "true");
-                    await getCountries();
-                    await getStates();
-                    await getDistricts();
-                    await getTehsils();
-                    await getCities();
+            if (data?.success === true) {
+                let cookies = headers["set-cookie"];
+                cookies = cookies[0].split(" namdan_csrf_key=");
+                // eslint-disable-next-line prefer-destructuring
 
-                    navigation.push("AshramDashboard");
-                } else {
-                    const temp = {
-                        ...showAlert,
-                        show: true,
-                        title: "Opps",
-                        message: "Wrong credentials",
-                    };
-                    setShowAlert(temp);
-                }
-            })
-            .catch((error) => {
-                if (error && error.response) {
-                    alert(error.response?.data.error);
-                }
-                console.error(error.response);
-            });
+                const csrfKey = cookies[1].split(";")[0];
+                const user = data?.data;
+                console.log(csrfKey);
+                await AsyncStorage.setItem("token", csrfKey);
+                await AsyncStorage.setItem("user", JSON.stringify(user));
+                dispatch({
+                    type: "LOGIN_USER",
+                    payload: { user },
+                });
+            }
+        } catch (error) {
+            if (error && error.response) {
+                setPassword("");
+                console.error(error.response.data.error);
+                setShowAlert({
+                    ...showAlert,
+                    show: true,
+                    title: "Oops",
+                    message: error.response.data.error,
+                });
+            } else {
+                console.error("Error in login request.", error.message);
+            }
+        }
     };
 
     return (
@@ -295,10 +113,12 @@ function Login({ navigation }) {
                 </View>
                 <View>
                     <Text
+                        allowFontScaling={false}
                         style={[
                             styles.textCenter,
-                            styles.textWhite,
+
                             styles.appName,
+                            { color: theme.colors.primary },
                         ]}
                     >
                         {textConstants.appName}
@@ -312,9 +132,10 @@ function Login({ navigation }) {
                                 color={theme.colors.primary}
                             />
                             <TextInput
+                                allowFontScaling={false}
                                 style={styles.inputs}
                                 value={userName}
-                                onChangeText={handleUserNameChange}
+                                onChangeText={(text) => setUserName(text)}
                                 placeholder="UserName"
                             />
                         </View>
@@ -326,19 +147,17 @@ function Login({ navigation }) {
                                 color={theme.colors.primary}
                             />
                             <TextInput
+                                allowFontScaling={false}
                                 style={styles.inputs}
                                 value={password}
-                                onChangeText={handlePasswordChange}
+                                onChangeText={(text) => setPassword(text)}
                                 secureTextEntry
                                 placeholder="Password"
+                                returnKeyType="go"
+                                onSubmitEditing={handleLogin}
                             />
                         </View>
                         <View style={styles.buttonContainer}>
-                            {/* <TouchableOpacity style={styles.loginButton} onPress={handleLogin} elevation={5} >
-                    <Text style={[styles.textCenter, styles.textWhite, styles.loginButtonText]}>
-                        {textConstants.login}
-                    </Text>
-                </TouchableOpacity> */}
                             <RoundButton
                                 label={textConstants.login}
                                 handlePress={handleLogin}
@@ -346,6 +165,7 @@ function Login({ navigation }) {
                         </View>
                         <TouchableOpacity>
                             <Text
+                                allowFontScaling={false}
                                 style={[
                                     styles.textCenter,
                                     styles.textWhite,
@@ -355,22 +175,11 @@ function Login({ navigation }) {
                                 Forget Password?
                             </Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.signUpContainer}>
-                            <Text
-                                style={[
-                                    styles.textCenter,
-                                    styles.textWhite,
-                                    styles.fontType,
-                                ]}
-                            >
-                                {textConstants.signUpLine}
-                            </Text>
-                        </TouchableOpacity>
                     </View>
                 </View>
             </ScrollView>
         </SafeAreaView>
     );
-}
+};
 
 export default Login;

@@ -28,10 +28,11 @@ const UserCard = ({ user, onPress }) => {
                         paddingHorizontal: 10,
                     }}
                 >
-                    <Text style={styles.name}>{user.name.trim()}</Text>
-                    <Text style={styles.address}>
-                        {user.relation.trim()} {user.guardian_name.trim()}
+                    <Text style={styles.name}>
+                        {user.name.trim()} {user.relation.trim()}{" "}
+                        {user.guardian_name.trim()}
                     </Text>
+
                     <Text style={styles.address}>
                         {[
                             tehsil_name,
@@ -52,7 +53,7 @@ const UserCard = ({ user, onPress }) => {
                                     alignItems: "center",
                                     justifyContent: "center",
                                     backgroundColor:
-                                        index <= 2
+                                        index <= 1
                                             ? theme.colors.primary
                                             : theme.colors.grey,
                                     borderTopWidth: index > 0 ? 1 : 0,
@@ -65,7 +66,7 @@ const UserCard = ({ user, onPress }) => {
                                 <Text
                                     style={{
                                         color:
-                                            index <= 2
+                                            index <= 1
                                                 ? theme.colors.white
                                                 : theme.colors.primary,
                                     }}

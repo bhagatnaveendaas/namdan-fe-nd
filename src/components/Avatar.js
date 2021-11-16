@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View, Image } from "react-native";
 import theme from "../constants/theme";
+import { FONTS } from "../constants/fonts";
 
 const Avatar = ({ status, imageSource }) => {
     return (
@@ -8,7 +9,11 @@ const Avatar = ({ status, imageSource }) => {
             <View style={styles.imageBorder}>
                 <Image style={styles.image} source={imageSource} />
             </View>
-            <Text style={styles.status}>{status}</Text>
+            {status && (
+                <Text allowFontScaling={false} style={styles.status}>
+                    {status}
+                </Text>
+            )}
         </View>
     );
 };
@@ -41,7 +46,7 @@ const styles = StyleSheet.create({
         backgroundColor: theme.colors.green,
         marginTop: 2,
         borderRadius: 5,
-        lineHeight: 18,
+        ...FONTS.h6,
         paddingHorizontal: 5,
     },
 });

@@ -16,7 +16,10 @@ const FormTextInput = ({
     return (
         <View style={styles.wrapper}>
             {label && (
-                <Text style={[styles.label, { marginBottom: -4 }]}>
+                <Text
+                    allowFontScaling={false}
+                    style={[styles.label, { marginBottom: -4 }]}
+                >
                     {label}
                     {required && <Text style={styles.required}>{" *"}</Text>}
                 </Text>
@@ -24,6 +27,7 @@ const FormTextInput = ({
             <View style={[styles.container, containerStyle]}>
                 {prependComponent}
                 <TextInput
+                    allowFontScaling={false}
                     style={styles.input}
                     returnKeyType="next"
                     value={value}

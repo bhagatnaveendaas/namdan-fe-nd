@@ -1,18 +1,9 @@
 import React, { useEffect } from "react";
-import {
-    Image,
-    StyleSheet,
-    Text,
-    View,
-    ScrollView,
-    AsyncStorage,
-} from "react-native";
+import { Image, StyleSheet, Text, View, ScrollView } from "react-native";
 import theme from "../constants/theme";
 import Avatar from "../components/Avatar";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import axios from "axios";
-import { executeRequest } from "../helper/network/link";
-import { getData } from "../httpClient/apiRequest";
+import { FONTS } from "../constants/fonts";
 
 const userDefaultImage = require("../../assets/icons/user.png");
 const calenderImage = require("../../assets/icons/calendar.png");
@@ -54,15 +45,17 @@ const Field = ({ label, value, text }) => {
                     }}
                 >
                     <Text
+                        allowFontScaling={false}
                         style={{
-                            fontFamily: theme.fonts.poppins.semiBold,
-                            fontSize: 14,
                             color: theme.colors.darkgray,
+                            ...FONTS.h5,
                         }}
                     >
                         {label}
                     </Text>
-                    <Text>{value}</Text>
+                    <Text allowFontScaling={false} style={{ ...FONTS.body5 }}>
+                        {value}
+                    </Text>
                 </View>
                 <Image
                     style={{ width: 25, height: 25, marginLeft: 10 }}
@@ -71,12 +64,14 @@ const Field = ({ label, value, text }) => {
             </View>
             {text && (
                 <Text
+                    allowFontScaling={false}
                     style={{
                         backgroundColor: theme.colors.white,
                         marginTop: 5,
                         padding: 5,
                         borderRadius: 5,
                         color: theme.colors.darkgray,
+                        ...FONTS.body5,
                     }}
                 >
                     {text}
@@ -87,21 +82,6 @@ const Field = ({ label, value, text }) => {
 };
 
 const Profile = ({ route, navigation }) => {
-    const { user } = route.params;
-    console.log(user.id);
-
-    useEffect(() => {
-        const load = async () => {
-            try {
-                const { data } = await getData(`/disciple/${user.id}/show`);
-                console.log(data.data);
-            } catch (error) {
-                console.log(error);
-            }
-        };
-
-        load();
-    }, []);
     return (
         <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
             <View
@@ -128,41 +108,53 @@ const Profile = ({ route, navigation }) => {
                     </View>
                     <View style={{ alignItems: "center", marginTop: 10 }}>
                         <Text
+                            allowFontScaling={false}
                             style={{
-                                fontSize: 16,
                                 color: theme.colors.primary,
-                                fontFamily: theme.fonts.poppins.semiBold,
-                                lineHeight: 18,
+                                ...FONTS.h3,
                             }}
                         >
-                            {user.name}
+                            {/* {user.name} */}
+                            Name
                         </Text>
                         <Text
+                            allowFontScaling={false}
                             style={{
-                                fontSize: 16,
+                                ...FONTS.h3,
                                 color: theme.colors.primary,
-                                fontFamily: theme.fonts.poppins.semiBold,
-                                lineHeight: 18,
                             }}
                         >
-                            {user.relation} {user.guardian_name}
+                            {/* {user.relation} {user.guardian_name} */}
+                            S/O Guardian Name
                         </Text>
-                        <Text>
-                            Form No: <Text>{user.form_no}</Text>
+                        <Text
+                            allowFontScaling={false}
+                            style={{ ...FONTS.body5 }}
+                        >
+                            Form No:{" "}
+                            <Text style={{ ...FONTS.body5 }}>1234456</Text>
                         </Text>
-                        <Text>
-                            Sadasyata No: <Text>12345</Text>
+                        <Text
+                            allowFontScaling={false}
+                            style={{ ...FONTS.body5 }}
+                        >
+                            Sadasyata No:{" "}
+                            <Text style={{ ...FONTS.body5 }}>12345</Text>
                         </Text>
-                        <Text>
-                            Date of Birth: <Text>12345</Text>
+                        <Text
+                            allowFontScaling={false}
+                            style={{ ...FONTS.body5 }}
+                        >
+                            Date of Birth:{" "}
+                            <Text style={{ ...FONTS.body5 }}>12345</Text>
                         </Text>
                     </View>
                     <View style={{ marginVertical: 15 }}>
                         <View style={{ flexDirection: "row" }}>
                             <Text
+                                allowFontScaling={false}
                                 style={{
-                                    fontFamily: theme.fonts.poppins.semiBold,
-                                    fontSize: 14,
+                                    ...FONTS.h5,
                                     width: 90,
                                     color: theme.colors.darkgray,
                                 }}
@@ -170,20 +162,21 @@ const Profile = ({ route, navigation }) => {
                                 Mobile No:{" "}
                             </Text>
                             <Text
+                                allowFontScaling={false}
                                 style={{
-                                    fontFamily: theme.fonts.poppins.regular,
-                                    fontSize: 14,
+                                    ...FONTS.body5,
                                     color: "black",
                                 }}
                             >
-                                {user.mobile_no}
+                                {/* {user.mobile_no} */}
+                                1234567890
                             </Text>
                         </View>
                         <View style={{ flexDirection: "row" }}>
                             <Text
+                                allowFontScaling={false}
                                 style={{
-                                    fontFamily: theme.fonts.poppins.semiBold,
-                                    fontSize: 14,
+                                    ...FONTS.h5,
                                     width: 90,
                                     color: theme.colors.darkgray,
                                 }}
@@ -191,22 +184,23 @@ const Profile = ({ route, navigation }) => {
                                 Address:{" "}
                             </Text>
                             <Text
+                                allowFontScaling={false}
                                 style={{
-                                    fontFamily: theme.fonts.poppins.regular,
-                                    fontSize: 14,
+                                    ...FONTS.body5,
                                     color: "black",
                                     textTransform: "capitalize",
                                     width: 240,
                                 }}
                             >
-                                {user.address}
+                                Address
+                                {/* {user.address}
                                 {", "}
                                 {[
                                     user.tehsil_name,
                                     user.district_name,
                                     user.state_name,
                                     user.country_name,
-                                ].join(", ")}
+                                ].join(", ")} */}
                             </Text>
                         </View>
                     </View>
@@ -225,7 +219,9 @@ const Profile = ({ route, navigation }) => {
                         alignItems: "center",
                     }}
                 >
-                    <Text>View History</Text>
+                    <Text allowFontScaling={false} style={{ ...FONTS.h5 }}>
+                        View History
+                    </Text>
                     <Image
                         style={{ width: 25, height: 25, marginLeft: 10 }}
                         source={clockImage}
@@ -269,7 +265,12 @@ const Profile = ({ route, navigation }) => {
                             borderRadius: 10,
                         }}
                     >
-                        <Text style={{ color: theme.colors.white }}>Hold</Text>
+                        <Text
+                            allowFontScaling={false}
+                            style={{ color: theme.colors.white }}
+                        >
+                            Hold
+                        </Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                         onPress={() => console.log("Ban pressed")}
@@ -282,7 +283,12 @@ const Profile = ({ route, navigation }) => {
                             borderRadius: 10,
                         }}
                     >
-                        <Text style={{ color: theme.colors.white }}>Ban</Text>
+                        <Text
+                            allowFontScaling={false}
+                            style={{ color: theme.colors.white }}
+                        >
+                            Ban
+                        </Text>
                     </TouchableOpacity>
                 </View>
             </View>

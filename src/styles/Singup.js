@@ -80,4 +80,18 @@ export default StyleSheet.create({
         borderRightWidth: 2,
         marginRight: 5,
     },
+    button: {
+        marginVertical: 20,
+        marginBottom: 30,
+        backgroundColor: theme.colors.primary,
+        height: 50,
+        borderRadius: 50,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    buttonText: {
+        fontSize: 18,
+        fontFamily: theme.fonts.poppins.regular,
+        color: theme.colors.white,
+    },
 });

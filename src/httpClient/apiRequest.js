@@ -12,17 +12,22 @@ const axiosInstance = axios.create({
 
 // Add token to each request
 axiosInstance.interceptors.request.use(
-    async config => {
-      let token = await AsyncStorage.getItem('token');
-      config = {...config, headers: {...config.headers, 'X-CSRF-TOKEN': token}};
-      return config;
+    async (config) => {
+        let token = await AsyncStorage.getItem("token");
+        config = {
+            ...config,
+            headers: { ...config.headers, "X-CSRF-TOKEN": token },
+        };
+        return config;
     },
-    error => {
-      return Promise.reject(error);
-    },
-  );
+    (error) => {
+        return Promise.reject(error);
+    }
+);
 
 export const getData = (url = "") => axiosInstance.get(url);
-export const postJsonData = (url = "", data) => axiosInstance.post(url, data);
+export const postJsonData = (url = "", data = {}) =>
+    axiosInstance.post(url, data);
+export const deleteData = (url = "") => axiosInstance.delete(url);
 
 export default axiosInstance;

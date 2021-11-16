@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
 import theme from "../constants/theme";
+import { FONTS } from "../constants/fonts";
 
 export default StyleSheet.create({
     center: {
@@ -18,5 +19,10 @@ export default StyleSheet.create({
         alignContent: "center",
         alignSelf: "center",
         color: theme.colors.white,
+    },
+    label: {
+        color: theme.colors.primary,
+        ...FONTS.h4,
+        marginVertical: 10,
     },
 });

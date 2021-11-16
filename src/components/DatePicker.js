@@ -25,7 +25,7 @@ const DatePicker = ({
     return (
         <View style={{ marginTop: 10 }}>
             {label && (
-                <Text style={[styles.label, { marginBottom: 2 }]}>
+                <Text allowFontScaling={false} style={[styles.label, { marginBottom: 2 }]}>
                     {label}
                     {required && <Text style={styles.required}>{" *"}</Text>}
                 </Text>
@@ -35,7 +35,7 @@ const DatePicker = ({
                 activeOpacity={1}
                 onPress={() => setShow(true)}
             >
-                <Text style={styles.dateText}>
+                <Text allowFontScaling={false} style={styles.dateText}>
                     {placeholder && showPlaceholder ? (
                         <Text style={styles.placeholderColor}>
                             {placeholder}

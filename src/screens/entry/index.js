@@ -12,11 +12,18 @@ const Entry = ({ route, navigation }) => {
     const [usersSearched, setUsersSearched] = useState([]);
 
     useEffect(() => {
-        console.log(entryType);
         navigation.setOptions({
             title: `${title} Entry`,
         });
     }, []);
+
+    useEffect(() => {
+        if (searchBy === "unique_id") {
+            searchDiscipleWithAadhar(text);
+        } else {
+            searchDiscipleWithMobile(text);
+        }
+    }, [searchBy, text]);
 
     const searchDiscipleWithAadhar = async (aadharno) => {
         try {
@@ -62,7 +69,7 @@ const Entry = ({ route, navigation }) => {
             }}
         >
             <View style={{ paddingHorizontal: 15, marginTop: 15 }}>
-                <SearchBar
+                {/* <SearchBar
                     placeholder={"Search by mobile Number"}
                     value={search}
                     setValue={(text) => {
@@ -70,23 +77,23 @@ const Entry = ({ route, navigation }) => {
                     }}
                     onSubmitEditing={() =>
                         searchBy === "unique_id"
-                            ? searchDiscipleWithAadhar(search)
-                            : searchDiscipleWithMobile(search)
+                            ? searchDiscipleWithAadhar(text)
+                            : searchDiscipleWithMobile(text)
                     }
                     onPress={() =>
                         searchBy === "mobile_id"
-                            ? searchDiscipleWithAadhar(search)
-                            : searchDiscipleWithMobile(search)
+                            ? searchDiscipleWithMobile(text)
+                            : searchDiscipleWithAadhar(text)
                     }
                     onCancel={() => {
                         setSearch("");
                         setUsersSearched([]);
                     }}
-                />
+                /> */}
             </View>
             <ScrollView
                 showsVerticalScrollIndicator={false}
-                style={{ flex: 1, marginTop: 10 }}
+                style={{ flex: 1 }}
             >
                 <View style={{ paddingHorizontal: 15 }}>
                     {usersSearched.map((user, index) => {

@@ -3,8 +3,7 @@ import { View, Text, Image, Dimensions } from "react-native";
 
 import { TouchableOpacity } from "react-native-gesture-handler";
 import theme from "../constants/theme";
-
-const { height, width } = Dimensions.get("window");
+import { FONTS } from "../constants/fonts";
 
 const VerticalIconButton = ({ label, icon, pressHandler }) => (
     <View
@@ -23,11 +22,11 @@ const VerticalIconButton = ({ label, icon, pressHandler }) => (
         >
             <Image source={icon} style={{ width: 60, height: 60 }} />
             <Text
+                allowFontScaling={false}
                 style={{
                     marginTop: 5,
                     color: theme.colors.primary,
-                    fontFamily: theme.fonts.poppins.regular,
-                    fontSize: 13
+                    ...FONTS.body5,
                 }}
             >
                 {label}

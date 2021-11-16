@@ -24,7 +24,7 @@ export default StyleSheet.create({
     itemText: {
         fontFamily: theme.fonts.poppins.regular,
         color: theme.colors.primary,
-        fontSize: 15,
+        fontSize: 18,
         paddingLeft: 2,
     },
     placeholderText: {

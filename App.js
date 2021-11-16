@@ -1,16 +1,15 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import DrawerNavigator from "./src/navigation/drawerNavigator";
-import FontContainer from "./FontContainer";
 import { AuthProvider } from "./src/context/AuthContext";
+import MainStack from "./src/navigation/MainStack";
 
-const App = () => (
-    <FontContainer>
+const App = () => {
+    return (
         <AuthProvider>
             <NavigationContainer>
-                <DrawerNavigator />
+                <MainStack />
             </NavigationContainer>
         </AuthProvider>
-    </FontContainer>
-);
+    );
+};
 export default App;

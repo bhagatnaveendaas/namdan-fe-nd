@@ -198,17 +198,16 @@ const SignUp = ({ navigation }) => {
         if (!districtId) {
             return false;
         }
-        const temp = JSON.parse(await AsyncStorage.getItem("tehsils"));
-        let reqTehsils = temp.filter(
-            (tehsil) => tehsil.district_id === districtId
-        );
-
-        reqTehsils = reqTehsils.map((item) => ({
-            ...item,
-            id: item.tehsil_id,
-            name: item.tehsil_name,
-        }));
-        setTehsils(reqTehsils);
+        try {
+            const { data } = await getData(`district/${districtId}/tehsil`);
+            let reqTehsils = data?.data;
+            setTehsils(reqTehsils);
+        } catch (error) {
+            console.error(error.message);
+            console.log(
+                `Unable to fectch tehsil for districtId = ${districtId}`
+            );
+        }
     };
 
     const onDobChange = (selectedDate) => {
@@ -514,6 +513,7 @@ const SignUp = ({ navigation }) => {
                 />
 
                 <Text
+                    allowFontScaling={false}
                     style={{
                         textAlign: "center",
                         fontFamily: theme.fonts.poppins.regular,
@@ -542,26 +542,6 @@ const SignUp = ({ navigation }) => {
                 required={true}
                 containerStyle={styles.textFieldContainer}
                 onChangeText={(text) => onChange(text, "form_no")}
-                appendComponent={
-                    <Image
-                        source={
-                            userData.form_no == ""
-                                ? null
-                                : userData.form_no?.length < 6
-                                ? crossIcon
-                                : checkIcon
-                        }
-                        style={{
-                            width: 18,
-                            height: 18,
-                            tintColor:
-                                userData.form_no?.length < 6
-                                    ? "red"
-                                    : "#83e85a",
-                            marginRight: 10,
-                        }}
-                    />
-                }
             />
             <FormTextInput
                 label={`${fields.uniqueNoField} Number`}
@@ -1000,9 +980,16 @@ const SignUp = ({ navigation }) => {
                     )}
                 </>
             )}
-            <View style={styles.buttonContainer}>
-                <RoundButton label="Register" handlePress={handleSubmit} />
-            </View>
+            {/* <Button
+                title="Register"
+                style={styles.button}
+                onPress={handleSubmit}
+            /> */}
+            <TouchableOpacity onPress={handleSubmit} style={styles.button}>
+                <Text allowFontScaling={false} style={styles.buttonText}>
+                    Submit
+                </Text>
+            </TouchableOpacity>
 
             <CountryCodePicker
                 ref={mobileRef}

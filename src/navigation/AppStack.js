@@ -14,18 +14,18 @@ import EligibilityForPunarUpdesh from "../screens/EligiblityForPunarUpdesh";
 import AddNaamdanCenter from "../screens/AddNaamdanCenter";
 import Approvals from "../screens/Approvals";
 import Messages from "../screens/Messages";
-import CreateMessage from "..//screens/CreateMessage";
+import CreateMessage from "../screens/CreateMessage";
 import MessageDetails from "../screens/MessageDetails";
 import Entry from "../screens/entry/index";
 import theme from "../constants/theme";
 import AddSewadaar from "../screens/AddSewadaar";
-import SearchScreen from "../screens/entry/search";
+import SearchScreen from "../screens/Search";
 import Profile from "../screens/Profile";
 import { useAuth } from "../context/AuthContext";
 
 const Stack = createStackNavigator();
 
-const MainStackNavigator = () => {
+const AppStack = () => {
     const {
         state: { user },
     } = useAuth();
@@ -42,15 +42,10 @@ const MainStackNavigator = () => {
                 headerTitleStyle: {
                     fontFamily: theme.fonts.poppins.semiBold,
                 },
+                headerBackAllowFontScaling: false,
+                headerTitleAllowFontScaling: false,
             }}
         >
-            {!user && (
-                <Stack.Screen
-                    name="Login"
-                    component={Login}
-                    options={{ header: () => {} }}
-                />
-            )}
             <Stack.Screen
                 name="AshramDashboard"
                 component={AshramDashboard}
@@ -58,8 +53,7 @@ const MainStackNavigator = () => {
             />
             <Stack.Screen name="Entry" component={Entry} />
             <Stack.Screen name="Profile" component={Profile} />
-            <Stack.Screen name="SearchScreen" component={SearchScreen} />
-            <Stack.Screen name="verifyOtp" component={verifyOtp} />
+            <Stack.Screen name="Search" component={SearchScreen} />
             <Stack.Screen name="Pratham Naam" component={SignUp} />
             <Stack.Screen
                 name="CountryDashboard"
@@ -85,4 +79,4 @@ const MainStackNavigator = () => {
     );
 };
 
-export default MainStackNavigator;
+export default AppStack;
