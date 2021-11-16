@@ -14,6 +14,8 @@ const userDefaultImage = require("../../../../assets/icons/user.png");
 const UserCard = ({ user, onPress }) => {
     // console.log(user.name)
     const { tehsil_name, district_name, state_name, country_name } = user;
+    let avatar = user?.avatar;
+
     const numbers = ["1", "2", "3", "4"];
     return (
         <TouchableHighlight
@@ -22,7 +24,11 @@ const UserCard = ({ user, onPress }) => {
             onPress={onPress}
         >
             <View style={styles.container}>
-                <Avatar imageSource={userDefaultImage} status={"Active"} />
+                <Avatar
+                    uri={avatar && avatar}
+                    imageSource={userDefaultImage}
+                    status={"Active"}
+                />
                 <View
                     style={{
                         flex: 1,
@@ -54,7 +60,7 @@ const UserCard = ({ user, onPress }) => {
                                     alignItems: "center",
                                     justifyContent: "center",
                                     backgroundColor:
-                                        index <= 1
+                                        index <= 0
                                             ? theme.colors.primary
                                             : theme.colors.grey,
                                     borderTopWidth: index > 0 ? 1 : 0,
@@ -67,7 +73,7 @@ const UserCard = ({ user, onPress }) => {
                                 <Text
                                     style={{
                                         color:
-                                            index <= 1
+                                            index <= 0
                                                 ? theme.colors.white
                                                 : theme.colors.primary,
                                     }}

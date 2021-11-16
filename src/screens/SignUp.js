@@ -420,8 +420,10 @@ const SignUp = ({ navigation }) => {
     const whatRef = useRef();
 
     const [mobileLoading, setmobileLoading] = useState(false);
+    const [whatsappLoading, setwhatsappLoading] = useState(false);
     const [addharLoading, setaddharLoading] = useState(false);
     const [showRef, setShowRef] = useState(false);
+    const [showWhatsappRef, setShowWhatsappRef] = useState(false);
     const [showAadharRef, setShowAadharRef] = useState(false);
 
     const onFetchingAadhar = async (text) => {
@@ -446,6 +448,30 @@ const SignUp = ({ navigation }) => {
             }
         } else {
             setShowAadharRef(false);
+        }
+    };
+    const onFetchingWhatsapp = async (text) => {
+        onChange(text, "whatsapp_no");
+        if (text.length == 10) {
+            setwhatsappLoading(true);
+            try {
+                const { data } = await postJsonData("/disciple/search", {
+                    search_by: "mobile_no",
+                    search_value: userData.country_code + userData.mobile_no,
+                });
+
+                if (data?.data.length > 0) {
+                    setShowWhatsappRef(true);
+                } else {
+                    setShowWhatsappRef(false);
+                }
+                setwhatsappLoading(false);
+            } catch (error) {
+                setwhatsappLoading(false);
+                console.log("Error", error);
+            }
+        } else {
+            setShowWhatsappRef(false);
         }
     };
     const onFetchingMobile = async (text) => {
@@ -696,13 +722,13 @@ const SignUp = ({ navigation }) => {
             <FormTextInput
                 label="Whatsapp Number"
                 value={userData.whatsapp_no}
-                placeholder={"Enter your mobile number"}
+                placeholder={"Enter your whatsapp number"}
                 keyboardType={
                     Platform.OS === "android" ? "numeric" : "number-pad"
                 }
                 maxLength={10}
                 containerStyle={styles.textFieldContainer}
-                onChangeText={(text) => onChange(text, "whatsapp_no")}
+                onChangeText={onFetchingWhatsapp}
                 prependComponent={
                     <TouchableOpacity
                         onPress={() => whatRef?.current.focus()}
@@ -713,27 +739,50 @@ const SignUp = ({ navigation }) => {
                 }
                 appendComponent={
                     <View style={{ flexDirection: "row" }}>
-                        <Image
-                            source={
-                                userData.whatsapp_no == ""
-                                    ? null
-                                    : userData.whatsapp_no?.length < 10
-                                    ? crossIcon
-                                    : checkIcon
-                            }
-                            style={{
-                                width: 18,
-                                height: 18,
-                                tintColor:
-                                    userData.whatsapp_no?.length < 10
-                                        ? "red"
-                                        : "#83e85a",
-                                marginRight: 10,
-                            }}
-                        />
+                        {whatsappLoading && (
+                            <ActivityIndicator
+                                animating={whatsappLoading}
+                                style={{ width: 10, height: 10 }}
+                                size="small"
+                                color={theme.colors.primary}
+                            />
+                        )}
+                        {showWhatsappRef && (
+                            <View>
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        navigation.navigate("Entry", {
+                                            title: "Search",
+                                            searchBy: "mobile_no",
+                                            text: `${userData.country_code}${userData.mobile_no}`,
+                                        });
+                                    }}
+                                    style={{
+                                        backgroundColor: "green",
+                                        paddingVertical: 2,
+                                        paddingHorizontal: 5,
+                                        borderRadius: 5,
+                                    }}
+                                >
+                                    <Text
+                                        allowFontScaling={false}
+                                        style={{
+                                            fontSize: 14,
+                                            color: "white",
+                                        }}
+                                    >
+                                        View Entry
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
+                        )}
+
                         <Image
                             source={mobileIcon}
-                            style={[styles.appendIcon, { width: 15 }]}
+                            style={[
+                                styles.appendIcon,
+                                { width: 15, marginLeft: 10 },
+                            ]}
                         />
                     </View>
                 }

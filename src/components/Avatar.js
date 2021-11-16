@@ -2,12 +2,16 @@ import React from "react";
 import { StyleSheet, Text, View, Image } from "react-native";
 import theme from "../constants/theme";
 import { FONTS } from "../constants/fonts";
+const defaultUserImage = require("../../assets/icons/user.png");
 
-const Avatar = ({ status, imageSource }) => {
+const Avatar = ({ status, imageSource, uri }) => {
     return (
         <View style={styles.imageWrapper}>
             <View style={styles.imageBorder}>
-                <Image style={styles.image} source={imageSource} />
+                <Image
+                    style={styles.image}
+                    source={uri ? { uri } : imageSource}
+                />
             </View>
             {status && (
                 <Text allowFontScaling={false} style={styles.status}>

@@ -52,6 +52,7 @@ const Entry = ({ route, navigation }) => {
             });
             if (data?.data.length > 0) {
                 setUsersSearched(data.data);
+                console.log(data?.data);
             }
             setLoading(false);
         } catch (error) {
