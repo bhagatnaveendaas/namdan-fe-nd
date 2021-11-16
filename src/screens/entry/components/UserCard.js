@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import theme from "../../../constants/theme";
 import Avatar from "../../../components/Avatar";
+import { FONTS } from "../../../constants/fonts";
 const userDefaultImage = require("../../../../assets/icons/user.png");
 
 const UserCard = ({ user, onPress }) => {
@@ -98,21 +99,15 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
     },
     name: {
-        fontSize: 16,
-        lineHeight: 22,
-        fontFamily: theme.fonts.poppins.semiBold,
+        ...FONTS.h5,
         textTransform: "capitalize",
     },
     address: {
-        fontSize: 14,
-        lineHeight: 22,
-        fontFamily: theme.fonts.poppins.regular,
+        ...FONTS.body5,
         textTransform: "capitalize",
     },
     phone: {
-        fontSize: 14,
-        lineHeight: 22,
-        fontFamily: theme.fonts.poppins.regular,
+        ...FONTS.body5,
         textTransform: "capitalize",
     },
 });
