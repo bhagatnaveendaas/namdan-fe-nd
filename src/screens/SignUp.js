@@ -586,6 +586,7 @@ const SignUp = ({ navigation }) => {
                                     }}
                                 >
                                     <Text
+                                        allowFontScaling={false}
                                         style={{
                                             fontSize: 14,
                                             color: "white",
@@ -670,6 +671,7 @@ const SignUp = ({ navigation }) => {
                                     }}
                                 >
                                     <Text
+                                        allowFontScaling={false}
                                         style={{
                                             fontSize: 14,
                                             color: "white",

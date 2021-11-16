@@ -32,6 +32,7 @@ const AppStack = () => {
 
     return (
         <Stack.Navigator
+            initialRouteName="AshramDashboard"
             headerMode="screen"
             screenOptions={{
                 headerTitleAlign: "center",
