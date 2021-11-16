@@ -8,8 +8,8 @@ import {
 } from "react-native";
 import RBSheet from "react-native-raw-bottom-sheet";
 import theme from "../constants/theme";
+import { FONTS } from "../constants/fonts";
 import { launchCamera, launchImageLibrary } from "react-native-image-picker";
-
 const galleryIcon = require("../../assets/icons/gallery.png");
 const cameraIcon = require("../../assets/icons/camera.png");
 
@@ -158,10 +158,9 @@ const ImagePicker = forwardRef(({ onImageSelected, onClose }, ref) => {
                                 />
                             )}
                             <Text
+                                allowFontScaling={false}
                                 style={{
-                                    fontSize: 15,
-                                    lineHeight: 22,
-                                    fontFamily: theme.fonts.poppins.semiBold,
+                                    ...FONTS.h3,
                                     color: theme.colors.primary,
                                 }}
                             >

@@ -26,6 +26,7 @@ const Home = ({ navigation }) => {
 
     const permissions = user?.permissions;
     const role = user?.role;
+    const roleId = user?.role_id;
 
     const getKPICounts = async () => {
         try {
@@ -61,6 +62,7 @@ const Home = ({ navigation }) => {
                     justifyContent: "space-between",
                     borderBottomLeftRadius: 15,
                     borderBottomRightRadius: 15,
+                    elevation: 5,
                 }}
             >
                 <TouchableOpacity onPress={() => navigation.openDrawer()}>
@@ -90,7 +92,7 @@ const Home = ({ navigation }) => {
                     prathamVsSatnam={kpiCounts.pending_satnams}
                     punarUpdesh={0}
                 />
-                {(role === "Namdan Sewadar" || role === "Ashram Admin") && (
+                {roleId === 8 && (
                     <View>
                         <Text allowFontScaling={false} style={styles.label}>
                             Entries
@@ -105,7 +107,7 @@ const Home = ({ navigation }) => {
                             {permissions.includes("pratham_mantra") && (
                                 <VerticalIconButton
                                     label={`Pratham Naam`}
-                                    icon={require("../../assets/icons/pn.png")}
+                                    icon={require("../../assets/icons/pratham_naam.png")}
                                     pressHandler={() =>
                                         navigation.push("Pratham Naam")
                                     }
@@ -114,7 +116,7 @@ const Home = ({ navigation }) => {
                             {permissions.includes("attendance") && (
                                 <VerticalIconButton
                                     label="Attendance"
-                                    icon={require("../../assets/icons/at.png")}
+                                    icon={require("../../assets/icons/attendance.png")}
                                     // pressHandler={() => {
                                     //     navigation.navigate("Entry", {
                                     //         title: "Attendance",
@@ -126,7 +128,7 @@ const Home = ({ navigation }) => {
                             {permissions.includes("satnam") && (
                                 <VerticalIconButton
                                     label="Satnaam"
-                                    icon={require("../../assets/icons/sn.png")}
+                                    icon={require("../../assets/icons/satnaam.png")}
                                     // pressHandler={() => {
                                     //     navigation.navigate("Entry", {
                                     //         title: "Enter Satnaam",
@@ -140,7 +142,7 @@ const Home = ({ navigation }) => {
                             {permissions.includes("sarnam") && (
                                 <VerticalIconButton
                                     label="Sarnaam"
-                                    icon={require("../../assets/icons/srn.png")}
+                                    icon={require("../../assets/icons/sarnaam.png")}
                                     // pressHandler={() => {
                                     //     navigation.navigate("Entry", {
                                     //         title: "Enter SaarNaam",
@@ -152,7 +154,7 @@ const Home = ({ navigation }) => {
                             {permissions.includes("sarshabd") && (
                                 <VerticalIconButton
                                     label={`Sarshabd`}
-                                    icon={require("../../assets/icons/sr2.png")}
+                                    icon={require("../../assets/icons/sarshabd.png")}
                                     // pressHandler={() => {
                                     //     navigation.navigate("Entry", {
                                     //         title: "SarShabd",
@@ -176,7 +178,7 @@ const Home = ({ navigation }) => {
                             {permissions.includes("punar_updesh") && (
                                 <VerticalIconButton
                                     label={`Punar Updesh`}
-                                    icon={require("../../assets/icons/pu.png")}
+                                    icon={require("../../assets/icons/punar_updesh.png")}
                                     // pressHandler={() => {
                                     //     navigation.navigate("Entry", {
                                     //         title: "Enter Punar Updesh",
@@ -189,7 +191,7 @@ const Home = ({ navigation }) => {
                     </View>
                 )}
 
-                {role === "Namdan Sewadar" && (
+                {roleId === 8 && (
                     <View
                         style={{
                             justifyContent: "center",

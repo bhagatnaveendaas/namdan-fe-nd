@@ -11,7 +11,9 @@ import { useAuth } from "../context/AuthContext";
 import { deleteData } from "../httpClient/apiRequest";
 import Avatar from "./Avatar";
 const defaultImage = require("../../assets/icons/user.png");
+const visibleItems = ["Dashboard", "SettingsScreen", "HelpScreen"];
 
+const getVisible = (item) => contains(item.key, visibleItems);
 const CustomDrawer = (props) => {
     const {
         state: { user },
@@ -26,6 +28,7 @@ const CustomDrawer = (props) => {
             await AsyncStorage.removeItem("token");
             await AsyncStorage.removeItem("user");
             console.log(data);
+            props.navigation.closeDrawer();
             dispatch({
                 type: "LOGOUT_USER",
             });
@@ -68,7 +71,28 @@ const CustomDrawer = (props) => {
                         </Text>
                     </View>
                 </View>
-                <DrawerItemList {...props} />
+                {/* <DrawerItemList {...props} /> */}
+                <TouchableOpacity>
+                    <View
+                        style={{
+                            margin: 10,
+                            paddingHorizontal: 10,
+                            paddingVertical: 12,
+                            borderRadius: 10,
+                            backgroundColor: theme.colors.primaryLight,
+                        }}
+                    >
+                        <Text
+                            style={{
+                                color: theme.colors.primary,
+                                ...FONTS.h3,
+                                fontSize: 18,
+                            }}
+                        >
+                            Profile
+                        </Text>
+                    </View>
+                </TouchableOpacity>
             </DrawerContentScrollView>
             <TouchableOpacity
                 style={{

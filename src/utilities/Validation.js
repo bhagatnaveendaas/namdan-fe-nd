@@ -4,11 +4,6 @@ import moment from "moment";
 const tommorow = moment(new Date().setDate(new Date().getDate() + 1));
 const threeYears = moment(new Date().setDate(new Date().getDate() - 365 * 3));
 
-// const threeYearDateText = threeYears.format("DD-MM-YYYY");
-export const file2Schema = Yup.object().shape({
-    file2: Yup.string().required("Please provide identity card back picture."),
-});
-
 export const NewNonIndianDiscipleSchema = Yup.object().shape({
     avatar: Yup.string().required("Please provide profile picture."),
     form_date: Yup.date().required("Please fill Form date.").max(tommorow),
@@ -70,14 +65,7 @@ export const NewNonIndianDiscipleSchema = Yup.object().shape({
         .required("Please fill Pincode")
         .min(6, "Enter valid pin code, it must be 6 characters long"),
     email: Yup.string().email("Enter a valid email address."),
-    file1: Yup.string()
-        .ensure()
-        .when("aadhaar_no", {
-            is: (aadhaar_no) => aadhaar_no !== "" && aadhaar_no.length >= 12,
-            then: Yup.string().required(
-                "Please provide identity card front picture."
-            ),
-        }),
+    file1: Yup.string(),
 });
 export const NewIndianDiscipleSchema = Yup.object().shape({
     avatar: Yup.string().required("Please provide profile picture."),
@@ -142,20 +130,6 @@ export const NewIndianDiscipleSchema = Yup.object().shape({
         .required("Please fill Pincode")
         .min(6, "Enter valid pin code, it must be 6 characters long"),
     email: Yup.string().email("Enter a valid email address."),
-    file1: Yup.string()
-        .ensure()
-        .when("aadhaar_no", {
-            is: (aadhaar_no) => aadhaar_no !== "" && aadhaar_no.length >= 12,
-            then: Yup.string().required(
-                "Please provide aadhaar card front picture."
-            ),
-        }),
-    file2: Yup.string()
-        .ensure()
-        .when("aadhaar_no", {
-            is: (aadhaar_no) => aadhaar_no !== "" && aadhaar_no.length >= 12,
-            then: Yup.string().required(
-                "Please provide aadhaar card back picture."
-            ),
-        }),
+    file1: Yup.string(),
+    file2: Yup.string(),
 });

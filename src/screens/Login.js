@@ -1,4 +1,3 @@
-import { Feather } from "@expo/vector-icons";
 import React, { useState } from "react";
 import {
     Image,
@@ -7,22 +6,16 @@ import {
     StatusBar,
     Text,
     TextInput,
-    TouchableOpacity,
     View,
-    AsyncStorage,
 } from "react-native";
 import AwesomeAlert from "react-native-awesome-alerts";
 import RoundButton from "../components/RoundButton";
-import textConstants from "../constants/text/Login";
 import theme from "../constants/theme";
-import { useAuth } from "../context/AuthContext";
 import { postJsonData } from "../httpClient/apiRequest";
 import styles from "../styles/Login";
 
 const Login = ({ navigation }) => {
-    const { dispatch } = useAuth();
     const [userName, setUserName] = useState("");
-    const [password, setPassword] = useState("");
     const [showAlert, setShowAlert] = useState({
         show: false,
         title: "",
@@ -31,11 +24,11 @@ const Login = ({ navigation }) => {
     });
     const handleLogin = async () => {
         // TODO: If I uncomment the following line, it's giving No identifiers allowed directly after numeric literal
-        // const deviceToken = Math.random() * 1_00_00_000;
+        const deviceToken = Math.floor(Math.random() * 10000000);
+
         const loginData = {
             username: userName,
-            password: password,
-            device_id: "32123",
+            device_id: deviceToken,
             longitude: "20.000",
             latitude: "30.555",
             channel: "mobile",
@@ -43,29 +36,12 @@ const Login = ({ navigation }) => {
         };
 
         try {
-            const { data, headers } = await postJsonData(
-                "/auth/login",
-                loginData
-            );
-
-            if (data?.success === true) {
-                let cookies = headers["set-cookie"];
-                cookies = cookies[0].split(" namdan_csrf_key=");
-                // eslint-disable-next-line prefer-destructuring
-
-                const csrfKey = cookies[1].split(";")[0];
-                const user = data?.data;
-                console.log(csrfKey);
-                await AsyncStorage.setItem("token", csrfKey);
-                await AsyncStorage.setItem("user", JSON.stringify(user));
-                dispatch({
-                    type: "LOGIN_USER",
-                    payload: { user },
-                });
+            const { data } = await postJsonData("/auth/login", loginData);
+            if (data?.success) {
+                navigation.navigate("Verify", { userName, deviceToken });
             }
         } catch (error) {
             if (error && error.response) {
-                setPassword("");
                 console.error(error.response.data.error);
                 setShowAlert({
                     ...showAlert,
@@ -105,76 +81,37 @@ const Login = ({ navigation }) => {
                     }}
                 />
 
+                <Image
+                    style={styles.image}
+                    source={require("../../assets/Guruji2.png")}
+                />
                 <View>
-                    <Image
-                        style={styles.image}
-                        source={require("../../assets/Guruji2.png")}
-                    />
-                </View>
-                <View>
-                    <Text
-                        allowFontScaling={false}
-                        style={[
-                            styles.textCenter,
-
-                            styles.appName,
-                            { color: theme.colors.primary },
-                        ]}
-                    >
-                        {textConstants.appName}
+                    <Text allowFontScaling={false} style={styles.label}>
+                        NAMDAN APP
                     </Text>
                     <View style={styles.inputContainer}>
                         <View style={styles.iconContainer}>
-                            <Feather
-                                style={styles.icons}
-                                name="user"
-                                size={20}
-                                color={theme.colors.primary}
-                            />
                             <TextInput
                                 allowFontScaling={false}
                                 style={styles.inputs}
+                                keyboardType="numeric"
                                 value={userName}
                                 onChangeText={(text) => setUserName(text)}
-                                placeholder="UserName"
+                                placeholder="Enter mobile number"
                             />
                         </View>
-                        <View style={styles.iconContainer}>
-                            <Feather
-                                style={styles.icons}
-                                name="key"
-                                size={20}
-                                color={theme.colors.primary}
-                            />
-                            <TextInput
-                                allowFontScaling={false}
-                                style={styles.inputs}
-                                value={password}
-                                onChangeText={(text) => setPassword(text)}
-                                secureTextEntry
-                                placeholder="Password"
-                                returnKeyType="go"
-                                onSubmitEditing={handleLogin}
-                            />
-                        </View>
-                        <View style={styles.buttonContainer}>
+                        <View style={{ marginTop: 100 }}>
                             <RoundButton
-                                label={textConstants.login}
-                                handlePress={handleLogin}
+                                label={"Get OTP"}
+                                handlePress={() => {
+                                    if (userName.length === 10) {
+                                        handleLogin();
+                                    } else {
+                                        alert("Enter a valid mobile number.");
+                                    }
+                                }}
                             />
                         </View>
-                        <TouchableOpacity>
-                            <Text
-                                allowFontScaling={false}
-                                style={[
-                                    styles.textCenter,
-                                    styles.textWhite,
-                                    styles.fontType,
-                                ]}
-                            >
-                                Forget Password?
-                            </Text>
-                        </TouchableOpacity>
                     </View>
                 </View>
             </ScrollView>

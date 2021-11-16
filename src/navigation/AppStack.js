@@ -3,10 +3,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 
 import AshramDashboard from "../screens/AshramDashboard";
 import CountryDashboard from "../screens/CountryDashboard";
-import Login from "../screens/Login";
-import HomeHeader from "../components/HomeHeader";
 import SignUp from "../screens/SignUp";
-import verifyOtp from "../screens/verifyOtp";
 import NaamdanReport from "../screens/NaamdanReport";
 import NaamdanCentre from "../screens/NaamdanCentre";
 import PendingSatnaam from "../screens/PendingSatnaam";

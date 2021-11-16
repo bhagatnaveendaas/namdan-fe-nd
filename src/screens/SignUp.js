@@ -27,7 +27,6 @@ import styles from "../styles/Singup";
 import {
     NewIndianDiscipleSchema,
     NewNonIndianDiscipleSchema,
-    file2Schema,
 } from "../utilities/Validation";
 import { useAuth } from "../context/AuthContext";
 import FormData from "form-data";
@@ -248,9 +247,6 @@ const SignUp = ({ navigation }) => {
                     abortEarly: false,
                 });
             }
-            if (fields.file2Field !== "" && fields.file2Field !== null) {
-                await file2Schema.validate(userData, { abortEarly: false });
-            }
             handleRegister();
         } catch (err) {
             if (err.name === "ValidationError") {
@@ -452,12 +448,12 @@ const SignUp = ({ navigation }) => {
     };
     const onFetchingWhatsapp = async (text) => {
         onChange(text, "whatsapp_no");
-        if (text.length == 10) {
+        if (text.length === 10) {
             setwhatsappLoading(true);
             try {
                 const { data } = await postJsonData("/disciple/search", {
                     search_by: "mobile_no",
-                    search_value: userData.country_code + userData.mobile_no,
+                    search_value: userData.whatsapp_country_code + text,
                 });
 
                 if (data?.data.length > 0) {
@@ -754,7 +750,7 @@ const SignUp = ({ navigation }) => {
                                         navigation.navigate("Entry", {
                                             title: "Search",
                                             searchBy: "mobile_no",
-                                            text: `${userData.country_code}${userData.mobile_no}`,
+                                            text: `${userData.whatsapp_country_code}${userData.whatsapp_no}`,
                                         });
                                     }}
                                     style={{

@@ -12,11 +12,7 @@ function RoundButton({ label, handlePress }) {
         >
             <Text
                 allowFontScaling={false}
-                style={[
-                    styles.textCenter,
-                    styles.textWhite,
-                    styles.loginButtonText,
-                ]}
+                style={[styles.textCenter, styles.loginButtonText]}
             >
                 {label}
             </Text>

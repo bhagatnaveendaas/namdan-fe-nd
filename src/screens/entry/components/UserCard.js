@@ -12,11 +12,16 @@ import { FONTS } from "../../../constants/fonts";
 const userDefaultImage = require("../../../../assets/icons/user.png");
 
 const UserCard = ({ user, onPress }) => {
-    // console.log(user.name)
-    const { tehsil_name, district_name, state_name, country_name } = user;
+    const {
+        tehsil_name,
+        district_name,
+        state_name,
+        country_name,
+        satnam_date,
+        sarnam_date,
+    } = user;
     let avatar = user?.avatar;
-
-    const numbers = ["1", "2", "3", "4"];
+    const naamLevel = ["pratham_date", satnam_date, sarnam_date, null];
     return (
         <TouchableHighlight
             activeOpacity={1}
@@ -33,6 +38,7 @@ const UserCard = ({ user, onPress }) => {
                     style={{
                         flex: 1,
                         paddingHorizontal: 10,
+                        flexDirection: "column",
                     }}
                 >
                     <Text style={styles.name}>
@@ -51,7 +57,7 @@ const UserCard = ({ user, onPress }) => {
                     <Text style={styles.phone}>{user.mobile_no}</Text>
                 </View>
                 <View style={{ width: 35 }}>
-                    {numbers.map((item, index) => {
+                    {naamLevel.map((item, index) => {
                         return (
                             <View
                                 key={index}
@@ -60,12 +66,12 @@ const UserCard = ({ user, onPress }) => {
                                     alignItems: "center",
                                     justifyContent: "center",
                                     backgroundColor:
-                                        index <= 0
+                                        item !== null
                                             ? theme.colors.primary
                                             : theme.colors.grey,
-                                    borderTopWidth: index > 0 ? 1 : 0,
+                                    borderTopWidth: item === null ? 1 : 0,
                                     borderTopColor:
-                                        index > 0
+                                        item === null
                                             ? theme.colors.white
                                             : theme.colors.primary,
                                 }}
@@ -73,12 +79,12 @@ const UserCard = ({ user, onPress }) => {
                                 <Text
                                     style={{
                                         color:
-                                            index <= 0
+                                            item !== null
                                                 ? theme.colors.white
                                                 : theme.colors.primary,
                                     }}
                                 >
-                                    {item}
+                                    {index + 1}
                                 </Text>
                             </View>
                         );

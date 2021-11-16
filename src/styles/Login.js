@@ -1,6 +1,7 @@
 import { StatusBar, StyleSheet, Dimensions } from "react-native";
 
 import theme from "../constants/theme";
+import { FONTS } from "../constants/fonts";
 
 const { height, width } = Dimensions.get("window");
 
@@ -9,7 +10,7 @@ export default StyleSheet.create({
         fontFamily: theme.fonts.poppins.regular,
     },
     container: {
-        backgroundColor: theme.colors.white,
+        backgroundColor: theme.colors.primary,
         flex: 1,
         // marginTop: StatusBar.currentHeight,
         // paddingTop: height * 0.08,
@@ -32,8 +33,8 @@ export default StyleSheet.create({
     inputs: {
         backgroundColor: theme.colors.white,
         flex: 1,
-        paddingHorizontal: width * 0.03,
-        fontFamily: theme.fonts.poppins.regular,
+        ...FONTS.h3,
+        fontSize: 18,
     },
     iconContainer: {
         flex: 1,
@@ -53,11 +54,11 @@ export default StyleSheet.create({
     },
     inputContainer: {
         paddingHorizontal: width * 0.07,
-        paddingTop: height * 0.05,
-        alignItems:"center"
+        alignItems: "center",
     },
     loginButton: {
-        backgroundColor: theme.colors.primary,
+        backgroundColor: theme.colors.white,
+        color: theme.colors.primary,
         padding: width * 0.035,
         width: 200,
         borderRadius: width * 0.5,
@@ -82,7 +83,8 @@ export default StyleSheet.create({
     loginButtonText: {
         textTransform: "uppercase",
         // fontWeight: "bold",
-        fontFamily: theme.fonts.poppins.semiBold,
+        ...FONTS.h3,
+        color: theme.colors.primary,
     },
     GreyButtonText: {
         textTransform: "uppercase",
@@ -95,5 +97,23 @@ export default StyleSheet.create({
     },
     signUpContainer: {
         paddingTop: height * 0.09,
+    },
+    label: {
+        color: theme.colors.white,
+        textAlign: "center",
+        ...FONTS.h2,
+        marginTop: 30,
+        marginBottom: 15,
+    },
+    otpContainer: {},
+    otp: {
+        width: 55,
+        height: 55,
+        borderRadius: 15,
+        borderWidth: 1,
+        borderColor: theme.colors.primaryLight,
+        backgroundColor: theme.colors.white,
+        ...FONTS.body1,
+        textAlign: "center",
     },
 });

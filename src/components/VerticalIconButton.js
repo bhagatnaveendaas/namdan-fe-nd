@@ -5,7 +5,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import theme from "../constants/theme";
 import { FONTS } from "../constants/fonts";
 
-const VerticalIconButton = ({ label, icon, pressHandler }) => (
+const VerticalIconButton = ({ label, icon, pressHandler, iconStyle }) => (
     <View
         style={{
             width: "30%",
@@ -20,7 +20,13 @@ const VerticalIconButton = ({ label, icon, pressHandler }) => (
             style={{ alignItems: "center", justifyContent: "center" }}
             onPress={pressHandler}
         >
-            <Image source={icon} style={{ width: 60, height: 60 }} />
+            <Image
+                source={icon}
+                style={{
+                    width: 60,
+                    height: 60,
+                }}
+            />
             <Text
                 allowFontScaling={false}
                 style={{
