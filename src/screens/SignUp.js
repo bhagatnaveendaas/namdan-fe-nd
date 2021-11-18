@@ -432,7 +432,7 @@ const SignUp = ({ navigation }) => {
                     search_value: text,
                 });
 
-                if (data?.data.length > 0) {
+                if (data?.data.disciples.length > 0) {
                     setShowAadharRef(true);
                 } else {
                     setaddharLoading(false);
@@ -456,7 +456,7 @@ const SignUp = ({ navigation }) => {
                     search_value: userData.whatsapp_country_code + text,
                 });
 
-                if (data?.data.length > 0) {
+                if (data?.data.disciples.length > 0) {
                     setShowWhatsappRef(true);
                 } else {
                     setShowWhatsappRef(false);
@@ -479,8 +479,7 @@ const SignUp = ({ navigation }) => {
                     search_by: "mobile_no",
                     search_value: userData.country_code + text,
                 });
-
-                if (data?.data.length > 0) {
+                if (data?.data.disciples.length > 0) {
                     setShowRef(true);
                 } else {
                     setShowRef(false);
@@ -624,8 +623,8 @@ const SignUp = ({ navigation }) => {
                                 userData.aadhaar_no == ""
                                     ? null
                                     : userData.aadhaar_no?.length < 12
-                                    ? crossIcon
-                                    : checkIcon
+                                        ? crossIcon
+                                        : checkIcon
                             }
                             style={{
                                 width: 18,
@@ -946,8 +945,8 @@ const SignUp = ({ navigation }) => {
                                 userData.pincode == ""
                                     ? null
                                     : userData.pincode?.length < 6
-                                    ? crossIcon
-                                    : checkIcon
+                                        ? crossIcon
+                                        : checkIcon
                             }
                             style={{
                                 width: 18,
@@ -981,8 +980,8 @@ const SignUp = ({ navigation }) => {
                                 userData.email == ""
                                     ? null
                                     : userData.email != "" && emailError == ""
-                                    ? checkIcon
-                                    : crossIcon
+                                        ? checkIcon
+                                        : crossIcon
                             }
                             style={{
                                 width: 18,

@@ -32,8 +32,8 @@ const Entry = ({ route, navigation }) => {
                 search_by: "unique_id",
                 search_value: aadharno,
             });
-            if (data?.data.length > 0) {
-                setUsersSearched(data.data);
+            if (data?.data.disciples.length > 0) {
+                setUsersSearched(data.data.disciples);
             }
             setLoading(false);
         } catch (error) {
@@ -50,8 +50,8 @@ const Entry = ({ route, navigation }) => {
                     ? mobileNo
                     : `+91${mobileNo}`,
             });
-            if (data?.data.length > 0) {
-                setUsersSearched(data.data);
+            if (data?.data.disciples.length > 0) {
+                setUsersSearched(data.data.disciples);
             }
             setLoading(false);
         } catch (error) {
@@ -104,7 +104,7 @@ const Entry = ({ route, navigation }) => {
                                     marginVertical: 6,
                                 }}
                             >
-                                <UserCard user={user} onPress={() => {}} />
+                                <UserCard user={user} onPress={() => { }} />
                             </View>
                         );
                     })}
