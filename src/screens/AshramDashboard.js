@@ -77,7 +77,7 @@ const Home = ({ navigation }) => {
                 >
                     {role}
                 </Text>
-                <TouchableOpacity onPress={() => navigation.navigate("Search")}>
+                <TouchableOpacity onPress={() => {}}>
                     <Image
                         style={{ height: 18, width: 22, tintColor: "white" }}
                         source={require("../../assets/icons/search.png")}
@@ -117,11 +117,7 @@ const Home = ({ navigation }) => {
                                 <VerticalIconButton
                                     label="Attendance"
                                     icon={require("../../assets/icons/attendance.png")}
-                                    pressHandler={() => {
-                                        navigation.navigate("Search", {
-                                            entryType: "Attendance Entry",
-                                        });
-                                    }}
+                                    pressHandler={() => {}}
                                 />
                             )}
                             {permissions.includes("satnam") && (
