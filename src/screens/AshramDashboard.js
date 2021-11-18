@@ -77,7 +77,7 @@ const Home = ({ navigation }) => {
                 >
                     {role}
                 </Text>
-                <TouchableOpacity onPress={() => {}}>
+                <TouchableOpacity onPress={() => navigation.navigate("Search")}>
                     <Image
                         style={{ height: 18, width: 22, tintColor: "white" }}
                         source={require("../../assets/icons/search.png")}
@@ -117,12 +117,11 @@ const Home = ({ navigation }) => {
                                 <VerticalIconButton
                                     label="Attendance"
                                     icon={require("../../assets/icons/attendance.png")}
-                                    // pressHandler={() => {
-                                    //     navigation.navigate("Entry", {
-                                    //         title: "Attendance",
-                                    //         entryType: ATTENDANCE,
-                                    //     });
-                                    // }}
+                                    pressHandler={() => {
+                                        navigation.navigate("Search", {
+                                            entryType: "Attendance Entry",
+                                        });
+                                    }}
                                 />
                             )}
                             {permissions.includes("satnam") && (
@@ -130,11 +129,8 @@ const Home = ({ navigation }) => {
                                     label="Satnaam"
                                     icon={require("../../assets/icons/satnaam.png")}
                                     // pressHandler={() => {
-                                    //     navigation.navigate("Entry", {
-                                    //         title: "Enter Satnaam",
-                                    //         entryType: SATNAM,
-                                    //         searchBy: "mobile_no",
-                                    //         text: "",
+                                    //     navigation.navigate("Search", {
+                                    //         entryType: "Satnaam Entry",
                                     //     });
                                     // }}
                                 />
@@ -144,9 +140,8 @@ const Home = ({ navigation }) => {
                                     label="Sarnaam"
                                     icon={require("../../assets/icons/sarnaam.png")}
                                     // pressHandler={() => {
-                                    //     navigation.navigate("Entry", {
-                                    //         title: "Enter SaarNaam",
-                                    //         entryType: SAARNAAM,
+                                    //     navigation.navigate("Search", {
+                                    //         entryType: "Sarnaam Entry",
                                     //     });
                                     // }}
                                 />
@@ -156,9 +151,8 @@ const Home = ({ navigation }) => {
                                     label={`Sarshabd`}
                                     icon={require("../../assets/icons/sarshabd.png")}
                                     // pressHandler={() => {
-                                    //     navigation.navigate("Entry", {
-                                    //         title: "SarShabd",
-                                    //         entryType: SAARSHABAD,
+                                    //     navigation.navigate("Search", {
+                                    //         entryType: "Sarshabd Entry",
                                     //     });
                                     // }}
                                 />
@@ -168,9 +162,8 @@ const Home = ({ navigation }) => {
                                     label="Shudhikaran"
                                     icon={require("../../assets/icons/sk.png")}
                                     // pressHandler={() => {
-                                    //     navigation.navigate("Entry", {
-                                    //         title: "Enter Shudhikaran",
-                                    //         entryType: SHUDDIKARAN,
+                                    //     navigation.navigate("Search", {
+                                    //         entryType: "Shuddhikaran Entry",
                                     //     });
                                     // }}
                                 />
@@ -180,9 +173,8 @@ const Home = ({ navigation }) => {
                                     label={`Punar Updesh`}
                                     icon={require("../../assets/icons/punar_updesh.png")}
                                     // pressHandler={() => {
-                                    //     navigation.navigate("Entry", {
-                                    //         title: "Enter Punar Updesh",
-                                    //         entryType: PUNARUPDESH,
+                                    //     navigation.navigate("Search", {
+                                    //         entryType: "Punar Updesh Entry",
                                     //     });
                                     // }}
                                 />

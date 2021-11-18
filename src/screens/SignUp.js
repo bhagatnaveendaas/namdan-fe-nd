@@ -32,6 +32,7 @@ import { useAuth } from "../context/AuthContext";
 import FormData from "form-data";
 import { getData, postJsonData } from "../httpClient/apiRequest";
 import SearchableFlatlist from "../components/SearchableFlatlist/SearchableFlatlist";
+import { searchDiscipleUrl } from "../constants/routes";
 const calendarIcon = require("../../assets/icons/calenderFilled.png");
 const checkIcon = require("../../assets/icons/check-circletick.png");
 const crossIcon = require("../../assets/icons/cross.png");
@@ -427,7 +428,7 @@ const SignUp = ({ navigation }) => {
         if (text.length == 12) {
             setaddharLoading(true);
             try {
-                const { data } = await postJsonData("/disciple/search", {
+                const { data } = await postJsonData(searchDiscipleUrl, {
                     search_by: "unique_id",
                     search_value: text,
                 });
@@ -451,7 +452,7 @@ const SignUp = ({ navigation }) => {
         if (text.length === 10) {
             setwhatsappLoading(true);
             try {
-                const { data } = await postJsonData("/disciple/search", {
+                const { data } = await postJsonData(searchDiscipleUrl, {
                     search_by: "mobile_no",
                     search_value: userData.whatsapp_country_code + text,
                 });
@@ -475,7 +476,7 @@ const SignUp = ({ navigation }) => {
         if (text.length == 10) {
             setmobileLoading(true);
             try {
-                const { data } = await postJsonData("/disciple/search", {
+                const { data } = await postJsonData(searchDiscipleUrl, {
                     search_by: "mobile_no",
                     search_value: userData.country_code + text,
                 });

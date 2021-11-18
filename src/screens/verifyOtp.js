@@ -6,6 +6,7 @@ import theme from "../constants/theme";
 import styles from "../styles/Login";
 import { useAuth } from "../context/AuthContext";
 import { postJsonData } from "../httpClient/apiRequest";
+import { loginUrl } from "../constants/routes";
 
 const VerifyOtp = ({ route, navigation }) => {
     const { dispatch } = useAuth();
@@ -37,7 +38,7 @@ const VerifyOtp = ({ route, navigation }) => {
     };
     const verifyOtp = async () => {
         try {
-            const { data, headers } = await postJsonData("/auth/login", {
+            const { data, headers } = await postJsonData(loginUrl, {
                 username: userName,
                 device_id: deviceToken,
                 longitude: "20.000",

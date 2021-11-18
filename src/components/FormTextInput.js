@@ -10,6 +10,8 @@ const FormTextInput = ({
     appendComponent,
     prependComponent,
     required,
+    textStyle,
+    placeholderColor,
     containerStyle,
     ...props
 }) => {
@@ -28,11 +30,13 @@ const FormTextInput = ({
                 {prependComponent}
                 <TextInput
                     allowFontScaling={false}
-                    style={styles.input}
+                    style={[styles.input, { ...textStyle }]}
                     returnKeyType="next"
                     value={value}
                     placeholder={placeholder}
-                    placeholderTextColor={styles.placeholderColor.color}
+                    placeholderTextColor={
+                        placeholderColor || styles.placeholderColor.color
+                    }
                     onChangeText={onChangeText}
                     {...props}
                 />

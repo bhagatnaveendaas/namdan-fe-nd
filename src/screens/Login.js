@@ -8,6 +8,7 @@ import {
     TextInput,
     View,
 } from "react-native";
+import { loginUrl } from "../constants/routes";
 import AwesomeAlert from "react-native-awesome-alerts";
 import RoundButton from "../components/RoundButton";
 import theme from "../constants/theme";
@@ -36,7 +37,7 @@ const Login = ({ navigation }) => {
         };
 
         try {
-            const { data } = await postJsonData("/auth/login", loginData);
+            const { data } = await postJsonData(loginUrl, loginData);
             if (data?.success) {
                 navigation.navigate("Verify", { userName, deviceToken });
             }

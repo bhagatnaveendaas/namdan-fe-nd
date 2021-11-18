@@ -1,9 +1,21 @@
-import React, { useEffect } from "react";
-import { Image, StyleSheet, Text, View, ScrollView } from "react-native";
+import React, { useState } from "react";
+import {
+    Image,
+    StyleSheet,
+    Text,
+    View,
+    ScrollView,
+    ActivityIndicator,
+} from "react-native";
 import theme from "../constants/theme";
 import Avatar from "../components/Avatar";
+import Button from "../components/Button";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { FONTS } from "../constants/fonts";
+import { getData } from "../httpClient/apiRequest";
+import { getUniqueDispleUrl } from "../constants/routes";
+import { useEffect } from "react";
+import moment from "moment";
 
 const userDefaultImage = require("../../assets/icons/user.png");
 const calenderImage = require("../../assets/icons/calendar.png");
@@ -82,6 +94,22 @@ const Field = ({ label, value, text }) => {
 };
 
 const Profile = ({ route, navigation }) => {
+    const [loading, setLoading] = useState(false);
+    const user = route.params.user ?? null;
+    const entryType = route.params.entryType ?? null;
+    const { avatar, id } = user;
+
+    console.log(entryType);
+
+    if (loading)
+        return (
+            <ActivityIndicator
+                color={theme.colors.primaryLight}
+                size="large"
+                style={{ marginTop: 30 }}
+                animating={loading}
+            />
+        );
     return (
         <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
             <View
@@ -103,6 +131,7 @@ const Profile = ({ route, navigation }) => {
                     <View style={{ marginTop: -50, alignItems: "center" }}>
                         <Avatar
                             status={"Active"}
+                            uri={avatar && avatar}
                             imageSource={userDefaultImage}
                         />
                     </View>
@@ -115,7 +144,7 @@ const Profile = ({ route, navigation }) => {
                             }}
                         >
                             {/* {user.name} */}
-                            Name
+                            {user?.name}
                         </Text>
                         <Text
                             allowFontScaling={false}
@@ -125,14 +154,14 @@ const Profile = ({ route, navigation }) => {
                             }}
                         >
                             {/* {user.relation} {user.guardian_name} */}
-                            S/O Guardian Name
+                            {user?.relation} {user?.guardian_name}
                         </Text>
                         <Text
                             allowFontScaling={false}
                             style={{ ...FONTS.body5 }}
                         >
                             Form No:{" "}
-                            <Text style={{ ...FONTS.body5 }}>1234456</Text>
+                            <Text style={{ ...FONTS.body5 }}>17-11-2021</Text>
                         </Text>
                         <Text
                             allowFontScaling={false}
@@ -169,7 +198,7 @@ const Profile = ({ route, navigation }) => {
                                 }}
                             >
                                 {/* {user.mobile_no} */}
-                                1234567890
+                                {user?.mobile_no}
                             </Text>
                         </View>
                         <View style={{ flexDirection: "row" }}>
@@ -192,15 +221,13 @@ const Profile = ({ route, navigation }) => {
                                     width: 240,
                                 }}
                             >
-                                Address
-                                {/* {user.address}
-                                {", "}
                                 {[
+                                    user.address,
                                     user.tehsil_name,
                                     user.district_name,
                                     user.state_name,
                                     user.country_name,
-                                ].join(", ")} */}
+                                ].join(", ")}
                             </Text>
                         </View>
                     </View>
@@ -254,9 +281,9 @@ const Profile = ({ route, navigation }) => {
                         marginVertical: 30,
                     }}
                 >
-                    <TouchableOpacity
+                    <Button
                         onPress={() => console.log("Hold pressed")}
-                        style={{
+                        buttonStyle={{
                             paddingHorizontal: 20,
                             paddingVertical: 5,
                             marginHorizontal: 10,
@@ -264,17 +291,12 @@ const Profile = ({ route, navigation }) => {
                             elevation: 3,
                             borderRadius: 10,
                         }}
-                    >
-                        <Text
-                            allowFontScaling={false}
-                            style={{ color: theme.colors.white }}
-                        >
-                            Hold
-                        </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
+                        textStyle={{ color: theme.colors.white }}
+                        text="Hold"
+                    />
+                    <Button
                         onPress={() => console.log("Ban pressed")}
-                        style={{
+                        buttonStyle={{
                             paddingHorizontal: 20,
                             paddingVertical: 5,
                             marginHorizontal: 10,
@@ -282,15 +304,30 @@ const Profile = ({ route, navigation }) => {
                             elevation: 3,
                             borderRadius: 10,
                         }}
-                    >
-                        <Text
-                            allowFontScaling={false}
-                            style={{ color: theme.colors.white }}
-                        >
-                            Ban
-                        </Text>
-                    </TouchableOpacity>
+                        textStyle={{ color: theme.colors.white }}
+                        text="Ban"
+                    />
                 </View>
+
+                {entryType !== null && (
+                    <Button
+                        onPress={() => console.log("Submit pressed")}
+                        buttonStyle={{
+                            padding: 12,
+                            marginVertical: 5,
+                            backgroundColor: theme.colors.primary,
+                            elevation: 3,
+                            borderRadius: 50,
+                            alignItems: "center",
+                        }}
+                        textStyle={{
+                            color: theme.colors.white,
+                            ...FONTS.h3,
+                            fontSize: 18,
+                        }}
+                        text="Submit"
+                    />
+                )}
             </View>
         </ScrollView>
     );
