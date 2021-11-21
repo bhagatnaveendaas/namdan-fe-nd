@@ -21,6 +21,7 @@
       "bundleIdentifier": "com.rs91.naamdan"
     },
     "android": {
+      "icon": "./assets/icon.png",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
