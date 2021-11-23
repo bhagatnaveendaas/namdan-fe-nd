@@ -25,7 +25,7 @@ const UserCard = ({ user, onPress }) => {
     return (
         <TouchableHighlight
             activeOpacity={1}
-            style={{ borderRadius: 8 }}
+            style={{ marginHorizontal: 5, borderRadius: 8, marginBottom: 16 }}
             onPress={onPress}
         >
             <View style={styles.container}>
@@ -69,15 +69,14 @@ const UserCard = ({ user, onPress }) => {
                                         item !== null
                                             ? theme.colors.primary
                                             : theme.colors.grey,
-                                    borderTopWidth: item === null ? 1 : 0,
-                                    borderTopColor:
-                                        item === null
-                                            ? theme.colors.white
-                                            : theme.colors.primary,
+                                    borderTopWidth: 1,
+                                    borderTopColor: theme.colors.white,
                                 }}
                             >
                                 <Text
+                                    allowFontScaling={false}
                                     style={{
+                                        ...FONTS.h5,
                                         color:
                                             item !== null
                                                 ? theme.colors.white

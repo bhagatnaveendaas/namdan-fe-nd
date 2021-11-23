@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Image, SafeAreaView, StatusBar, Text, View } from "react-native";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
-// import MasterCreation from "../components/MasterCreation";
-// import OtherControls from "../components/OtherControls";
 import ScoreBoard from "../components/ScoreBoard";
 import VerticalIconButton from "../components/VerticalIconButton";
 import { FONTS } from "../constants/fonts";
@@ -58,6 +56,7 @@ const Home = ({ navigation }) => {
                     backgroundColor: theme.colors.primary,
                     flexDirection: "row",
                     padding: 20,
+                    paddingVertical: 10,
                     alignItems: "center",
                     justifyContent: "space-between",
                     borderBottomLeftRadius: 15,
@@ -71,13 +70,26 @@ const Home = ({ navigation }) => {
                         source={require("../../assets/icons/white_side_menu.png")}
                     />
                 </TouchableOpacity>
-                <Text
-                    allowFontScaling={false}
-                    style={{ color: "white", ...FONTS.h2 }}
-                >
-                    {role}
-                </Text>
-                <TouchableOpacity onPress={() => {}}>
+                <View>
+                    <Text
+                        allowFontScaling={false}
+                        style={{
+                            color: "white",
+                            ...FONTS.h3,
+                            textAlign: "center",
+                            fontSize: 20,
+                        }}
+                    >
+                        {user?.district_name.toUpperCase()}
+                    </Text>
+                    <Text
+                        allowFontScaling={false}
+                        style={{ color: "white", ...FONTS.h2, fontSize: 20 }}
+                    >
+                        {role.toUpperCase()}
+                    </Text>
+                </View>
+                <TouchableOpacity onPress={() => navigation.navigate("Search")}>
                     <Image
                         style={{ height: 18, width: 22, tintColor: "white" }}
                         source={require("../../assets/icons/search.png")}
@@ -89,6 +101,7 @@ const Home = ({ navigation }) => {
                     prathams={kpiCounts.prathams}
                     satnams={kpiCounts.satnams}
                     sarnams={kpiCounts.sarnams}
+                    sarshabd={kpiCounts?.sarshabd ?? 0}
                     prathamVsSatnam={kpiCounts.pending_satnams}
                     punarUpdesh={0}
                 />
@@ -117,62 +130,66 @@ const Home = ({ navigation }) => {
                                 <VerticalIconButton
                                     label="Attendance"
                                     icon={require("../../assets/icons/attendance.png")}
-                                    pressHandler={() => {}}
+                                    pressHandler={() => {
+                                        navigation.navigate("Search", {
+                                            entryType: "Attendance Entry",
+                                        });
+                                    }}
                                 />
                             )}
                             {permissions.includes("satnam") && (
                                 <VerticalIconButton
                                     label="Satnaam"
                                     icon={require("../../assets/icons/satnaam.png")}
-                                    // pressHandler={() => {
-                                    //     navigation.navigate("Search", {
-                                    //         entryType: "Satnaam Entry",
-                                    //     });
-                                    // }}
+                                    pressHandler={() => {
+                                        navigation.navigate("Search", {
+                                            entryType: "Satnaam Entry",
+                                        });
+                                    }}
                                 />
                             )}
                             {permissions.includes("sarnam") && (
                                 <VerticalIconButton
                                     label="Sarnaam"
                                     icon={require("../../assets/icons/sarnaam.png")}
-                                    // pressHandler={() => {
-                                    //     navigation.navigate("Search", {
-                                    //         entryType: "Sarnaam Entry",
-                                    //     });
-                                    // }}
+                                    pressHandler={() => {
+                                        navigation.navigate("Search", {
+                                            entryType: "Sarnaam Entry",
+                                        });
+                                    }}
                                 />
                             )}
                             {permissions.includes("sarshabd") && (
                                 <VerticalIconButton
                                     label={`Sarshabd`}
                                     icon={require("../../assets/icons/sarshabd.png")}
-                                    // pressHandler={() => {
-                                    //     navigation.navigate("Search", {
-                                    //         entryType: "Sarshabd Entry",
-                                    //     });
-                                    // }}
+                                // pressHandler={() => {
+                                //     navigation.navigate("Search", {
+                                //         entryType: "Sarshabd Entry",
+                                //     });
+                                // }}
                                 />
                             )}
                             {permissions.includes("shudhikaran") && (
                                 <VerticalIconButton
                                     label="Shudhikaran"
                                     icon={require("../../assets/icons/sk.png")}
-                                    // pressHandler={() => {
-                                    //     navigation.navigate("Search", {
-                                    //         entryType: "Shuddhikaran Entry",
-                                    //     });
-                                    // }}
+                                    pressHandler={() => {
+                                        navigation.navigate("Search", {
+                                            entryType: "Shuddhikaran Entry",
+                                        });
+                                    }}
                                 />
                             )}
                             {permissions.includes("punar_updesh") && (
                                 <VerticalIconButton
                                     label={`Punar Updesh`}
                                     icon={require("../../assets/icons/punar_updesh.png")}
-                                    // pressHandler={() => {
-                                    //     navigation.navigate("Search", {
-                                    //         entryType: "Punar Updesh Entry",
-                                    //     });
-                                    // }}
+                                // pressHandler={() => {
+                                //     navigation.navigate("Search", {
+                                //         entryType: "Punar Updesh Entry",
+                                //     });
+                                // }}
                                 />
                             )}
                         </View>
@@ -208,7 +225,7 @@ const Home = ({ navigation }) => {
                                     justifyContent: "center",
                                     alignItems: "center",
                                 }}
-                                onPress={() => {}}
+                                onPress={() => { }}
                             >
                                 <Image
                                     source={require("../../assets/icons/message.png")}

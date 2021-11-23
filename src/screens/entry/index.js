@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, ScrollView, View } from "react-native";
 import SearchBar from "../../components/SearchBar";
+import { useAuth } from "../../context/AuthContext";
 import theme from "../../constants/theme";
 import { postJsonData } from "../../httpClient/apiRequest";
 import UserCard from "./components/UserCard";
 
 const Entry = ({ route, navigation }) => {
+    const { state } = useAuth();
+    const AuthUser = state.user;
     const [loading, setLoading] = useState(false);
-    const { searchBy, text, entryType, title } = route.params;
+    const { searchBy, text, title } = route.params;
     const [search, setSearch] = useState(text || "");
     const [usersSearched, setUsersSearched] = useState([]);
 
@@ -31,6 +34,7 @@ const Entry = ({ route, navigation }) => {
             const { data } = await postJsonData("/disciple/search", {
                 search_by: "unique_id",
                 search_value: aadharno,
+                country_id: AuthUser.country,
             });
             if (data?.data.disciples.length > 0) {
                 setUsersSearched(data.data.disciples);
@@ -46,6 +50,7 @@ const Entry = ({ route, navigation }) => {
             setLoading(true);
             const { data } = await postJsonData("/disciple/search", {
                 search_by: "mobile_no",
+                country_id: AuthUser.country,
                 search_value: mobileNo.includes("+")
                     ? mobileNo
                     : `+91${mobileNo}`,

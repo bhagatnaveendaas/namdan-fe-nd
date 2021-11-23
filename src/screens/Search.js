@@ -1,43 +1,36 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Picker } from "@react-native-picker/picker";
 import {
     View,
     Text,
     Platform,
     TouchableOpacity,
-    Image,
-    ScrollView,
     ActivityIndicator,
+    FlatList,
 } from "react-native";
 import { FONTS } from "../constants/fonts";
 import theme from "../constants/theme";
+import { useAuth } from "../context/AuthContext";
 import FormTextInput from "../components/FormTextInput";
 import CountryCodePicker from "../components/CountryCodePicker";
+import RadioButton from "../components/RadioButton";
 import styles from "../styles/Singup";
 import { postJsonData } from "../httpClient/apiRequest";
 import UserCard from "./entry/components/UserCard";
 import { searchDiscipleUrl } from "../constants/routes";
-const filterIcon = require("../../assets/icons/filter.png");
 
 const Search = ({ navigation, route }) => {
-    const filterOptions = [
-        {
-            value: "mobile_no",
-            label: "Search By Mobile Number",
-        },
-        {
-            value: "unique_id",
-            label: "Search By Aadhaar Number",
-        },
-    ];
+    const { state } = useAuth();
+    const AuthUser = state.user;
+    const [totalDisciples, settotalDisciples] = useState(0);
+    const [currentPage, setCurrentPage] = useState(1);
     const [users, setUsers] = useState([]);
     const [notFoundText, setNotFoundText] = useState("");
     const [loading, setLoading] = useState(false);
-    const [searchBy, setSearchBy] = useState(filterOptions[0].value);
+    const [stopFetchMore, setStopFetchMore] = useState(false);
+    const [searchBy, setSearchBy] = useState("mobile_no");
     const [search, setSearch] = useState("");
     const [code, setCode] = useState("+91");
     const codeRef = useRef();
-    const filterRef = useRef();
 
     useEffect(() => {
         navigation.setOptions({
@@ -45,19 +38,33 @@ const Search = ({ navigation, route }) => {
         });
     }, []);
 
-    const searchDisciple = async () => {
+    const searchDisciple = async (page) => {
+        if (searchBy === "mobile_no" && search.length < 10) {
+            alert("Please enter a valid mobile number.");
+            return;
+        }
+        if (searchBy === "unique_id" && search.length < 12) {
+            alert("Please enter a valid aadhaar number.");
+            return;
+        }
         setLoading(true);
         try {
-            const { data } = await postJsonData(searchDiscipleUrl, {
+            const { data } = await postJsonData(searchDiscipleUrl(page), {
                 search_by: searchBy,
                 search_value: searchBy === "mobile_no" ? code + search : search,
+                country_id: AuthUser.country,
             });
 
-            if (data?.data) {
-                if (data?.data.length === 0) {
-                    setNotFoundText("No entry found for this ");
+            if (data?.data.disciples) {
+                if (data?.data.disciples.length === 0) {
+                    setStopFetchMore(true);
+                    if (page === 1) {
+                        setNotFoundText("No desciple found");
+                    }
                 }
-                setUsers(data?.data);
+                setUsers([...users, ...data?.data.disciples]);
+                settotalDisciples(data?.data.total);
+                setCurrentPage(currentPage + 1);
                 setLoading(false);
             }
         } catch (error) {
@@ -69,6 +76,14 @@ const Search = ({ navigation, route }) => {
                 console.error(`Error which searching disciple.`, error);
             }
         }
+    };
+    const onOptionChange = (key) => {
+        setSearchBy(key);
+        setSearch("");
+        setUsers([]);
+        setCurrentPage(1);
+        settotalDisciples(0);
+        setStopFetchMore(false);
     };
 
     return (
@@ -85,6 +100,7 @@ const Search = ({ navigation, route }) => {
                             ? "Enter your mobile number"
                             : "Enter your aadhar number"
                     }
+                    autoFocus={true}
                     required={true}
                     keyboardType={
                         Platform.OS === "android" ? "numeric" : "number-pad"
@@ -100,8 +116,12 @@ const Search = ({ navigation, route }) => {
                     }}
                     onFocus={() => setNotFoundText("")}
                     placeholderColor={theme.colors.primary}
-                    onChangeText={(text) => setSearch(text)}
-                    onSubmitEditing={searchDisciple}
+                    onChangeText={(text) => {
+                        setSearch(text);
+                        setUsers([]);
+                        setCurrentPage(1);
+                    }}
+                    onSubmitEditing={() => searchDisciple(currentPage)}
                     textStyle={{ marginLeft: 10 }}
                     prependComponent={
                         searchBy === "mobile_no" && (
@@ -123,101 +143,126 @@ const Search = ({ navigation, route }) => {
                             </TouchableOpacity>
                         )
                     }
-                    appendComponent={
-                        <TouchableOpacity
-                            style={{ marginRight: 10 }}
-                            onPress={() => filterRef?.current.focus()}
-                        >
-                            <Image
-                                source={filterIcon}
-                                style={{
-                                    width: 20,
-                                    height: 20,
-                                    tintColor: theme.colors.primary,
-                                }}
-                            />
-                        </TouchableOpacity>
-                    }
                 />
                 <CountryCodePicker
                     ref={codeRef}
                     onValueChange={(value) => setCode(value)}
                     value={code}
                 />
-                <Picker
-                    ref={filterRef}
-                    selectedValue={searchBy}
-                    onValueChange={(value) => {
-                        setSearchBy(value);
-                        setSearch("");
-                        setUsers([]);
-                    }}
-                    style={{ display: "none" }}
-                >
-                    {filterOptions.map((item, index) => (
-                        <Picker.Item
-                            key={index}
-                            label={item.label}
-                            value={item.value}
-                        />
-                    ))}
-                </Picker>
             </View>
-
-            <ScrollView
-                showsVerticalScrollIndicator={false}
-                style={{ flex: 1, marginTop: 15 }}
+            <View
+                style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    marginTop: 10,
+                }}
             >
-                {!loading && notFoundText !== "" && (
-                    <View style={{ marginTop: 60, alignItems: "center" }}>
-                        <Text
-                            style={{
-                                textAlign: "center",
-                                color: theme.colors.primaryLight,
-                                ...FONTS.h2,
-                                width: 300,
-                            }}
-                        >
-                            {notFoundText +
-                                `${
-                                    searchBy === "mobile_no"
-                                        ? "Mobile Number"
-                                        : "Unique Id"
-                                }`}
-                        </Text>
-                    </View>
-                )}
-                <View style={{ paddingHorizontal: 15 }}>
-                    {users.map((user, index) => {
-                        return (
-                            <View
-                                key={index}
+                <RadioButton
+                    selected={searchBy === "mobile_no"}
+                    color={theme.colors.primary}
+                    id="mno"
+                    labelStyle={{
+                        ...FONTS.h5,
+                    }}
+                    size={20}
+                    label="Mobile Number"
+                    onPress={() => onOptionChange("mobile_no")}
+                />
+                <RadioButton
+                    selected={searchBy === "unique_id"}
+                    color={theme.colors.primary}
+                    label="Aadhaar Number"
+                    labelStyle={{
+                        ...FONTS.h5,
+                    }}
+                    size={20}
+                    id="uno"
+                    onPress={() => onOptionChange("unique_id")}
+                />
+            </View>
+            {users.length > 0 && users && (
+                <View style={{ marginVertical: 5 }}>
+                    <Text
+                        style={{
+                            marginLeft: 20,
+                            ...FONTS.h5,
+                            color: theme.colors.primaryLight,
+                            textDecorationLine: "underline",
+                        }}
+                    >
+                        {`Showing ${users.length} ${users.length > 1 ? "disciples" : "disciple"
+                            } out of ${totalDisciples}`}
+                    </Text>
+                </View>
+            )}
+            <FlatList
+                data={users}
+                style={{ padding: 15, paddingTop: 5 }}
+                keyExtractor={(item) => item.id.toString()}
+                showsVerticalScrollIndicator={false}
+                onEndReachedThreshold={0.01}
+                onEndReached={() => {
+                    if (!stopFetchMore) {
+                        searchDisciple(currentPage);
+                    }
+                }}
+                ListEmptyComponent={() =>
+                    notFoundText !== "" && (
+                        <View style={{ marginTop: 60, alignItems: "center" }}>
+                            <Text
                                 style={{
-                                    marginVertical: 6,
+                                    width: 300,
+                                    textAlign: "center",
+                                    ...FONTS.h1,
+                                    color: theme.colors.primaryLight,
+                                }}
+                            >{`No Disciple Found`}</Text>
+                        </View>
+                    )
+                }
+                ListFooterComponent={() => (
+                    <>
+                        {loading && (
+                            <ActivityIndicator
+                                style={{ marginBottom: 10 }}
+                                color={theme.colors.primaryLight}
+                                animating={loading}
+                                size={"large"}
+                            />
+                        )}
+                        {stopFetchMore && totalDisciples >= 10 && (
+                            <Text
+                                style={{
+                                    alignSelf: "center",
+                                    textAlign: "center",
+                                    padding: 5,
+                                    width: 150,
+                                    color: theme.colors.primaryLight,
+                                    marginBottom: 20,
+                                    borderRadius: 10,
+                                    marginTop: 10,
+                                    ...FONTS.h5,
                                 }}
                             >
-                                <UserCard
-                                    user={user}
-                                    onPress={() => {
-                                        navigation.navigate("Profile", {
-                                            user,
-                                            entryType: route.params?.entryType,
-                                        });
-                                    }}
-                                />
-                            </View>
-                        );
-                    })}
-                </View>
-                {loading && (
-                    <ActivityIndicator
-                        color={theme.colors.primaryLight}
-                        size="large"
-                        style={{ marginTop: 30 }}
-                        animating={loading}
-                    />
+                                No more desciples
+                            </Text>
+                        )}
+                    </>
                 )}
-            </ScrollView>
+                renderItem={({ item }) => {
+                    return (
+                        <UserCard
+                            user={item}
+                            onPress={() =>
+                                navigation.navigate("Profile", {
+                                    user: item,
+                                    entryType: route.params?.entryType ?? null,
+                                })
+                            }
+                        />
+                    );
+                }}
+            />
         </View>
     );
 };

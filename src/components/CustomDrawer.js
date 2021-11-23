@@ -20,7 +20,7 @@ const CustomDrawer = (props) => {
         dispatch,
     } = useAuth();
 
-    const { role, name } = user;
+    const { role, name, avatar } = user;
 
     const logout = async () => {
         try {
@@ -52,7 +52,7 @@ const CustomDrawer = (props) => {
                         borderBottomWidth: 4,
                     }}
                 >
-                    <Avatar imageSource={defaultImage} />
+                    <Avatar uri={avatar && avatar} imageSource={defaultImage} />
                     <View style={{ flex: 1, marginLeft: 15 }}>
                         <Text
                             allowFontScaling={false}

@@ -1,6 +1,6 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-
+import EditDisciple from '../screens/EditDisciple'
 import AshramDashboard from "../screens/AshramDashboard";
 import CountryDashboard from "../screens/CountryDashboard";
 import SignUp from "../screens/SignUp";
@@ -51,6 +51,7 @@ const AppStack = () => {
             />
             <Stack.Screen name="Entry" component={Entry} />
             <Stack.Screen name="Profile" component={Profile} />
+            <Stack.Screen name="Edit" component={EditDisciple} />
             <Stack.Screen name="Search" component={SearchScreen} />
             <Stack.Screen name="Pratham Naam" component={SignUp} />
             <Stack.Screen

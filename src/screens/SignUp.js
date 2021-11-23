@@ -78,9 +78,10 @@ const SignUp = ({ navigation }) => {
     };
 
     const isIndian = user?.country === 2;
-
+    const scrollRef = useRef();
     const namdan_takenAt = ["Online", "Naamdan Center"];
     const relations = ["S/O", "D/O", "W/O"];
+    const [showOtp, setShowOtp] = useState(false);
     const [states, setStates] = useState([]);
     const [districts, setDistricts] = useState([]);
     const [countries, setcountries] = useState([]);
@@ -220,7 +221,12 @@ const SignUp = ({ navigation }) => {
             setUserData({ ...userData, dob: selectedDate, age: 0 });
         }
     };
-
+    const scrollToTop = () => {
+        scrollRef.current?.scrollTo({
+            y: 0,
+            animated: true,
+        });
+    };
     const onChange = (value, key) => {
         setUserData({ ...userData, [key]: value });
     };
@@ -323,7 +329,6 @@ const SignUp = ({ navigation }) => {
                 name: "file2.jpg",
             });
         }
-        console.log(formData);
         const config = {
             method: "post",
             url: `${appConfig.api_url}/disciple/create`,
@@ -334,7 +339,6 @@ const SignUp = ({ navigation }) => {
             },
             data: formData,
         };
-        console.log(formData);
         axios(config)
             .then((response) => {
                 console.log(response.data);
@@ -346,7 +350,8 @@ const SignUp = ({ navigation }) => {
                 };
                 setShowAlert(temp);
                 setUserData(formFields);
-                navigation.push("AshramDashboard");
+                // scrollToTop();
+                navigation.navigate("AshramDashboard");
             })
             .catch((error) => {
                 if (error && error.response) {
@@ -428,11 +433,11 @@ const SignUp = ({ navigation }) => {
         if (text.length == 12) {
             setaddharLoading(true);
             try {
-                const { data } = await postJsonData(searchDiscipleUrl, {
+                const { data } = await postJsonData(searchDiscipleUrl(1), {
                     search_by: "unique_id",
                     search_value: text,
+                    country_id: user.country,
                 });
-
                 if (data?.data.disciples.length > 0) {
                     setShowAadharRef(true);
                 } else {
@@ -452,9 +457,10 @@ const SignUp = ({ navigation }) => {
         if (text.length === 10) {
             setwhatsappLoading(true);
             try {
-                const { data } = await postJsonData(searchDiscipleUrl, {
+                const { data } = await postJsonData(searchDiscipleUrl(1), {
                     search_by: "mobile_no",
                     search_value: userData.whatsapp_country_code + text,
+                    country_id: user.country,
                 });
 
                 if (data?.data.disciples.length > 0) {
@@ -476,9 +482,10 @@ const SignUp = ({ navigation }) => {
         if (text.length == 10) {
             setmobileLoading(true);
             try {
-                const { data } = await postJsonData(searchDiscipleUrl, {
+                const { data } = await postJsonData(searchDiscipleUrl(1), {
                     search_by: "mobile_no",
                     search_value: userData.country_code + text,
+                    country_id: user.country,
                 });
                 if (data?.data.disciples.length > 0) {
                     setShowRef(true);
@@ -499,6 +506,7 @@ const SignUp = ({ navigation }) => {
 
     return (
         <ScrollView
+            ref={scrollRef}
             style={styles.mainContainer}
             keyboardShouldPersistTaps={enableSearch ? "always" : "never"}
         >
@@ -595,7 +603,7 @@ const SignUp = ({ navigation }) => {
                                 <TouchableOpacity
                                     onPress={() => {
                                         navigation.navigate("Entry", {
-                                            title: "Search",
+                                            title: "Available",
                                             searchBy: "unique_id",
                                             text: `${userData.aadhaar_no}`,
                                         });
@@ -680,7 +688,7 @@ const SignUp = ({ navigation }) => {
                                 <TouchableOpacity
                                     onPress={() => {
                                         navigation.navigate("Entry", {
-                                            title: "Search",
+                                            title: "Available",
                                             searchBy: "mobile_no",
                                             text: `${userData.country_code}${userData.mobile_no}`,
                                         });
@@ -748,7 +756,7 @@ const SignUp = ({ navigation }) => {
                                 <TouchableOpacity
                                     onPress={() => {
                                         navigation.navigate("Entry", {
-                                            title: "Search",
+                                            title: "Available",
                                             searchBy: "mobile_no",
                                             text: `${userData.whatsapp_country_code}${userData.whatsapp_no}`,
                                         });
@@ -972,7 +980,6 @@ const SignUp = ({ navigation }) => {
                     onChange(text, "email");
                 }}
                 containerStyle={styles.textFieldContainer}
-                containerStyle={styles.textFieldContainer}
                 keyboardType={"email-address"}
                 appendComponent={
                     <View style={{ flexDirection: "row" }}>
@@ -1027,12 +1034,34 @@ const SignUp = ({ navigation }) => {
                     )}
                 </>
             )}
+            {!showOtp ? (
+                <TouchableOpacity
+                    onPress={() => setShowOtp(true)}
+                    style={styles.button}
+                >
+                    <Text allowFontScaling={false} style={styles.buttonText}>
+                        Get OTP
+                    </Text>
+                </TouchableOpacity>
+            ) : (
+                <FormTextInput
+                    autoFocus={showOtp}
+                    placeholder={"Enter the otp we just sent you."}
+                    containerStyle={styles.textFieldContainer}
+                    label={"One Time Password"}
+                    maxLength={6}
+                    keyboardType={"numeric"}
+                />
+            )}
             {/* <Button
                 title="Register"
                 style={styles.button}
                 onPress={handleSubmit}
             /> */}
-            <TouchableOpacity onPress={handleSubmit} style={styles.button}>
+            <TouchableOpacity
+                onPress={handleSubmit}
+                style={[styles.button, { marginBottom: 30 }]}
+            >
                 <Text allowFontScaling={false} style={styles.buttonText}>
                     Submit
                 </Text>
