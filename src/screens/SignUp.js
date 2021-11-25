@@ -39,6 +39,7 @@ const mobileIcon = require("../../assets/icons/mobileFilled.png");
 const buildingIcon = require("../../assets/icons/building.png");
 const pinIcon = require("../../assets/icons/locationPin.png");
 const userIcon = require("../../assets/icons/userFilled.png");
+import { consentOtpUrl } from "../constants/routes";
 
 const threeYearsBack = new Date().setDate(new Date().getDate() - 365 * 3 - 1);
 const SignUp = ({ navigation }) => {
@@ -72,6 +73,7 @@ const SignUp = ({ navigation }) => {
         namdan_taken: "",
         country_code: "+91",
         whatsapp_country_code: "+91",
+        otp: "",
     };
 
     const isIndian = user?.country === 2;
@@ -83,9 +85,9 @@ const SignUp = ({ navigation }) => {
     const [states, setStates] = useState([]);
     const [districts, setDistricts] = useState([]);
     const [countries, setcountries] = useState([]);
+    const otpRef = useRef(null);
     const [tehsils, setTehsils] = useState([]);
     const [cities, setCities] = useState([]);
-    const [otp, setOtp] = useState("");
     const [emailError, setEmailError] = useState("");
     const [showAlert, setShowAlert] = useState({
         show: false,
@@ -210,6 +212,38 @@ const SignUp = ({ navigation }) => {
         }
     };
 
+    const requestOtp = async () => {
+        if (userData.mobile_no === "" || userData.mobile_no.length < 10) {
+            alert("Please enter your valid mobile number.");
+            return;
+        }
+        try {
+            const { data } = await postJsonData(consentOtpUrl, {
+                mobile_no: userData?.country_code + userData?.mobile_no,
+                country_id: (user?.country).toString(),
+            });
+            console.log("data", data);
+            if (data?.success) {
+                const temp = {
+                    ...showAlert,
+                    show: true,
+                    title: "Successful",
+                    message: `${data?.message}`,
+                };
+                setShowAlert(temp);
+                setShowOtp(true);
+            }
+        } catch (error) {
+            if (error && error.response) {
+                console.log(`Signup: ${JSON.stringify(error.response.data)}`);
+                // alert(error.response?.data.error);
+            } else {
+                console.log(`Signup: ${error}`);
+                // alert(error);
+            }
+        }
+    };
+
     const onDobChange = (selectedDate) => {
         let Age = moment(new Date(selectedDate)).toNow(true).split(" "); // Age = ["a/number", "days/months/years"]
 
@@ -253,10 +287,6 @@ const SignUp = ({ navigation }) => {
                     abortEarly: false,
                 });
             }
-            if (otp === "") {
-                alert("Please Enter OTP");
-                return;
-            }
             await handleRegister();
         } catch (err) {
             if (err.name === "ValidationError") {
@@ -268,7 +298,6 @@ const SignUp = ({ navigation }) => {
     };
 
     const handleRegister = async () => {
-        
         const formData = new FormData();
         formData.append("name", userData.name);
         formData.append("relation", userData.relation);
@@ -302,6 +331,8 @@ const SignUp = ({ navigation }) => {
         if (userData.aadhaar_no !== "" && userData.aadhaar_no.length >= 12) {
             formData.append("unique_id", userData.aadhaar_no);
         }
+
+        formData.append("consent_otp", userData.otp);
         formData.append("avatar", {
             uri:
                 Platform.OS === "android"
@@ -342,6 +373,7 @@ const SignUp = ({ navigation }) => {
         };
         setIsDisable(true);
 
+        console.log(formData);
         axios(config)
             .then((response) => {
                 const temp = {
@@ -350,10 +382,13 @@ const SignUp = ({ navigation }) => {
                     title: "Successful",
                     message: "Disciple created successfully",
                 };
-                setShowAlert(temp);
-                scrollToTop();
                 setUserData(formFields);
-                setIsDisable(false);
+                setUserData({ ...userData, form_date: "" });
+                setShowAlert(temp);
+                setTimeout(() => {
+                    setIsDisable(false);
+                    navigation.navigate("AshramDashboard");
+                }, 1500);
             })
             .catch((error) => {
                 setIsDisable(false);
@@ -636,8 +671,8 @@ const SignUp = ({ navigation }) => {
                                 userData.aadhaar_no == ""
                                     ? null
                                     : userData.aadhaar_no?.length < 12
-                                        ? crossIcon
-                                        : checkIcon
+                                    ? crossIcon
+                                    : checkIcon
                             }
                             style={{
                                 width: 18,
@@ -847,7 +882,7 @@ const SignUp = ({ navigation }) => {
                 label="Date of Birth"
                 placeholder="Select Date of birth"
                 date={userData.dob}
-                value={moment().subtract(3, 'years')}
+                value={moment().subtract(3, "years")}
                 setDate={(date) => onDobChange(date)}
                 maximumDate={new Date(threeYearsBack)}
                 containerStyle={styles.dateContainer}
@@ -959,8 +994,8 @@ const SignUp = ({ navigation }) => {
                                 userData.pincode == ""
                                     ? null
                                     : userData.pincode?.length < 6
-                                        ? crossIcon
-                                        : checkIcon
+                                    ? crossIcon
+                                    : checkIcon
                             }
                             style={{
                                 width: 18,
@@ -993,8 +1028,8 @@ const SignUp = ({ navigation }) => {
                                 userData.email == ""
                                     ? null
                                     : userData.email != "" && emailError == ""
-                                        ? checkIcon
-                                        : crossIcon
+                                    ? checkIcon
+                                    : crossIcon
                             }
                             style={{
                                 width: 18,
@@ -1040,19 +1075,16 @@ const SignUp = ({ navigation }) => {
                 </>
             )}
             {!showOtp ? (
-                <TouchableOpacity
-                    onPress={() => setShowOtp(true)}
-                    style={styles.button}
-                >
+                <TouchableOpacity onPress={requestOtp} style={styles.button}>
                     <Text allowFontScaling={false} style={styles.buttonText}>
                         Get OTP
                     </Text>
                 </TouchableOpacity>
             ) : (
                 <FormTextInput
-                    autoFocus={showOtp}
-                    value={otp}
-                    onChangeText={(text) => setOtp(text)}
+                    ref={otpRef}
+                    value={userData.otp}
+                    onChangeText={(value) => onChange(value, "otp")}
                     placeholder={"Enter the otp we just sent you."}
                     containerStyle={styles.textFieldContainer}
                     label={"One Time Password"}

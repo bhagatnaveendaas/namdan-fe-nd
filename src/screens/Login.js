@@ -39,6 +39,7 @@ const Login = ({ navigation }) => {
         try {
             const { data } = await postJsonData(loginUrl, loginData);
             if (data?.success) {
+                console.log(data);
                 navigation.navigate("Verify", { userName, deviceToken });
             }
         } catch (error) {

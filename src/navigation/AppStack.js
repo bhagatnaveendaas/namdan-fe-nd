@@ -24,10 +24,6 @@ import { useAuth } from "../context/AuthContext";
 const Stack = createStackNavigator();
 
 const AppStack = () => {
-    const {
-        state: { user },
-    } = useAuth();
-
     return (
         <Stack.Navigator
             initialRouteName="AshramDashboard"

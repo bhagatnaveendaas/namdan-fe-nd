@@ -10,17 +10,34 @@ const History = ({ route }) => {
     let history = route.params?.history;
 
     let newTemp = [...history].map((h, j) => {
-        let pratham = h.detail.filter((item) => item.name === "first_mantra" || item.name === 'satnam_attendance')
-        let satnam = h.detail.filter((item) => item.name === "satnam" )
-        let satnam_exam = h.detail.filter(item => item.name==="satnam_exam")
-        let sarnam = h.detail.filter((item) => item.name === "sarnam" )
-        let sarnam_exam = h.detail.filter(item => item.name==="sarnam_exam")
-        let shuddhikaran = h.detail.filter(item => item.name.includes("shuddhikaran"))
-        let reupdesh = h.detail.filter((item) => item.name === "reupdesh")
-        
-        return [pratham, satnam, satnam_exam, sarnam, sarnam_exam, shuddhikaran, reupdesh];
-    })
+        let pratham = h.detail.filter(
+            (item) =>
+                item.name === "first_mantra" ||
+                item.name === "satnam_attendance"
+        );
+        let satnam = h.detail.filter((item) => item.name === "satnam");
+        let satnam_exam = h.detail.filter(
+            (item) => item.name === "satnam_exam"
+        );
+        let sarnam = h.detail.filter((item) => item.name === "sarnam");
+        let sarnam_exam = h.detail.filter(
+            (item) => item.name === "sarnam_exam"
+        );
+        let shuddhikaran = h.detail.filter((item) =>
+            item.name.includes("shuddhikaran")
+        );
+        let reupdesh = h.detail.filter((item) => item.name === "reupdesh");
 
+        return [
+            pratham,
+            satnam,
+            satnam_exam,
+            sarnam,
+            sarnam_exam,
+            shuddhikaran,
+            reupdesh,
+        ];
+    });
 
     let newHistory = [...newTemp].map((k, l) => {
         return k.map((h, i) => {
@@ -39,13 +56,19 @@ const History = ({ route }) => {
                     };
                 if (name === "satnam_exam")
                     return {
-                        name: `Satnam Exam ${j+1}`,
+                        name: `Satnam Exam ${j + 1}`,
                         date: moment(date, "YYYY-MM-DD").format("DD-MM-YYYY"),
                         remark,
                     };
                 if (name === `satnam_shuddhikaran`)
                     return {
-                        name: `Satnam Shuddhikaran ${j+1}`,
+                        name: `Satnam Shuddhikaran ${j + 1}`,
+                        date: moment(date, "YYYY-MM-DD").format("DD-MM-YYYY"),
+                        remark,
+                    };
+                if (name === `sarnam_shuddhikaran`)
+                    return {
+                        name: `Sarnam Shuddhikaran ${j + 1}`,
                         date: moment(date, "YYYY-MM-DD").format("DD-MM-YYYY"),
                         remark,
                     };
@@ -62,7 +85,8 @@ const History = ({ route }) => {
                         remark,
                     };
             });
-        })
+        });
+
     });
 
     return (
@@ -97,35 +121,47 @@ const History = ({ route }) => {
                         <View key={i}>
                             {item.map((d, j) => {
                                 return (
-                                    <View key={j} >
-                                        {
-                                            d.map((k, l) => {
-                                                return  <View key={l} style={{ marginBottom: 5 }}>
-                                                <View style={styles.row}>
-                                                    <Text
-                                                        style={styles.text}
-                                                        allowFontScaling={false}
-                                                    >
-                                                        {k.name}
-                                                    </Text>
-                                                    <Text
-                                                        style={styles.date}
-                                                        allowFontScaling={false}
-                                                    >
-                                                        {k.date}
-                                                    </Text>
+                                    <View key={j}>
+                                        {d.map((k, l) => {
+                                            return (
+                                                <View
+                                                    key={l}
+                                                    style={{ marginBottom: 5 }}
+                                                >
+                                                    <View style={styles.row}>
+                                                        <Text
+                                                            style={styles.text}
+                                                            allowFontScaling={
+                                                                false
+                                                            }
+                                                        >
+                                                            {k.name}
+                                                        </Text>
+                                                        <Text
+                                                            style={styles.date}
+                                                            allowFontScaling={
+                                                                false
+                                                            }
+                                                        >
+                                                            {k.date}
+                                                        </Text>
+                                                    </View>
+                                                    {k.remark &&
+                                                        k.remark !== "ok" && (
+                                                            <Text
+                                                                style={
+                                                                    styles.remark
+                                                                }
+                                                                allowFontScaling={
+                                                                    false
+                                                                }
+                                                            >
+                                                                {k.remark}
+                                                            </Text>
+                                                        )}
                                                 </View>
-                                                {k.remark && k.remark !== "ok" && (
-                                                    <Text
-                                                        style={styles.remark}
-                                                        allowFontScaling={false}
-                                                    >
-                                                        {k.remark}
-                                                    </Text>
-                                                )}
-                                            </View>
-                                            })
-                                        }
+                                            );
+                                        })}
                                     </View>
                                 );
                             })}

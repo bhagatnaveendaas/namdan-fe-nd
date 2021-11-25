@@ -2,7 +2,7 @@ import React from "react";
 import { Feather, MaterialIcons } from "@expo/vector-icons";
 import theme from "../constants/theme";
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import Profile from "../screens/Profile";
+import UserProfile from "../screens/UserProfile";
 import MainStackNavigator from "./AppStack";
 import CustomDrawer from "../components/CustomDrawer";
 
@@ -57,7 +57,7 @@ const DrawerNavigator = () => (
                 ),
             }}
             name="Profile"
-            component={Profile}
+            component={UserProfile}
         />
     </Drawer.Navigator>
 );

@@ -71,8 +71,8 @@ const CustomDrawer = (props) => {
                         </Text>
                     </View>
                 </View>
-                {/* <DrawerItemList {...props} /> */}
-                <TouchableOpacity>
+                <DrawerItemList {...props} />
+                {/* <TouchableOpacity>
                     <View
                         style={{
                             margin: 10,
@@ -92,7 +92,7 @@ const CustomDrawer = (props) => {
                             Profile
                         </Text>
                     </View>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
             </DrawerContentScrollView>
             <TouchableOpacity
                 style={{

@@ -20,6 +20,7 @@ const Home = ({ navigation }) => {
 
     const {
         state: { user },
+        dispatch,
     } = useAuth();
 
     const permissions = user?.permissions;

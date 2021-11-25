@@ -165,12 +165,12 @@ const Profile = ({ route, navigation }) => {
             };
         }
         if (entryType === "Sarshabd Entry") {
-            (entryType = createSarshabdUrl),
-                (entryData = {
-                    disciple_id: disciple?.id,
-                    sarshabd_date: selectedDate,
-                    remark: "ok",
-                });
+            entryUrl = createSarshabdUrl;
+            entryData = {
+                disciple_id: disciple?.id,
+                sarshabd_date: selectedDate,
+                remark: "ok",
+            };
         }
         console.log(entryData, entryUrl);
         try {
@@ -260,10 +260,14 @@ const Profile = ({ route, navigation }) => {
 
     const enableSarshabd =
         countDays(disciple?.sarnam_date, disciple?.rules?.sarshabd_date) >= 1 &&
-        entryType === "Sarshabd Entry" &&
         disciple?.sarnam_date !== "" &&
         disciple?.sarshabd_date === "";
+
     if (enableSarnam) showSubmitButton = true;
+    if (entryType === "Sarshabd Entry" && enableSarshabd) {
+        showSubmitButton = true;
+    }
+
     if (
         entryType === "Shuddhikaran Entry" ||
         entryType === "Punar Updesh Entry"
@@ -449,8 +453,7 @@ const Profile = ({ route, navigation }) => {
                             label={"Mobile No."}
                             value={disciple?.mobile_no}
                         />
-                        {(disciple?.whatsapp_no !== null ||
-                            disciple?.whatsapp_no !== "") && (
+                        {disciple?.whatsapp_no !== "" && (
                             <FieldLine
                                 label={"Whatsapp No."}
                                 value={disciple?.whatsapp_no}
@@ -471,15 +474,13 @@ const Profile = ({ route, navigation }) => {
                             label={"Occupation"}
                             value={disciple?.occupation}
                         />
-                        {(disciple?.unique_id !== null ||
-                            disciple?.unique_id !== "") && (
+                        {disciple?.unique_id !== "" && (
                             <FieldLine
                                 label={"Aadhaar No."}
                                 value={disciple?.unique_id}
                             />
                         )}
-                        {(disciple?.email !== null ||
-                            disciple?.email !== "") && (
+                        {disciple?.email !== "" && (
                             <FieldLine
                                 label={"Email ID"}
                                 value={disciple?.email}
@@ -683,12 +684,12 @@ const Profile = ({ route, navigation }) => {
                         enableSarshabd ? (
                             <Field
                                 label={"Sarshabd"}
-                                enable={enableSarshabd}
+                                enable={true}
                                 value={selectedDate}
                                 minDate={moment(
-                                    disciple?.sarshabd_date,
+                                    disciple?.rules.sarshabd_date,
                                     "YYYY-MM-DD"
-                                ).add(1, "d")}
+                                ).add("1", "d")}
                                 onDateChange={setSelectedDate}
                             />
                         ) : disciple?.sarshabd_date !== "" ? (
@@ -731,10 +732,19 @@ const Profile = ({ route, navigation }) => {
                             value={selectedDate}
                             enable={true}
                             reason={reason}
-                            minDate={moment(
-                                disciple?.form_date,
-                                "YYYY-MM-DD"
-                            ).add(1, "d")}
+                            minDate={
+                                disciple?.shuddhikaran.length < 1
+                                    ? moment(
+                                          disciple?.form_date,
+                                          "YYYY-MM-DD"
+                                      ).add(1, "d")
+                                    : moment(
+                                          disciple?.shuddhikaran[
+                                              disciple?.shuddhikaran.length - 1
+                                          ].date,
+                                          "YYYY-MM_DD"
+                                      ).add(1, "d")
+                            }
                             onReasonChange={(text) => setReason(text)}
                             onDateChange={setSelectedDate}
                         />
