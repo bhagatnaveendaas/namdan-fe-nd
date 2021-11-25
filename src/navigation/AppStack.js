@@ -1,6 +1,6 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import EditDisciple from '../screens/EditDisciple'
+import EditDisciple from "../screens/EditDisciple";
 import AshramDashboard from "../screens/AshramDashboard";
 import CountryDashboard from "../screens/CountryDashboard";
 import SignUp from "../screens/SignUp";
@@ -18,6 +18,7 @@ import theme from "../constants/theme";
 import AddSewadaar from "../screens/AddSewadaar";
 import SearchScreen from "../screens/Search";
 import Profile from "../screens/Profile";
+import History from "../screens/History";
 import { useAuth } from "../context/AuthContext";
 
 const Stack = createStackNavigator();
@@ -52,6 +53,11 @@ const AppStack = () => {
             <Stack.Screen name="Entry" component={Entry} />
             <Stack.Screen name="Profile" component={Profile} />
             <Stack.Screen name="Edit" component={EditDisciple} />
+            <Stack.Screen
+                name="History"
+                component={History}
+                options={{ title: "Punar Updesh History" }}
+            />
             <Stack.Screen name="Search" component={SearchScreen} />
             <Stack.Screen name="Pratham Naam" component={SignUp} />
             <Stack.Screen

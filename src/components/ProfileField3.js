@@ -22,9 +22,11 @@ const Field = ({
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate || date;
         setShow(Platform.OS === "ios");
-        setDate(currentDate);
-        setDateText(moment(selectedDate).format("DD-MM-YYYY"));
-        onDateChange(moment(selectedDate).format("YYYY-MM-DD"));
+        if (event.type === "set") {
+            setDate(currentDate);
+            setDateText(moment(selectedDate).format("DD-MM-YYYY"));
+            onDateChange(moment(selectedDate).format("YYYY-MM-DD"));
+        } else return null;
     };
     return (
         <View

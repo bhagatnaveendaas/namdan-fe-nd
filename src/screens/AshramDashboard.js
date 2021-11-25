@@ -39,7 +39,12 @@ const Home = ({ navigation }) => {
             }
         }
     };
-
+    useEffect(() => {
+        const unsubscribe = navigation.addListener("focus", () => {
+            getKPICounts();
+        });
+        return unsubscribe;
+    }, [navigation]);
     useEffect(() => {
         getKPICounts();
     }, []);
@@ -122,7 +127,7 @@ const Home = ({ navigation }) => {
                                     label={`Pratham Naam`}
                                     icon={require("../../assets/icons/pratham_naam.png")}
                                     pressHandler={() =>
-                                        navigation.push("Pratham Naam")
+                                        navigation.navigate("Pratham Naam")
                                     }
                                 />
                             )}
@@ -162,12 +167,12 @@ const Home = ({ navigation }) => {
                             {permissions.includes("sarshabd") && (
                                 <VerticalIconButton
                                     label={`Sarshabd`}
-                                    icon={require("../../assets/icons/sarshabd.png")}
-                                // pressHandler={() => {
-                                //     navigation.navigate("Search", {
-                                //         entryType: "Sarshabd Entry",
-                                //     });
-                                // }}
+                                    icon={require("../../assets/icons/sr2.png")}
+                                    pressHandler={() => {
+                                        navigation.navigate("Search", {
+                                            entryType: "Sarshabd Entry",
+                                        });
+                                    }}
                                 />
                             )}
                             {permissions.includes("shudhikaran") && (
@@ -185,11 +190,11 @@ const Home = ({ navigation }) => {
                                 <VerticalIconButton
                                     label={`Punar Updesh`}
                                     icon={require("../../assets/icons/punar_updesh.png")}
-                                // pressHandler={() => {
-                                //     navigation.navigate("Search", {
-                                //         entryType: "Punar Updesh Entry",
-                                //     });
-                                // }}
+                                    pressHandler={() => {
+                                        navigation.navigate("Search", {
+                                            entryType: "Punar Updesh Entry",
+                                        });
+                                    }}
                                 />
                             )}
                         </View>
@@ -225,7 +230,7 @@ const Home = ({ navigation }) => {
                                     justifyContent: "center",
                                     alignItems: "center",
                                 }}
-                                onPress={() => { }}
+                                onPress={() => {}}
                             >
                                 <Image
                                     source={require("../../assets/icons/message.png")}

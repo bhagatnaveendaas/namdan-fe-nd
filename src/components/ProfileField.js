@@ -6,12 +6,10 @@ import {
     Text,
     View,
     TouchableOpacity,
-    TextInput,
 } from "react-native";
 import moment from "moment";
 import theme from "../constants/theme";
 import { FONTS } from "../constants/fonts";
-import { min } from "lodash";
 const calenderImage = require("../../assets/icons/calendar.png");
 
 const Field = ({ label, enable, onDateChange, value, minDate, children }) => {
@@ -21,9 +19,11 @@ const Field = ({ label, enable, onDateChange, value, minDate, children }) => {
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate || date;
         setShow(Platform.OS === "ios");
-        setDate(currentDate);
-        setDateText(moment(selectedDate).format("DD-MM-YYYY"));
-        onDateChange(moment(selectedDate).format("YYYY-MM-DD"));
+        if (event.type === "set") {
+            setDate(currentDate);
+            setDateText(moment(selectedDate).format("DD-MM-YYYY"));
+            onDateChange(moment(selectedDate).format("YYYY-MM-DD"));
+        } else return null;
     };
     return (
         <View

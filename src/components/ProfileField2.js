@@ -11,7 +11,7 @@ import {
 import moment from "moment";
 import theme from "../constants/theme";
 import { FONTS } from "../constants/fonts";
-import { min } from "lodash";
+
 const calenderImage = require("../../assets/icons/calendar.png");
 
 const Field = ({
@@ -19,6 +19,7 @@ const Field = ({
     enable,
     onDateChange,
     value,
+    minDate,
     reason,
     onReasonChange,
 }) => {
@@ -28,9 +29,11 @@ const Field = ({
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate || date;
         setShow(Platform.OS === "ios");
-        setDate(currentDate);
-        setDateText(moment(selectedDate).format("DD-MM-YYYY"));
-        onDateChange(moment(selectedDate).format("YYYY-MM-DD"));
+        if (event.type === "set") {
+            setDate(currentDate);
+            setDateText(moment(selectedDate).format("DD-MM-YYYY"));
+            onDateChange(moment(selectedDate).format("YYYY-MM-DD"));
+        } else return null;
     };
     return (
         <View
@@ -132,6 +135,7 @@ const Field = ({
                     mode={"date"}
                     display={"default"}
                     maximumDate={new Date()}
+                    minimumDate={minDate ? new Date(minDate): null}
                     onChange={onChange}
                     onResponderReject={() => {
                         onDateChange("");

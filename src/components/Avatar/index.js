@@ -1,8 +1,7 @@
 import React from "react";
-import { StyleSheet, Text, View, Image } from "react-native";
-import theme from "../constants/theme";
-import { FONTS } from "../constants/fonts";
-const defaultUserImage = require("../../assets/icons/user.png");
+import { Text, View, Image } from "react-native";
+
+import styles from "./styles";
 
 const Avatar = ({
     status,
@@ -46,25 +45,3 @@ const Avatar = ({
 
 export default Avatar;
 
-const styles = StyleSheet.create({
-    imageWrapper: {
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    imageBorder: {
-        borderWidth: 4,
-        alignItems: "center",
-        justifyContent: "center",
-        borderColor: theme.colors.green,
-        backgroundColor: theme.colors.white,
-    },
-    image: {},
-    status: {
-        color: theme.colors.white,
-        backgroundColor: theme.colors.green,
-        marginTop: 2,
-        borderRadius: 5,
-        ...FONTS.h6,
-        paddingHorizontal: 5,
-    },
-});

@@ -11,6 +11,7 @@ import {
 import theme from "../constants/theme";
 import Avatar from "../components/Avatar";
 import Button from "../components/Button";
+import AwesomeAlert from "react-native-awesome-alerts";
 import Field from "../components/ProfileField";
 import Field2 from "../components/ProfileField2";
 import Field3 from "../components/ProfileField3";
@@ -19,22 +20,19 @@ import { FONTS, SIZES } from "../constants/fonts";
 import { getData, postJsonData } from "../httpClient/apiRequest";
 import {
     createHajriUrl,
+    createPunarUpdeshUrl,
     createSarnamUrl,
+    createSarshabdUrl,
     createSatnamExamUrl,
-    createSatnamUrl,
     createShuddhikaranUrl,
     getUniqueDispleUrl,
 } from "../constants/routes";
 import { useEffect } from "react";
 import moment from "moment";
-import {
-    countMonths,
-    countDays,
-    countDaysBetween,
-    countYears,
-} from "../utilities/DateUtils";
+import { countMonths, countDays } from "../utilities/DateUtils";
 const userDefaultImage = require("../../assets/icons/user.png");
 const clockImage = require("../../assets/icons/clock.png");
+import styles from "../styles/Profile";
 
 const FieldLine = ({ label, value }) => {
     return (
@@ -64,13 +62,19 @@ const FieldLine = ({ label, value }) => {
     );
 };
 
-let buttonDisable = false;
 const Profile = ({ route, navigation }) => {
     const { state } = useAuth();
+    const [showAlert, setShowAlert] = useState({
+        show: false,
+        title: "",
+        message: "",
+        confirm: "Ok",
+    });
     const AuthUser = state?.user;
     const user = route.params.user;
     const today = moment().format("YYYY-MM-DD");
-    const [pass, setPass] = useState(true);
+    const [buttonDisable, setButtonDisable] = useState(false);
+    const [pass, setPass] = useState(null);
     const [loading, setLoading] = useState(false);
     const [disciple, setDisciple] = useState(null);
     const [showModal, setShowModal] = useState(false);
@@ -98,17 +102,26 @@ const Profile = ({ route, navigation }) => {
         [user?.id]
     );
     const createEntry = async () => {
-        if (entryType === "Shuddhikaran Entry") {
+        if (selectedDate === "") {
+            alert("Please select a date for entry.");
+            return;
+        }
+
+        if (entryType === "Satnaam Entry" && pass === null) {
+            alert("Please select pass or fail option.");
+            return;
+        }
+        if (
+            entryType === "Shuddhikaran Entry" ||
+            entryType === "Punar Updesh Entry"
+        ) {
             if (reason === "") {
                 alert(`Please specify a reason for ${entryType.toLowerCase()}`);
                 return;
             }
         }
-        if (selectedDate === "") {
-            alert("Please select a date for entry.");
-            return;
-        }
-        buttonDisable = true;
+
+        setButtonDisable(true);
         let entryData = {
             disciple_id: disciple?.id,
             remark: "ok",
@@ -143,11 +156,41 @@ const Profile = ({ route, navigation }) => {
                 description: reason,
             };
         }
+        if (entryType === "Punar Updesh Entry") {
+            entryUrl = createPunarUpdeshUrl;
+            entryData = {
+                disciple_id: disciple?.id,
+                reupdesh_date: selectedDate,
+                remark: reason,
+            };
+        }
+        if (entryType === "Sarshabd Entry") {
+            (entryType = createSarshabdUrl),
+                (entryData = {
+                    disciple_id: disciple?.id,
+                    sarshabd_date: selectedDate,
+                    remark: "ok",
+                });
+        }
         console.log(entryData, entryUrl);
         try {
             await postJsonData(entryUrl, entryData);
-            navigation.pop(1);
+            const temp = {
+                ...showAlert,
+                show: true,
+                title: "Successful",
+                message: "Entry Added successfully",
+            };
+            setShowAlert(temp);
+            setReason("");
+            setSelectedDate("");
+            setTimeout(() => {
+                navigation.pop();
+            }, 1500);
         } catch (error) {
+            setReason("");
+            setSelectedDate("");
+            setButtonDisable(false);
             if (error && error.response) {
                 console.error(error.response.data.error);
                 alert(error.response.data.error);
@@ -155,7 +198,6 @@ const Profile = ({ route, navigation }) => {
                 console.error(`Error which searching disciple.`, error);
             }
         }
-        buttonDisable = false;
     };
     let arr = [];
     for (var i = 0; i < 3; i++) {
@@ -175,7 +217,7 @@ const Profile = ({ route, navigation }) => {
                     i == 0
                         ? countMonths(disciple?.form_date, today) >= 1
                         : arr[i - 1].value !== "" &&
-                        countMonths(disciple?.form_date, today) >= i + 1,
+                          countMonths(disciple?.form_date, today) >= i + 1,
                 minDate:
                     i == 0
                         ? moment(disciple?.form_date, "YYYY-MM-DD").add(1, "M")
@@ -197,14 +239,14 @@ const Profile = ({ route, navigation }) => {
         disciple?.satnam_exam.length < 1
             ? true
             : countMonths(
-                disciple?.satnam_exam[disciple?.satnam_exam.length - 1]
-                    .exam_date,
-                today
-            ) >= 1;
+                  disciple?.satnam_exam[disciple?.satnam_exam.length - 1]
+                      .exam_date,
+                  today
+              ) >= 1;
 
     const enableSatnam =
         countMonths(disciple?.form_date, today) >=
-        disciple?.rules?.min_satnam_month &&
+            disciple?.rules?.min_satnam_month &&
         disciple?.satnam_date === "" &&
         minDateforSatnam;
 
@@ -212,22 +254,29 @@ const Profile = ({ route, navigation }) => {
         showSubmitButton = true;
     }
     const enableSarnam =
-        countDays(disciple?.satnam_date, "2015-12-31") >= 1 &&
+        countDays(disciple?.satnam_date, disciple?.rules?.sarnam_date) >= 1 &&
         entryType === "Sarnaam Entry" &&
-        disciple?.sarnam_date === null;
+        disciple?.sarnam_date === "";
 
+    const enableSarshabd =
+        countDays(disciple?.sarnam_date, disciple?.rules?.sarshabd_date) >= 1 &&
+        entryType === "Sarshabd Entry" &&
+        disciple?.sarnam_date !== "" &&
+        disciple?.sarshabd_date === "";
     if (enableSarnam) showSubmitButton = true;
-    if (entryType === "Shuddhikaran Entry") {
-        buttonDisable = (selectedDate === "" || reason === "") ?? true;
+    if (
+        entryType === "Shuddhikaran Entry" ||
+        entryType === "Punar Updesh Entry"
+    ) {
         showSubmitButton = true;
     }
+
     useEffect(() => {
         navigation.setOptions({
             title: `${entryType ?? "Disciple's Detail"}`,
         });
         fetchDiscipleDetails(user?.id);
     }, [fetchDiscipleDetails, user?.id]);
-
     if (loading)
         return (
             <ActivityIndicator
@@ -245,6 +294,28 @@ const Profile = ({ route, navigation }) => {
             }}
             showsVerticalScrollIndicator={false}
         >
+            <AwesomeAlert
+                show={showAlert.show}
+                showProgress={false}
+                title={showAlert.title}
+                message={showAlert.message}
+                closeOnTouchOutside={true}
+                closeOnHardwareBackPress={false}
+                showCancelButton={true}
+                fieldNames
+                showConfirmButton={true}
+                cancelText={showAlert.cancel}
+                confirmText={showAlert.confirm}
+                confirmButtonColor="#DD6B55"
+                onCancelPressed={() => {
+                    const temp = { ...showAlert, show: false };
+                    setShowAlert(temp);
+                }}
+                onConfirmPressed={() => {
+                    const temp = { ...showAlert, show: false };
+                    setShowAlert(temp);
+                }}
+            />
             <View
                 style={{
                     flex: 1,
@@ -261,51 +332,57 @@ const Profile = ({ route, navigation }) => {
                         padding: 15,
                     }}
                 >
-                    <TouchableOpacity
-                        style={{
-                            paddingHorizontal: 5,
-                            alignSelf: "flex-end",
-                            borderRadius: 5,
-                            flexDirection: "row",
-                            alignItems: "center",
-                            paddingVertical: 2,
-                            backgroundColor:
+                    {entryType === null && (
+                        <TouchableOpacity
+                            style={{
+                                paddingHorizontal: 5,
+                                alignSelf: "flex-end",
+                                borderRadius: 5,
+                                flexDirection: "row",
+                                alignItems: "center",
+                                paddingVertical: 2,
+                                backgroundColor:
+                                    disciple?.district_id !== AuthUser.district
+                                        ? "lightgray"
+                                        : theme.colors.primaryLight,
+                            }}
+                            onPress={() => {}}
+                            disabled={
                                 disciple?.district_id !== AuthUser.district
-                                    ? "lightgray"
-                                    : theme.colors.primaryLight,
-                        }}
-                        onPress={() => { }}
-                        disabled={disciple?.district_id !== AuthUser.district}
-                    >
-                        <Image
-                            source={clockImage}
-                            style={{
-                                marginRight: 4,
-                                width: 10,
-                                height: 10,
-                                tintColor:
-                                    disciple?.district_id !== AuthUser.district
-                                        ? "gray"
-                                        : theme.colors.primary,
-                            }}
-                        />
-                        <Text
-                            style={{
-                                color:
-                                    disciple?.district_id !== AuthUser.district
-                                        ? "gray"
-                                        : theme.colors.primary,
-                                ...FONTS.h6,
-                            }}
+                            }
                         >
-                            Edit
-                        </Text>
-                    </TouchableOpacity>
+                            <Image
+                                source={clockImage}
+                                style={{
+                                    marginRight: 4,
+                                    width: 10,
+                                    height: 10,
+                                    tintColor:
+                                        disciple?.district_id !==
+                                        AuthUser.district
+                                            ? "gray"
+                                            : theme.colors.primary,
+                                }}
+                            />
+                            <Text
+                                style={{
+                                    color:
+                                        disciple?.district_id !==
+                                        AuthUser.district
+                                            ? "gray"
+                                            : theme.colors.primary,
+                                    ...FONTS.h6,
+                                }}
+                            >
+                                Edit
+                            </Text>
+                        </TouchableOpacity>
+                    )}
                     <TouchableOpacity
                         onPress={() => setShowModal(true)}
                         style={{
                             width: 110,
-                            marginTop: -75,
+                            marginTop: entryType === null ? -85 : -55,
                             alignSelf: "center",
                             alignItems: "center",
                         }}
@@ -374,11 +451,11 @@ const Profile = ({ route, navigation }) => {
                         />
                         {(disciple?.whatsapp_no !== null ||
                             disciple?.whatsapp_no !== "") && (
-                                <FieldLine
-                                    label={"Whatsapp No."}
-                                    value={disciple?.mobile_no}
-                                />
-                            )}
+                            <FieldLine
+                                label={"Whatsapp No."}
+                                value={disciple?.whatsapp_no}
+                            />
+                        )}
                         <FieldLine
                             label={"Address"}
                             value={[
@@ -396,24 +473,46 @@ const Profile = ({ route, navigation }) => {
                         />
                         {(disciple?.unique_id !== null ||
                             disciple?.unique_id !== "") && (
-                                <FieldLine
-                                    label={"Aadhaar No."}
-                                    value={disciple?.unique_id}
-                                />
-                            )}
+                            <FieldLine
+                                label={"Aadhaar No."}
+                                value={disciple?.unique_id}
+                            />
+                        )}
                         {(disciple?.email !== null ||
                             disciple?.email !== "") && (
-                                <FieldLine
-                                    label={"Email ID"}
-                                    value={disciple?.email}
-                                />
-                            )}
+                            <FieldLine
+                                label={"Email ID"}
+                                value={disciple?.email}
+                            />
+                        )}
                     </View>
                 </View>
+                {disciple?.history.length > 0 && (
+                    <TouchableOpacity
+                        onPress={() =>
+                            navigation.push("History", {
+                                history: disciple?.history,
+                            })
+                        }
+                        style={styles.historyBtn}
+                    >
+                        <Text allowFontScaling={false} style={{ ...FONTS.h5 }}>
+                            View History
+                        </Text>
+                        <Image
+                            style={{ width: 25, height: 25, marginLeft: 10 }}
+                            source={clockImage}
+                        />
+                    </TouchableOpacity>
+                )}
                 <View style={{ marginVertical: 15 }}>
                     <Field
-                        label={"Pratham Naam"}
-                        value={user?.form_date}
+                        label={
+                            disciple?.history.length > 0
+                                ? `Punar Updesh ${disciple?.history.length}`
+                                : "Pratham Naam"
+                        }
+                        value={disciple?.form_date}
                         enable={false}
                     />
                     {arr.map(({ label, value, minDate, enable }, i) => {
@@ -425,7 +524,7 @@ const Profile = ({ route, navigation }) => {
                                     enable={enable}
                                     value={value}
                                     minDate={minDate}
-                                    onDateChange={(e) => { }}
+                                    onDateChange={(e) => {}}
                                 />
                             );
                         }
@@ -480,7 +579,9 @@ const Profile = ({ route, navigation }) => {
                                 </View>
                             </Field>
                         )}
-                    {entryType === "Satnaam Entry" ? (
+                    {entryType === "Satnaam Entry" &&
+                    countMonths(disciple?.form_date, today) >=
+                        disciple?.rules?.min_satnam_month ? (
                         <Field
                             label="Satnaam"
                             value={disciple?.satnam_date}
@@ -509,8 +610,9 @@ const Profile = ({ route, navigation }) => {
                                 })}
                                 {enableSatnam && (
                                     <Field3
-                                        label={`Exam ${disciple?.satnam_exam.length + 1
-                                            }`}
+                                        label={`Exam ${
+                                            disciple?.satnam_exam.length + 1
+                                        }`}
                                         value={selectedDate}
                                         enable={enableSatnam}
                                         onOptionChange={setPass}
@@ -518,16 +620,16 @@ const Profile = ({ route, navigation }) => {
                                         minDate={
                                             disciple?.satnam_exam.length < 1
                                                 ? moment(
-                                                    disciple?.form_date,
-                                                    "YYYY-MM-DD"
-                                                ).add(4, "M")
+                                                      disciple?.form_date,
+                                                      "YYYY-MM-DD"
+                                                  ).add(4, "M")
                                                 : moment(
-                                                    disciple?.satnam_exam[
-                                                        disciple?.satnam_exam
-                                                            .length - 1
-                                                    ].exam_date,
-                                                    "YYYY-MM-DD"
-                                                ).add(1, "d")
+                                                      disciple?.satnam_exam[
+                                                          disciple?.satnam_exam
+                                                              .length - 1
+                                                      ].exam_date,
+                                                      "YYYY-MM-DD"
+                                                  ).add(1, "d")
                                         }
                                         onDateChange={setSelectedDate}
                                     />
@@ -536,13 +638,13 @@ const Profile = ({ route, navigation }) => {
                         </Field>
                     ) : null}
                     {entryType !== "Sarnaam Entry" &&
-                        disciple?.sarnam_date !== null && (
+                        disciple?.sarnam_date !== "" && (
                             <Field
                                 label="Sarnaam"
                                 enable={false}
                                 value={disciple?.sarnam_date}
                                 minDate={null}
-                                onDateChange={(e) => { }}
+                                onDateChange={(e) => {}}
                             />
                         )}
                     {entryType === "Sarnaam Entry" ? (
@@ -551,16 +653,51 @@ const Profile = ({ route, navigation }) => {
                                 label={"Sarnaam"}
                                 enable={enableSarnam}
                                 value={selectedDate}
-                                minDate={null}
+                                minDate={moment(
+                                    disciple?.satnam_date,
+                                    "YYYY-MM-DD"
+                                ).add("1", "d")}
                                 onDateChange={setSelectedDate}
                             />
-                        ) : disciple?.sarnam_date !== null ? (
+                        ) : disciple?.sarnam_date !== "" ? (
                             <Field
                                 label="Sarnaam"
                                 enable={false}
                                 value={disciple?.sarnam_date}
                                 minDate={null}
-                                onDateChange={(e) => { }}
+                                onDateChange={(e) => {}}
+                            />
+                        ) : null
+                    ) : null}
+                    {entryType !== "Sarshabd Entry" &&
+                        disciple?.sarshabd_date !== "" && (
+                            <Field
+                                label="Sarshabd"
+                                enable={false}
+                                value={disciple?.sarshabd_date}
+                                minDate={null}
+                                onDateChange={(e) => {}}
+                            />
+                        )}
+                    {entryType === "Sarshabd Entry" ? (
+                        enableSarshabd ? (
+                            <Field
+                                label={"Sarshabd"}
+                                enable={enableSarshabd}
+                                value={selectedDate}
+                                minDate={moment(
+                                    disciple?.sarshabd_date,
+                                    "YYYY-MM-DD"
+                                ).add(1, "d")}
+                                onDateChange={setSelectedDate}
+                            />
+                        ) : disciple?.sarshabd_date !== "" ? (
+                            <Field
+                                label="Sarshabd"
+                                enable={false}
+                                value={disciple?.sarshabd_date}
+                                minDate={null}
+                                onDateChange={(e) => {}}
                             />
                         ) : null
                     ) : null}
@@ -580,19 +717,40 @@ const Profile = ({ route, navigation }) => {
                                     value={item.date}
                                     enable={false}
                                     reason={item.description}
-                                    onReasonChange={(e) => { }}
-                                    onDateChange={(e) => { }}
+                                    onReasonChange={(e) => {}}
+                                    onDateChange={(e) => {}}
                                 />
                             ))}
                         </>
                     )}
                     {entryType === "Shuddhikaran Entry" && (
                         <Field2
-                            label={`Shuddhikaran ${disciple?.shuddhikaran.length + 1
-                                }`}
+                            label={`Shuddhikaran ${
+                                disciple?.shuddhikaran.length + 1
+                            }`}
                             value={selectedDate}
                             enable={true}
                             reason={reason}
+                            minDate={moment(
+                                disciple?.form_date,
+                                "YYYY-MM-DD"
+                            ).add(1, "d")}
+                            onReasonChange={(text) => setReason(text)}
+                            onDateChange={setSelectedDate}
+                        />
+                    )}
+                    {entryType === "Punar Updesh Entry" && (
+                        <Field2
+                            label={`Punar Updesh ${
+                                disciple?.history.length + 1
+                            }`}
+                            value={selectedDate}
+                            enable={true}
+                            reason={reason}
+                            minDate={moment(
+                                disciple?.form_date,
+                                "YYYY-MM-DD"
+                            ).add(1, "d")}
                             onReasonChange={(text) => setReason(text)}
                             onDateChange={setSelectedDate}
                         />
@@ -632,7 +790,7 @@ const Profile = ({ route, navigation }) => {
                                 textAlign: "center",
                                 padding: 5,
                                 width: 250,
-                                color: theme.colors.primaryLight,
+                                color: theme.colors.primary,
                                 borderRadius: 10,
                                 marginVertical: 10,
                                 ...FONTS.h5,

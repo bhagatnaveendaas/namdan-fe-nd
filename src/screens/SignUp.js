@@ -1,5 +1,4 @@
 import axios from "axios";
-import _ from "lodash";
 import moment from "moment";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -17,7 +16,6 @@ import CountryCodePicker from "../components/CountryCodePicker";
 import DatePicker from "../components/DatePicker";
 import FormTextInput from "../components/FormTextInput";
 import FormSelectInput from "../components/FormSelectInput";
-import RoundButton from "../components/RoundButton";
 import UploadButton from "../components/UploadButton";
 import ImagePicker from "../components/ImagePicker";
 import appConfig from "../config";
@@ -43,7 +41,6 @@ const pinIcon = require("../../assets/icons/locationPin.png");
 const userIcon = require("../../assets/icons/userFilled.png");
 
 const threeYearsBack = new Date().setDate(new Date().getDate() - 365 * 3 - 1);
-
 const SignUp = ({ navigation }) => {
     const {
         state: { user },
@@ -62,7 +59,7 @@ const SignUp = ({ navigation }) => {
         tehsil_id: 0,
         city_id: user?.city || 0,
         form_no: "",
-        form_date: moment(),
+        form_date: moment().format("YYYY-MM-DD"),
         mobile_no: "",
         whatsapp_no: "",
         avatar: "",
@@ -71,7 +68,7 @@ const SignUp = ({ navigation }) => {
         email: "",
         pincode: "",
         occupation: "",
-        dob: moment(threeYearsBack),
+        dob: "",
         namdan_taken: "",
         country_code: "+91",
         whatsapp_country_code: "+91",
@@ -81,12 +78,14 @@ const SignUp = ({ navigation }) => {
     const scrollRef = useRef();
     const namdan_takenAt = ["Online", "Naamdan Center"];
     const relations = ["S/O", "D/O", "W/O"];
+    const [isDisable, setIsDisable] = useState(false);
     const [showOtp, setShowOtp] = useState(false);
     const [states, setStates] = useState([]);
     const [districts, setDistricts] = useState([]);
     const [countries, setcountries] = useState([]);
     const [tehsils, setTehsils] = useState([]);
     const [cities, setCities] = useState([]);
+    const [otp, setOtp] = useState("");
     const [emailError, setEmailError] = useState("");
     const [showAlert, setShowAlert] = useState({
         show: false,
@@ -254,7 +253,11 @@ const SignUp = ({ navigation }) => {
                     abortEarly: false,
                 });
             }
-            handleRegister();
+            if (otp === "") {
+                alert("Please Enter OTP");
+                return;
+            }
+            await handleRegister();
         } catch (err) {
             if (err.name === "ValidationError") {
                 alert(err.errors[0]);
@@ -265,14 +268,12 @@ const SignUp = ({ navigation }) => {
     };
 
     const handleRegister = async () => {
-        const dob = userData.dob.toISOString().split("T")[0];
-        const form_date = userData.form_date.toISOString().split("T")[0];
-
+        
         const formData = new FormData();
         formData.append("name", userData.name);
         formData.append("relation", userData.relation);
         formData.append("guardian_name", userData.guardianName);
-        formData.append("dob", dob);
+        formData.append("dob", userData.dob);
         formData.append("address", userData.address);
         formData.append("country_id", userData.country_id);
         formData.append("state_id", userData.state_id);
@@ -294,7 +295,7 @@ const SignUp = ({ navigation }) => {
             );
         }
         formData.append("form_no", userData.form_no);
-        formData.append("form_date", form_date);
+        formData.append("form_date", userData.form_date);
         formData.append("occupation", userData.occupation);
         formData.append("namdan_taken", userData.namdan_taken);
         formData.append("email", userData.email);
@@ -307,7 +308,7 @@ const SignUp = ({ navigation }) => {
                     ? userData.avatar
                     : userData.avatar.replace("file://", ""),
             type: "image/jpeg",
-            name: "file1.jpg",
+            name: "avatar.jpg",
         });
         if (userData.file1 !== "") {
             formData.append("file1", {
@@ -339,9 +340,10 @@ const SignUp = ({ navigation }) => {
             },
             data: formData,
         };
+        setIsDisable(true);
+
         axios(config)
             .then((response) => {
-                console.log(response.data);
                 const temp = {
                     ...showAlert,
                     show: true,
@@ -349,11 +351,12 @@ const SignUp = ({ navigation }) => {
                     message: "Disciple created successfully",
                 };
                 setShowAlert(temp);
+                scrollToTop();
                 setUserData(formFields);
-                // scrollToTop();
-                navigation.navigate("AshramDashboard");
+                setIsDisable(false);
             })
             .catch((error) => {
+                setIsDisable(false);
                 if (error && error.response) {
                     console.log(
                         `Signup: ${JSON.stringify(error.response.data)}`
@@ -555,7 +558,8 @@ const SignUp = ({ navigation }) => {
             <DatePicker
                 label="Form Date"
                 placeholder="Select Date"
-                date={moment(userData.form_date)}
+                date={userData.form_date}
+                value={moment()}
                 setDate={(date) => onChange(date, "form_date")}
                 maximumDate={new Date()}
                 containerStyle={styles.dateContainer}
@@ -842,7 +846,8 @@ const SignUp = ({ navigation }) => {
             <DatePicker
                 label="Date of Birth"
                 placeholder="Select Date of birth"
-                date={moment(userData.dob)}
+                date={userData.dob}
+                value={moment().subtract(3, 'years')}
                 setDate={(date) => onDobChange(date)}
                 maximumDate={new Date(threeYearsBack)}
                 containerStyle={styles.dateContainer}
@@ -1046,6 +1051,8 @@ const SignUp = ({ navigation }) => {
             ) : (
                 <FormTextInput
                     autoFocus={showOtp}
+                    value={otp}
+                    onChangeText={(text) => setOtp(text)}
                     placeholder={"Enter the otp we just sent you."}
                     containerStyle={styles.textFieldContainer}
                     label={"One Time Password"}
@@ -1053,14 +1060,18 @@ const SignUp = ({ navigation }) => {
                     keyboardType={"numeric"}
                 />
             )}
-            {/* <Button
-                title="Register"
-                style={styles.button}
-                onPress={handleSubmit}
-            /> */}
             <TouchableOpacity
                 onPress={handleSubmit}
-                style={[styles.button, { marginBottom: 30 }]}
+                disabled={isDisable}
+                style={[
+                    styles.button,
+                    { marginBottom: 30 },
+                    {
+                        backgroundColor: isDisable
+                            ? "lightgray"
+                            : theme.colors.primary,
+                    },
+                ]}
             >
                 <Text allowFontScaling={false} style={styles.buttonText}>
                     Submit

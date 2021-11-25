@@ -56,7 +56,6 @@ const ImagePicker = forwardRef(({ onImageSelected, onClose }, ref) => {
                                 `Error with status ${response.errorCode} and message: ${response.errorMessage}`
                             );
                         } else {
-                            const uri = response.assets[0].uri;
                             onImageSelected(response.assets[0]);
                         }
                     }
@@ -94,7 +93,6 @@ const ImagePicker = forwardRef(({ onImageSelected, onClose }, ref) => {
                                 `Error with status ${response.errorCode} and message: ${response.errorMessage}`
                             );
                         } else {
-                            // const uri = response.assets[0].uri;
                             onImageSelected(response.assets[0]);
                         }
                     }

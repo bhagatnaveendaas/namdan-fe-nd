@@ -6,7 +6,7 @@ const threeYears = moment(new Date().setDate(new Date().getDate() - 365 * 3));
 
 export const NewNonIndianDiscipleSchema = Yup.object().shape({
     avatar: Yup.string().required("Please provide profile picture."),
-    form_date: Yup.date().required("Please fill Form date.").max(tommorow),
+    form_date: Yup.string().required("Please fill Form date."),
     form_no: Yup.string()
         .required("Please fill Form number.")
         .min(6, "Form number must be atleast of 6 characters."),
@@ -46,9 +46,7 @@ export const NewNonIndianDiscipleSchema = Yup.object().shape({
     occupation: Yup.string()
         .required("Please fill Occupation.")
         .matches(/^[a-zA-Z ]*$/, "Occupation must contain alphabets only."),
-    dob: Yup.date()
-        .max(threeYears, `Check DOB, make sure age is greater than 3 years`)
-        .required("Date of birth."),
+    dob: Yup.string().required("Date of birth is required."),
     country_id: Yup.number()
         .required("Please fill Country.")
         .min(1, "Please fill Country."),
@@ -69,7 +67,7 @@ export const NewNonIndianDiscipleSchema = Yup.object().shape({
 });
 export const NewIndianDiscipleSchema = Yup.object().shape({
     avatar: Yup.string().required("Please provide profile picture."),
-    form_date: Yup.date().required("Please fill Form date.").max(tommorow),
+    form_date: Yup.string().required("Please fill Form date."),
     form_no: Yup.string()
         .required("Please fill Form number.")
         .min(6, "Form number must be atleast of 6 characters."),
@@ -109,9 +107,7 @@ export const NewIndianDiscipleSchema = Yup.object().shape({
     occupation: Yup.string()
         .required("Please fill Occupation.")
         .matches(/^[a-zA-Z ]*$/, "Occupation must contain alphabets only."),
-    dob: Yup.date()
-        .max(threeYears, `Check DOB, make sure age is greater than 3 years`)
-        .required("Date of birth."),
+    dob: Yup.string().required("Date of birth is required."),
 
     country_id: Yup.number()
         .required("Please fill Country.")
