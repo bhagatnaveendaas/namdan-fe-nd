@@ -10,6 +10,7 @@ const Drawer = createDrawerNavigator();
 
 const DrawerNavigator = () => (
     <Drawer.Navigator
+        edgeWidth={0}
         drawerContentOptions={{
             activeTintColor: theme.colors.white,
             activeBackgroundColor: theme.colors.primary,

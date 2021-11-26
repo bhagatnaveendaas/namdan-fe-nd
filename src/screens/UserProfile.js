@@ -153,6 +153,20 @@ const UserProfile = () => {
                                 {moment(user?.dob).format("DD-MM-YYYY")}
                             </Text>
                         </Text>
+                        {user?.namdan_center_name && (
+                            <Text
+                                allowFontScaling={false}
+                                style={{
+                                    color: theme.colors.primary,
+                                    ...FONTS.body5,
+                                }}
+                            >
+                                Naamdan Center:{" "}
+                                <Text style={{ ...FONTS.body5 }}>
+                                    {user?.namdan_center_name}
+                                </Text>
+                            </Text>
+                        )}
                         <Text
                             allowFontScaling={false}
                             style={{
