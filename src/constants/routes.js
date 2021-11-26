@@ -9,4 +9,3 @@ export const createShuddhikaranUrl = "/shuddhikaran/create";
 export const createPunarUpdeshUrl = "/reupdesh/create";
 export const createSarshabdUrl = "/sarshabd/create";
 export const consentOtpUrl = "/disciple/consent"
-

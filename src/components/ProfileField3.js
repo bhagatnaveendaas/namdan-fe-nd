@@ -58,8 +58,8 @@ const Field = ({
                             color: enable
                                 ? theme.colors.darkgray
                                 : optionValue
-                                    ? theme.colors.green
-                                    : theme.colors.red,
+                                ? theme.colors.green
+                                : theme.colors.red,
                             ...FONTS.h5,
                         }}
                     >
@@ -100,7 +100,9 @@ const Field = ({
                                         color: theme.colors.primary,
                                     }}
                                 >
-                                    Select Date
+                                    {dateText !== ""
+                                        ? "Change Date"
+                                        : "Select Date"}
                                 </Text>
                             </TouchableOpacity>
                         )}

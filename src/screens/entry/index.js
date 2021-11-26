@@ -16,7 +16,7 @@ const Entry = ({ route, navigation }) => {
 
     useEffect(() => {
         navigation.setOptions({
-            title: `${title} Entry`,
+            title: `Entries`,
         });
     }, []);
 
@@ -73,32 +73,9 @@ const Entry = ({ route, navigation }) => {
                 height: "100%",
             }}
         >
-            <View style={{ paddingHorizontal: 15, marginTop: 15 }}>
-                {/* <SearchBar
-                    placeholder={"Search by mobile Number"}
-                    value={search}
-                    setValue={(text) => {
-                        setSearch(text);
-                    }}
-                    onSubmitEditing={() =>
-                        searchBy === "unique_id"
-                            ? searchDiscipleWithAadhar(text)
-                            : searchDiscipleWithMobile(text)
-                    }
-                    onPress={() =>
-                        searchBy === "mobile_id"
-                            ? searchDiscipleWithMobile(text)
-                            : searchDiscipleWithAadhar(text)
-                    }
-                    onCancel={() => {
-                        setSearch("");
-                        setUsersSearched([]);
-                    }}
-                /> */}
-            </View>
             <ScrollView
                 showsVerticalScrollIndicator={false}
-                style={{ flex: 1 }}
+                style={{ flex: 1, marginTop: 20 }}
             >
                 <View style={{ paddingHorizontal: 15 }}>
                     {usersSearched.map((user, index) => {
@@ -109,7 +86,15 @@ const Entry = ({ route, navigation }) => {
                                     marginVertical: 6,
                                 }}
                             >
-                                <UserCard user={user} onPress={() => { }} />
+                                <UserCard
+                                    user={user}
+                                    onPress={() =>
+                                        navigation.navigate("Profile", {
+                                            user,
+                                            entryType: null,
+                                        })
+                                    }
+                                />
                             </View>
                         );
                     })}

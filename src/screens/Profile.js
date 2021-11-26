@@ -11,10 +11,10 @@ import {
 import theme from "../constants/theme";
 import Avatar from "../components/Avatar";
 import Button from "../components/Button";
-import AwesomeAlert from "react-native-awesome-alerts";
 import Field from "../components/ProfileField";
 import Field2 from "../components/ProfileField2";
 import Field3 from "../components/ProfileField3";
+import Success from "../components/Alert/Success";
 import { useAuth } from "../context/AuthContext";
 import { FONTS, SIZES } from "../constants/fonts";
 import { getData, postJsonData } from "../httpClient/apiRequest";
@@ -29,7 +29,7 @@ import {
 } from "../constants/routes";
 import { useEffect } from "react";
 import moment from "moment";
-import { countMonths, countDays } from "../utilities/DateUtils";
+import { countMonths, countDays, countYears } from "../utilities/DateUtils";
 const userDefaultImage = require("../../assets/icons/user.png");
 const clockImage = require("../../assets/icons/clock.png");
 import styles from "../styles/Profile";
@@ -64,12 +64,7 @@ const FieldLine = ({ label, value }) => {
 
 const Profile = ({ route, navigation }) => {
     const { state } = useAuth();
-    const [showAlert, setShowAlert] = useState({
-        show: false,
-        title: "",
-        message: "",
-        confirm: "Ok",
-    });
+    const [showAlert, setShowAlert] = useState(false);
     const AuthUser = state?.user;
     const user = route.params.user;
     const today = moment().format("YYYY-MM-DD");
@@ -101,6 +96,7 @@ const Profile = ({ route, navigation }) => {
         },
         [user?.id]
     );
+
     const createEntry = async () => {
         if (selectedDate === "") {
             alert("Please select a date for entry.");
@@ -174,19 +170,16 @@ const Profile = ({ route, navigation }) => {
         }
         console.log(entryData, entryUrl);
         try {
-            await postJsonData(entryUrl, entryData);
-            const temp = {
-                ...showAlert,
-                show: true,
-                title: "Successful",
-                message: "Entry Added successfully",
-            };
-            setShowAlert(temp);
-            setReason("");
-            setSelectedDate("");
-            setTimeout(() => {
-                navigation.pop();
-            }, 1500);
+            const { data } = await postJsonData(entryUrl, entryData);
+            if (data.success) {
+                setReason("");
+                setSelectedDate("");
+                setShowAlert(true);
+                setTimeout(() => {
+                    setShowAlert(false);
+                    navigation.goBack();
+                }, 1500);
+            }
         } catch (error) {
             setReason("");
             setSelectedDate("");
@@ -215,8 +208,10 @@ const Profile = ({ route, navigation }) => {
                 value: "",
                 enable:
                     i == 0
-                        ? countMonths(disciple?.form_date, today) >= 1
+                        ? countMonths(disciple?.form_date, today) >= 1 &&
+                          disciple?.satnam_date === ""
                         : arr[i - 1].value !== "" &&
+                          disciple?.satnam_date === "" &&
                           countMonths(disciple?.form_date, today) >= i + 1,
                 minDate:
                     i == 0
@@ -230,6 +225,7 @@ const Profile = ({ route, navigation }) => {
     if (entryType === "Attendance Entry") {
         if (
             disciple?.satnam_attendance.length < 3 &&
+            disciple?.satnam_date === "" &&
             countMonths(moment(disciple?.form_date, "YYYY-MM-DD"), today) >= 1
         ) {
             showSubmitButton = true;
@@ -244,12 +240,12 @@ const Profile = ({ route, navigation }) => {
                   today
               ) >= 1;
 
-    const enableSatnam =
+    const showSatnam =
         countMonths(disciple?.form_date, today) >=
             disciple?.rules?.min_satnam_month &&
-        disciple?.satnam_date === "" &&
-        minDateforSatnam;
-
+        countYears(disciple?.dob, today) >= disciple?.rules?.satnam_age;
+    const enableSatnam =
+        showSatnam && disciple?.satnam_date === "" && minDateforSatnam;
     if (entryType === "Satnaam Entry" && enableSatnam) {
         showSubmitButton = true;
     }
@@ -298,27 +294,9 @@ const Profile = ({ route, navigation }) => {
             }}
             showsVerticalScrollIndicator={false}
         >
-            <AwesomeAlert
-                show={showAlert.show}
-                showProgress={false}
-                title={showAlert.title}
-                message={showAlert.message}
-                closeOnTouchOutside={true}
-                closeOnHardwareBackPress={false}
-                showCancelButton={true}
-                fieldNames
-                showConfirmButton={true}
-                cancelText={showAlert.cancel}
-                confirmText={showAlert.confirm}
-                confirmButtonColor="#DD6B55"
-                onCancelPressed={() => {
-                    const temp = { ...showAlert, show: false };
-                    setShowAlert(temp);
-                }}
-                onConfirmPressed={() => {
-                    const temp = { ...showAlert, show: false };
-                    setShowAlert(temp);
-                }}
+            <Success
+                message={"Entry Added Successfully!"}
+                visible={showAlert}
             />
             <View
                 style={{
@@ -350,7 +328,9 @@ const Profile = ({ route, navigation }) => {
                                         ? "lightgray"
                                         : theme.colors.primaryLight,
                             }}
-                            onPress={() => {}}
+                            onPress={() =>
+                                navigation.navigate("Edit", { user: disciple })
+                            }
                             disabled={
                                 disciple?.district_id !== AuthUser.district
                             }
@@ -442,6 +422,18 @@ const Profile = ({ route, navigation }) => {
                                 ...FONTS.body5,
                             }}
                         >
+                            Naamdan Center:{" "}
+                            <Text style={{ ...FONTS.body5 }}>
+                                {disciple?.namdan_center_name}
+                            </Text>
+                        </Text>
+                        <Text
+                            allowFontScaling={false}
+                            style={{
+                                color: theme.colors.primary,
+                                ...FONTS.body5,
+                            }}
+                        >
                             Naamdan Taken:{" "}
                             <Text style={{ ...FONTS.body5 }}>
                                 {disciple?.namdan_taken}
@@ -459,6 +451,7 @@ const Profile = ({ route, navigation }) => {
                                 value={disciple?.whatsapp_no}
                             />
                         )}
+
                         <FieldLine
                             label={"Address"}
                             value={[
@@ -497,11 +490,19 @@ const Profile = ({ route, navigation }) => {
                         }
                         style={styles.historyBtn}
                     >
-                        <Text allowFontScaling={false} style={{ ...FONTS.h5 }}>
+                        <Text
+                            allowFontScaling={false}
+                            style={{ ...FONTS.h5, color: theme.colors.primary }}
+                        >
                             View History
                         </Text>
                         <Image
-                            style={{ width: 25, height: 25, marginLeft: 10 }}
+                            style={{
+                                width: 25,
+                                height: 25,
+                                marginLeft: 10,
+                                tintColor: theme.colors.grey,
+                            }}
                             source={clockImage}
                         />
                     </TouchableOpacity>
@@ -580,9 +581,7 @@ const Profile = ({ route, navigation }) => {
                                 </View>
                             </Field>
                         )}
-                    {entryType === "Satnaam Entry" &&
-                    countMonths(disciple?.form_date, today) >=
-                        disciple?.rules?.min_satnam_month ? (
+                    {entryType === "Satnaam Entry" && showSatnam ? (
                         <Field
                             label="Satnaam"
                             value={disciple?.satnam_date}
@@ -733,7 +732,7 @@ const Profile = ({ route, navigation }) => {
                             enable={true}
                             reason={reason}
                             minDate={
-                                disciple?.shuddhikaran.length < 1
+                                disciple?.shuddhikaran.length === 0
                                     ? moment(
                                           disciple?.form_date,
                                           "YYYY-MM-DD"

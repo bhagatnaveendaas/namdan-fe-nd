@@ -1,12 +1,6 @@
 import React, { useState, memo } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import {
-    Platform,
-    Image,
-    Text,
-    View,
-    TouchableOpacity,
-} from "react-native";
+import { Platform, Image, Text, View, TouchableOpacity } from "react-native";
 import moment from "moment";
 import theme from "../constants/theme";
 import { FONTS } from "../constants/fonts";
@@ -93,7 +87,9 @@ const Field = ({ label, enable, onDateChange, value, minDate, children }) => {
                                         color: theme.colors.primary,
                                     }}
                                 >
-                                    Select Date
+                                    {dateText !== ""
+                                        ? "Change Date"
+                                        : "Select Date"}
                                 </Text>
                             </TouchableOpacity>
                         )}

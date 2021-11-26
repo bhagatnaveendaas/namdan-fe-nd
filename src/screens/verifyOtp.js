@@ -1,5 +1,11 @@
-import React, { useState, useRef } from "react";
-import { View, Text, Image, AsyncStorage } from "react-native";
+import React, { useState, useRef, useEffect } from "react";
+import {
+    View,
+    Text,
+    Image,
+    AsyncStorage,
+    TouchableOpacity,
+} from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import RoundButton from "../components/RoundButton";
 import theme from "../constants/theme";
@@ -7,10 +13,12 @@ import styles from "../styles/Login";
 import { useAuth } from "../context/AuthContext";
 import { postJsonData } from "../httpClient/apiRequest";
 import { loginUrl } from "../constants/routes";
+import Timer from "../components/Timer";
 
 const VerifyOtp = ({ route, navigation }) => {
     const { dispatch } = useAuth();
-    const { userName, deviceToken } = route.params;
+    const { userName, deviceToken, loginData } = route.params;
+
     const [otp, setOtp] = useState(new Array(6).fill(""));
     const ref = [
         useRef(null),
@@ -35,6 +43,22 @@ const VerifyOtp = ({ route, navigation }) => {
             ref[index + 1].current.focus();
         }
         setOtp([...otp.map((d, idx) => (idx === index ? value : d))]);
+    };
+
+    const requestOtp = async () => {
+        try {
+            await postJsonData(loginUrl, loginData);
+        } catch (error) {
+            if (error && error.response) {
+                console.error(
+                    "Error in requesting otp",
+                    error.response.data.error
+                );
+                alert(error.response.data.error);
+            } else {
+                console.error("Error in requesting otp.", error.message);
+            }
+        }
     };
     const verifyOtp = async () => {
         try {
@@ -64,6 +88,7 @@ const VerifyOtp = ({ route, navigation }) => {
         } catch (error) {
             if (error && error.response) {
                 console.error("Error", error.response.data.error);
+                alert(error.response.data.error);
             } else {
                 console.error("Error in login request.", error.message);
             }
@@ -107,6 +132,14 @@ const VerifyOtp = ({ route, navigation }) => {
                         />
                     );
                 })}
+            </View>
+            <View style={{ marginTop: 10 }}>
+                <Timer
+                    color={"white"}
+                    onPress={requestOtp}
+                    start={true}
+                    time={60}
+                />
             </View>
             <View style={{ paddingTop: "20%", alignItems: "center" }}>
                 <RoundButton

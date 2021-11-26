@@ -60,6 +60,12 @@ const History = ({ route }) => {
                         date: moment(date, "YYYY-MM-DD").format("DD-MM-YYYY"),
                         remark,
                     };
+                if (name === `first_shuddhikaran`)
+                    return {
+                        name: `Pratham Shuddhikaran ${j + 1}`,
+                        date: moment(date, "YYYY-MM-DD").format("DD-MM-YYYY"),
+                        remark,
+                    };
                 if (name === `satnam_shuddhikaran`)
                     return {
                         name: `Satnam Shuddhikaran ${j + 1}`,
@@ -69,6 +75,12 @@ const History = ({ route }) => {
                 if (name === `sarnam_shuddhikaran`)
                     return {
                         name: `Sarnam Shuddhikaran ${j + 1}`,
+                        date: moment(date, "YYYY-MM-DD").format("DD-MM-YYYY"),
+                        remark,
+                    };
+                if (name === `sarshabd_shuddhikaran`)
+                    return {
+                        name: `Sarshabd Shuddhikaran ${j + 1}`,
                         date: moment(date, "YYYY-MM-DD").format("DD-MM-YYYY"),
                         remark,
                     };
@@ -86,7 +98,6 @@ const History = ({ route }) => {
                     };
             });
         });
-
     });
 
     return (
@@ -100,8 +111,10 @@ const History = ({ route }) => {
                 <View
                     style={[
                         styles.row,
+                        styles.box,
                         {
                             marginBottom: 20,
+                            paddingBottom: 10,
                         },
                     ]}
                 >
@@ -149,14 +162,30 @@ const History = ({ route }) => {
                                                     {k.remark &&
                                                         k.remark !== "ok" && (
                                                             <Text
-                                                                style={
-                                                                    styles.remark
-                                                                }
+                                                                style={{
+                                                                    ...FONTS.body4,
+                                                                    textTransform:
+                                                                        "capitalize",
+                                                                    color:
+                                                                        k.remark ===
+                                                                        "Fail"
+                                                                            ? theme
+                                                                                  .colors
+                                                                                  .red
+                                                                            : k.remark ===
+                                                                              "Pass"
+                                                                            ? theme
+                                                                                  .colors
+                                                                                  .green
+                                                                            : theme
+                                                                                  .colors
+                                                                                  .primary,
+                                                                }}
                                                                 allowFontScaling={
                                                                     false
                                                                 }
                                                             >
-                                                                {k.remark}
+                                                                {k.remark.trim()}
                                                             </Text>
                                                         )}
                                                 </View>
@@ -184,6 +213,8 @@ const styles = StyleSheet.create({
     },
     box: {
         marginBottom: 7,
+        borderBottomColor: theme.colors.primary,
+        borderBottomWidth: 2,
     },
     image: {
         width: 25,
@@ -192,12 +223,12 @@ const styles = StyleSheet.create({
         tintColor: theme.colors.primary,
     },
     remark: {
-        ...FONTS.body5,
-        color: theme.colors.grey,
+        ...FONTS.body4,
+        textTransform: "capitalize",
     },
     text: {
         ...FONTS.h4,
-        color: theme.colors.grey,
+        color: theme.colors.primary,
         textTransform: "capitalize",
     },
     line: {
@@ -208,6 +239,12 @@ const styles = StyleSheet.create({
     date: {
         ...FONTS.body4,
         color: theme.colors.primary,
+    },
+    red: {
+        color: theme.colors.red,
+    },
+    green: {
+        color: theme.colors.green,
     },
 });
 

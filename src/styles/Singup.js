@@ -1,4 +1,5 @@
 import { StatusBar, StyleSheet, Dimensions } from "react-native";
+import { FONTS } from "../constants/fonts";
 import theme from "../constants/theme";
 
 const { height, width } = Dimensions.get("window");
@@ -92,5 +93,14 @@ export default StyleSheet.create({
         fontSize: 18,
         fontFamily: theme.fonts.poppins.regular,
         color: theme.colors.white,
+    },
+    updateButton: {
+        backgroundColor: theme.colors.primaryLight,
+        paddingHorizontal: 5,
+        borderRadius: 5,
+    },
+    updateButtonText: {
+        ...FONTS.h5,
+        color: theme.colors.primary,
     },
 });

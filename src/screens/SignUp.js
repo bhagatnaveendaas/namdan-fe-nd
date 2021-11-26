@@ -11,13 +11,13 @@ import {
     ActivityIndicator,
     ScrollView,
 } from "react-native";
-import AwesomeAlert from "react-native-awesome-alerts";
 import CountryCodePicker from "../components/CountryCodePicker";
 import DatePicker from "../components/DatePicker";
 import FormTextInput from "../components/FormTextInput";
 import FormSelectInput from "../components/FormSelectInput";
 import UploadButton from "../components/UploadButton";
 import ImagePicker from "../components/ImagePicker";
+import Success from "../components/Alert/Success";
 import appConfig from "../config";
 import Constants from "../constants/text/Signup";
 import theme from "../constants/theme";
@@ -40,6 +40,7 @@ const buildingIcon = require("../../assets/icons/building.png");
 const pinIcon = require("../../assets/icons/locationPin.png");
 const userIcon = require("../../assets/icons/userFilled.png");
 import { consentOtpUrl } from "../constants/routes";
+import Timer from "../components/Timer";
 
 const threeYearsBack = new Date().setDate(new Date().getDate() - 365 * 3 - 1);
 const SignUp = ({ navigation }) => {
@@ -73,29 +74,22 @@ const SignUp = ({ navigation }) => {
         namdan_taken: "",
         country_code: "+91",
         whatsapp_country_code: "+91",
-        otp: "",
     };
 
     const isIndian = user?.country === 2;
     const scrollRef = useRef();
-    const namdan_takenAt = ["Online", "Naamdan Center"];
-    const relations = ["S/O", "D/O", "W/O"];
+    const [namdan_takenAt, setNamedanTakenAt] = useState([]);
+    const [relations, setRelations] = useState([]);
     const [isDisable, setIsDisable] = useState(false);
     const [showOtp, setShowOtp] = useState(false);
+    const [otp, setOtp] = useState("");
     const [states, setStates] = useState([]);
     const [districts, setDistricts] = useState([]);
     const [countries, setcountries] = useState([]);
-    const otpRef = useRef(null);
     const [tehsils, setTehsils] = useState([]);
     const [cities, setCities] = useState([]);
     const [emailError, setEmailError] = useState("");
-    const [showAlert, setShowAlert] = useState({
-        show: false,
-        showCancelButton: false,
-        title: "",
-        message: "",
-        confirm: "Ok",
-    });
+    const [showAlert, setShowAlert] = useState(false);
     const [fields, setFields] = useState({
         uniqueNoField: "",
         file1Field: "",
@@ -117,6 +111,40 @@ const SignUp = ({ navigation }) => {
 
     const [userData, setUserData] = useState(formFields);
 
+    const getRelationOption = async () => {
+        try {
+            const { data } = await getData("/misc/list?slug=relation");
+            if (data.success) {
+                const temp = [...data?.data].map((item) => item.name);
+                setRelations(temp);
+            }
+        } catch (error) {
+            console.log("error", error);
+        }
+    };
+    const getNaamDanTakenOption = async () => {
+        try {
+            const { data } = await getData("/misc/list?slug=namdan_taken");
+            if (data.success) {
+                const temp = [...data?.data].map((item) => item.name);
+                setNamedanTakenAt(temp);
+            }
+        } catch (error) {
+            console.log("error", error);
+        }
+    };
+    const getOccupationOption = async () => {
+        try {
+            const { data } = await getData("/misc/list?slug=occupations");
+            if (data.success) {
+                const temp = [...data?.data].map((item) => item.name);
+                console.log(temp);
+            }
+        } catch (error) {
+            console.log("error", error);
+        }
+    };
+
     const getCountries = async () => {
         const { data } = await getData("/country/list?page=1&limit=1000");
         const temp = data?.data.countries;
@@ -125,6 +153,9 @@ const SignUp = ({ navigation }) => {
 
     useEffect(() => {
         getCountries();
+        getNaamDanTakenOption();
+        getRelationOption();
+        getOccupationOption();
     }, []);
 
     useEffect(() => {
@@ -224,19 +255,12 @@ const SignUp = ({ navigation }) => {
             });
             console.log("data", data);
             if (data?.success) {
-                const temp = {
-                    ...showAlert,
-                    show: true,
-                    title: "Successful",
-                    message: `${data?.message}`,
-                };
-                setShowAlert(temp);
                 setShowOtp(true);
             }
         } catch (error) {
             if (error && error.response) {
                 console.log(`Signup: ${JSON.stringify(error.response.data)}`);
-                // alert(error.response?.data.error);
+                alert(error.response?.data.error);
             } else {
                 console.log(`Signup: ${error}`);
                 // alert(error);
@@ -287,6 +311,13 @@ const SignUp = ({ navigation }) => {
                     abortEarly: false,
                 });
             }
+            if (otp === "") {
+                alert("Please enter OTP.");
+                return;
+            } else if (otp.length < 6) {
+                alert("Otp must be 6 characters long.");
+                return;
+            }
             await handleRegister();
         } catch (err) {
             if (err.name === "ValidationError") {
@@ -323,7 +354,9 @@ const SignUp = ({ navigation }) => {
                 userData.whatsapp_country_code + userData.whatsapp_no
             );
         }
-        formData.append("form_no", userData.form_no);
+        if (userData.form_no !== "") {
+            formData.append("form_no", userData.form_no);
+        }
         formData.append("form_date", userData.form_date);
         formData.append("occupation", userData.occupation);
         formData.append("namdan_taken", userData.namdan_taken);
@@ -332,7 +365,7 @@ const SignUp = ({ navigation }) => {
             formData.append("unique_id", userData.aadhaar_no);
         }
 
-        formData.append("consent_otp", userData.otp);
+        formData.append("consent_otp", otp);
         formData.append("avatar", {
             uri:
                 Platform.OS === "android"
@@ -376,16 +409,11 @@ const SignUp = ({ navigation }) => {
         console.log(formData);
         axios(config)
             .then((response) => {
-                const temp = {
-                    ...showAlert,
-                    show: true,
-                    title: "Successful",
-                    message: "Disciple created successfully",
-                };
                 setUserData(formFields);
                 setUserData({ ...userData, form_date: "" });
-                setShowAlert(temp);
+                setShowAlert(true);
                 setTimeout(() => {
+                    setShowAlert(false);
                     setIsDisable(false);
                     navigation.navigate("AshramDashboard");
                 }, 1500);
@@ -548,27 +576,9 @@ const SignUp = ({ navigation }) => {
             style={styles.mainContainer}
             keyboardShouldPersistTaps={enableSearch ? "always" : "never"}
         >
-            <AwesomeAlert
-                show={showAlert.show}
-                showProgress={false}
-                title={showAlert.title}
-                message={showAlert.message}
-                closeOnTouchOutside={true}
-                closeOnHardwareBackPress={false}
-                showCancelButton={true}
-                fieldNames
-                showConfirmButton={true}
-                cancelText={showAlert.cancel}
-                confirmText={showAlert.confirm}
-                confirmButtonColor="#DD6B55"
-                onCancelPressed={() => {
-                    const temp = { ...showAlert, show: false };
-                    setShowAlert(temp);
-                }}
-                onConfirmPressed={() => {
-                    const temp = { ...showAlert, show: false };
-                    setShowAlert(temp);
-                }}
+            <Success
+                message={"Entry Added Successfully!"}
+                visible={showAlert}
             />
             <TouchableOpacity onPress={openAvatarSheet}>
                 <Image
@@ -1081,16 +1091,25 @@ const SignUp = ({ navigation }) => {
                     </Text>
                 </TouchableOpacity>
             ) : (
-                <FormTextInput
-                    ref={otpRef}
-                    value={userData.otp}
-                    onChangeText={(value) => onChange(value, "otp")}
-                    placeholder={"Enter the otp we just sent you."}
-                    containerStyle={styles.textFieldContainer}
-                    label={"One Time Password"}
-                    maxLength={6}
-                    keyboardType={"numeric"}
-                />
+                <>
+                    <FormTextInput
+                        value={otp}
+                        onChangeText={(value) => setOtp(value)}
+                        placeholder={"Enter the otp we just sent you."}
+                        containerStyle={styles.textFieldContainer}
+                        label={"One Time Password"}
+                        maxLength={6}
+                        keyboardType={"numeric"}
+                        appendComponent={
+                            <Timer
+                                color={"blue"}
+                                start={showOtp}
+                                time={300}
+                                onPress={requestOtp}
+                            />
+                        }
+                    />
+                </>
             )}
             <TouchableOpacity
                 onPress={handleSubmit}

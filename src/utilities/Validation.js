@@ -7,9 +7,9 @@ const threeYears = moment(new Date().setDate(new Date().getDate() - 365 * 3));
 export const NewNonIndianDiscipleSchema = Yup.object().shape({
     avatar: Yup.string().required("Please provide profile picture."),
     form_date: Yup.string().required("Please fill Form date."),
-    form_no: Yup.string()
-        .required("Please fill Form number.")
-        .min(6, "Form number must be atleast of 6 characters."),
+    // form_no: Yup.string()
+    //     .required("Please fill Form number.")
+    //     .min(6, "Form number must be atleast of 6 characters."),
     aadhaar_no: Yup.lazy((value) => {
         if (value !== "") {
             return Yup.string().min(
@@ -71,9 +71,9 @@ export const NewNonIndianDiscipleSchema = Yup.object().shape({
 export const NewIndianDiscipleSchema = Yup.object().shape({
     avatar: Yup.string().required("Please provide profile picture."),
     form_date: Yup.string().required("Please fill Form date."),
-    form_no: Yup.string()
-        .required("Please fill Form number.")
-        .min(6, "Form number must be atleast of 6 characters."),
+    // form_no: Yup.string()
+    //     .required("Please fill Form number.")
+    //     .min(6, "Form number must be atleast of 6 characters."),
     aadhaar_no: Yup.lazy((value) => {
         if (value !== "") {
             return Yup.string().min(

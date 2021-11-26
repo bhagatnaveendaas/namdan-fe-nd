@@ -6,6 +6,7 @@ import {
     TouchableOpacity,
     ActivityIndicator,
     FlatList,
+    Image,
 } from "react-native";
 import { FONTS } from "../constants/fonts";
 import theme from "../constants/theme";
@@ -17,6 +18,7 @@ import styles from "../styles/Singup";
 import { postJsonData } from "../httpClient/apiRequest";
 import UserCard from "./entry/components/UserCard";
 import { searchDiscipleUrl } from "../constants/routes";
+const searchImage = require("../../assets/icons/search.png");
 
 const Search = ({ navigation, route }) => {
     const { state } = useAuth();
@@ -143,6 +145,19 @@ const Search = ({ navigation, route }) => {
                             </TouchableOpacity>
                         )
                     }
+                    appendComponent={
+                        <TouchableOpacity onPress={() => searchDisciple(1)}>
+                            <Image
+                                source={searchImage}
+                                style={{
+                                    height: 20,
+                                    width: 20,
+                                    tintColor: theme.colors.primary,
+                                    marginRight: 10,
+                                }}
+                            />
+                        </TouchableOpacity>
+                    }
                 />
                 <CountryCodePicker
                     ref={codeRef}
@@ -190,8 +205,9 @@ const Search = ({ navigation, route }) => {
                             textDecorationLine: "underline",
                         }}
                     >
-                        {`Showing ${users.length} ${users.length > 1 ? "disciples" : "disciple"
-                            } out of ${totalDisciples}`}
+                        {`Showing ${users.length} ${
+                            users.length > 1 ? "disciples" : "disciple"
+                        } out of ${totalDisciples}`}
                     </Text>
                 </View>
             )}

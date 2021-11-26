@@ -101,7 +101,9 @@ const Field = ({
                                         color: theme.colors.primary,
                                     }}
                                 >
-                                    Select Date
+                                    {dateText !== ""
+                                        ? "Change Date"
+                                        : "Select Date"}
                                 </Text>
                             </TouchableOpacity>
                         )}
@@ -135,7 +137,7 @@ const Field = ({
                     mode={"date"}
                     display={"default"}
                     maximumDate={new Date()}
-                    minimumDate={minDate ? new Date(minDate): null}
+                    minimumDate={minDate ? new Date(minDate) : null}
                     onChange={onChange}
                     onResponderReject={() => {
                         onDateChange("");
