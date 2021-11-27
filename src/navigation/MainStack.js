@@ -3,6 +3,7 @@ import React from "react";
 import DrawerNavigator from "./drawerNavigator";
 import AuthStack from "./AuthStack";
 import { useAuth } from "../context/AuthContext";
+import { DetailProvider } from "../context/DetailContex";
 
 const MainStack = () => {
     const {
@@ -11,7 +12,11 @@ const MainStack = () => {
     if (!user) {
         return <AuthStack />;
     } else {
-        return <DrawerNavigator />;
+        return (
+            <DetailProvider>
+                <DrawerNavigator />
+            </DetailProvider>
+        );
     }
 };
 

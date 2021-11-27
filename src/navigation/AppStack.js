@@ -20,6 +20,7 @@ import SearchScreen from "../screens/Search";
 import Profile from "../screens/Profile";
 import History from "../screens/History";
 import { useAuth } from "../context/AuthContext";
+import { DetailProvider } from "../context/DetailContex";
 
 const Stack = createStackNavigator();
 
@@ -46,15 +47,17 @@ const AppStack = () => {
                 component={AshramDashboard}
                 options={{ headerShown: false }}
             />
-            <Stack.Screen name="Entry" component={Entry} />
-            <Stack.Screen name="Profile" component={Profile} />
-            <Stack.Screen name="Edit" component={EditDisciple} />
-            <Stack.Screen
-                name="History"
-                component={History}
-                options={{ title: "Punar Updesh History" }}
-            />
             <Stack.Screen name="Search" component={SearchScreen} />
+            <Stack.Screen name="Entry" component={Entry} />
+           
+                <Stack.Screen name="Profile" component={Profile} />
+                <Stack.Screen name="Edit" component={EditDisciple} />
+                <Stack.Screen
+                    name="History"
+                    component={History}
+                    options={{ title: "Punar Updesh History" }}
+                />
+            
             <Stack.Screen name="Pratham Naam" component={SignUp} />
             <Stack.Screen
                 name="CountryDashboard"

@@ -33,6 +33,7 @@ import { countMonths, countDays, countYears } from "../utilities/DateUtils";
 const userDefaultImage = require("../../assets/icons/user.png");
 const clockImage = require("../../assets/icons/clock.png");
 import styles from "../styles/Profile";
+import { withDetailContext } from "../context/DetailContex";
 
 const FieldLine = ({ label, value }) => {
     return (
@@ -62,7 +63,11 @@ const FieldLine = ({ label, value }) => {
     );
 };
 
-const Profile = ({ route, navigation }) => {
+const Profile = ({ route, navigation, ...props }) => {
+    const {
+        state: { detail },
+        dispatch: detailDispatch,
+    } = props.global;
     const { state } = useAuth();
     const [showAlert, setShowAlert] = useState(false);
     const AuthUser = state?.user;
@@ -71,7 +76,6 @@ const Profile = ({ route, navigation }) => {
     const [buttonDisable, setButtonDisable] = useState(false);
     const [pass, setPass] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [disciple, setDisciple] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [selectedDate, setSelectedDate] = useState("");
     const [reason, setReason] = useState("");
@@ -82,7 +86,10 @@ const Profile = ({ route, navigation }) => {
             try {
                 const { data } = await getData(getUniqueDispleUrl(id));
                 if (data?.data) {
-                    setDisciple({ ...user, ...data.data });
+                    detailDispatch({
+                        type: "LOAD_DETAILS",
+                        payload: { detail: { ...user, ...data.data } },
+                    });
                 }
             } catch (error) {
                 if (error && error.response) {
@@ -96,7 +103,6 @@ const Profile = ({ route, navigation }) => {
         },
         [user?.id]
     );
-
     const createEntry = async () => {
         if (selectedDate === "") {
             alert("Please select a date for entry.");
@@ -119,7 +125,7 @@ const Profile = ({ route, navigation }) => {
 
         setButtonDisable(true);
         let entryData = {
-            disciple_id: disciple?.id,
+            disciple_id: detail?.id,
             remark: "ok",
         };
         let entryUrl = createHajriUrl;
@@ -134,7 +140,7 @@ const Profile = ({ route, navigation }) => {
             entryData = {
                 exam_date: selectedDate,
                 result: pass ? "pass" : "fail",
-                disciple_id: disciple?.id,
+                disciple_id: detail?.id,
             };
         }
         if (entryType === "Sarnaam Entry") {
@@ -147,7 +153,7 @@ const Profile = ({ route, navigation }) => {
         if (entryType === "Shuddhikaran Entry") {
             entryUrl = createShuddhikaranUrl;
             entryData = {
-                disciple_id: disciple?.id,
+                disciple_id: detail?.id,
                 date: selectedDate,
                 description: reason,
             };
@@ -155,7 +161,7 @@ const Profile = ({ route, navigation }) => {
         if (entryType === "Punar Updesh Entry") {
             entryUrl = createPunarUpdeshUrl;
             entryData = {
-                disciple_id: disciple?.id,
+                disciple_id: detail?.id,
                 reupdesh_date: selectedDate,
                 remark: reason,
             };
@@ -163,7 +169,7 @@ const Profile = ({ route, navigation }) => {
         if (entryType === "Sarshabd Entry") {
             entryUrl = createSarshabdUrl;
             entryData = {
-                disciple_id: disciple?.id,
+                disciple_id: detail?.id,
                 sarshabd_date: selectedDate,
                 remark: "ok",
             };
@@ -194,10 +200,10 @@ const Profile = ({ route, navigation }) => {
     };
     let arr = [];
     for (var i = 0; i < 3; i++) {
-        if (i < disciple?.satnam_attendance.length) {
+        if (i < detail?.satnam_attendance.length) {
             let c = {
                 label: `Hajri${i + 1}`,
-                value: disciple?.satnam_attendance[i]?.attendance_date,
+                value: detail?.satnam_attendance[i]?.attendance_date,
                 enable: false,
                 minDate: null,
             };
@@ -208,14 +214,14 @@ const Profile = ({ route, navigation }) => {
                 value: "",
                 enable:
                     i == 0
-                        ? countMonths(disciple?.form_date, today) >= 1 &&
-                          disciple?.satnam_date === ""
+                        ? countMonths(detail?.form_date, today) >= 1 &&
+                          detail?.satnam_date === ""
                         : arr[i - 1].value !== "" &&
-                          disciple?.satnam_date === "" &&
-                          countMonths(disciple?.form_date, today) >= i + 1,
+                          detail?.satnam_date === "" &&
+                          countMonths(detail?.form_date, today) >= i + 1,
                 minDate:
                     i == 0
-                        ? moment(disciple?.form_date, "YYYY-MM-DD").add(1, "M")
+                        ? moment(detail?.form_date, "YYYY-MM-DD").add(1, "M")
                         : moment(arr[i - 1].value, "YYYY-MM-DD").add(1, "M"),
             };
             arr[i] = c;
@@ -224,40 +230,39 @@ const Profile = ({ route, navigation }) => {
     let showSubmitButton = false;
     if (entryType === "Attendance Entry") {
         if (
-            disciple?.satnam_attendance.length < 3 &&
-            disciple?.satnam_date === "" &&
-            countMonths(moment(disciple?.form_date, "YYYY-MM-DD"), today) >= 1
+            detail?.satnam_attendance.length < 3 &&
+            detail?.satnam_date === "" &&
+            countMonths(moment(detail?.form_date, "YYYY-MM-DD"), today) >= 1
         ) {
             showSubmitButton = true;
         }
     }
     let minDateforSatnam =
-        disciple?.satnam_exam.length < 1
+        detail?.satnam_exam.length < 1
             ? true
             : countMonths(
-                  disciple?.satnam_exam[disciple?.satnam_exam.length - 1]
-                      .exam_date,
+                  detail?.satnam_exam[detail?.satnam_exam.length - 1].exam_date,
                   today
               ) >= 1;
 
     const showSatnam =
-        countMonths(disciple?.form_date, today) >=
-            disciple?.rules?.min_satnam_month &&
-        countYears(disciple?.dob, today) >= disciple?.rules?.satnam_age;
+        countMonths(detail?.form_date, today) >=
+            detail?.rules?.min_satnam_month &&
+        countYears(detail?.dob, today) >= detail?.rules?.satnam_age;
     const enableSatnam =
-        showSatnam && disciple?.satnam_date === "" && minDateforSatnam;
+        showSatnam && detail?.satnam_date === "" && minDateforSatnam;
     if (entryType === "Satnaam Entry" && enableSatnam) {
         showSubmitButton = true;
     }
     const enableSarnam =
-        countDays(disciple?.satnam_date, disciple?.rules?.sarnam_date) >= 1 &&
+        countDays(detail?.satnam_date, detail?.rules?.sarnam_date) >= 1 &&
         entryType === "Sarnaam Entry" &&
-        disciple?.sarnam_date === "";
+        detail?.sarnam_date === "";
 
     const enableSarshabd =
-        countDays(disciple?.sarnam_date, disciple?.rules?.sarshabd_date) >= 1 &&
-        disciple?.sarnam_date !== "" &&
-        disciple?.sarshabd_date === "";
+        countDays(detail?.sarnam_date, detail?.rules?.sarshabd_date) >= 1 &&
+        detail?.sarnam_date !== "" &&
+        detail?.sarshabd_date === "";
 
     if (enableSarnam) showSubmitButton = true;
     if (entryType === "Sarshabd Entry" && enableSarshabd) {
@@ -270,6 +275,13 @@ const Profile = ({ route, navigation }) => {
     ) {
         showSubmitButton = true;
     }
+
+    useEffect(() => {
+        const unsubscribe = navigation.addListener("focus", () => {
+            fetchDiscipleDetails(user?.id);
+        });
+        return unsubscribe;
+    }, [navigation]);
 
     useEffect(() => {
         navigation.setOptions({
@@ -324,16 +336,14 @@ const Profile = ({ route, navigation }) => {
                                 alignItems: "center",
                                 paddingVertical: 2,
                                 backgroundColor:
-                                    disciple?.district_id !== AuthUser.district
+                                    detail?.district_id !== AuthUser.district
                                         ? "lightgray"
                                         : theme.colors.primaryLight,
                             }}
                             onPress={() =>
-                                navigation.navigate("Edit", { user: disciple })
+                                navigation.navigate("Edit", { user: detail })
                             }
-                            disabled={
-                                disciple?.district_id !== AuthUser.district
-                            }
+                            disabled={detail?.district_id !== AuthUser.district}
                         >
                             <Image
                                 source={clockImage}
@@ -342,7 +352,7 @@ const Profile = ({ route, navigation }) => {
                                     width: 10,
                                     height: 10,
                                     tintColor:
-                                        disciple?.district_id !==
+                                        detail?.district_id !==
                                         AuthUser.district
                                             ? "gray"
                                             : theme.colors.primary,
@@ -351,7 +361,7 @@ const Profile = ({ route, navigation }) => {
                             <Text
                                 style={{
                                     color:
-                                        disciple?.district_id !==
+                                        detail?.district_id !==
                                         AuthUser.district
                                             ? "gray"
                                             : theme.colors.primary,
@@ -375,7 +385,7 @@ const Profile = ({ route, navigation }) => {
                             borderSize={110}
                             imageSize={100}
                             status={"Active"}
-                            uri={disciple && disciple.avatar}
+                            uri={detail && detail.avatar}
                             imageSource={userDefaultImage}
                         />
                     </TouchableOpacity>
@@ -388,8 +398,8 @@ const Profile = ({ route, navigation }) => {
                             }}
                         >
                             {/* {user.name} */}
-                            {disciple?.name} {disciple?.relation}{" "}
-                            {disciple?.guardian_name}
+                            {detail?.name} {detail?.relation}{" "}
+                            {detail?.guardian_name}
                         </Text>
                         <Text
                             allowFontScaling={false}
@@ -400,7 +410,7 @@ const Profile = ({ route, navigation }) => {
                         >
                             Form No:{" "}
                             <Text style={{ ...FONTS.body5 }}>
-                                {disciple?.form_no}
+                                {detail?.form_no}
                             </Text>
                         </Text>
                         <Text
@@ -412,7 +422,7 @@ const Profile = ({ route, navigation }) => {
                         >
                             Date of Birth:{" "}
                             <Text style={{ ...FONTS.body5 }}>
-                                {moment(disciple?.dob).format("DD-MM-YYYY")}
+                                {moment(detail?.dob).format("DD-MM-YYYY")}
                             </Text>
                         </Text>
                         <Text
@@ -424,7 +434,7 @@ const Profile = ({ route, navigation }) => {
                         >
                             Naamdan Center:{" "}
                             <Text style={{ ...FONTS.body5 }}>
-                                {disciple?.namdan_center_name}
+                                {detail?.namdan_center_name}
                             </Text>
                         </Text>
                         <Text
@@ -436,56 +446,56 @@ const Profile = ({ route, navigation }) => {
                         >
                             Naamdan Taken:{" "}
                             <Text style={{ ...FONTS.body5 }}>
-                                {disciple?.namdan_taken}
+                                {detail?.namdan_taken}
                             </Text>
                         </Text>
                     </View>
                     <View style={{ marginTop: 15 }}>
                         <FieldLine
                             label={"Mobile No."}
-                            value={disciple?.mobile_no}
+                            value={detail?.mobile_no}
                         />
-                        {disciple?.whatsapp_no !== "" && (
+                        {detail?.whatsapp_no !== "" && (
                             <FieldLine
                                 label={"Whatsapp No."}
-                                value={disciple?.whatsapp_no}
+                                value={detail?.whatsapp_no}
                             />
                         )}
 
                         <FieldLine
                             label={"Address"}
                             value={[
-                                disciple?.address,
-                                disciple?.tehsil_name,
-                                disciple?.district_name,
-                                disciple?.state_name,
-                                disciple?.country_name,
-                                disciple?.pincode ?? null,
+                                detail?.address,
+                                detail?.tehsil_name,
+                                detail?.district_name,
+                                detail?.state_name,
+                                detail?.country_name,
+                                detail?.pincode ?? null,
                             ].join(", ")}
                         />
                         <FieldLine
                             label={"Occupation"}
-                            value={disciple?.occupation}
+                            value={detail?.occupation}
                         />
-                        {disciple?.unique_id !== "" && (
+                        {detail?.unique_id !== "" && (
                             <FieldLine
                                 label={"Aadhaar No."}
-                                value={disciple?.unique_id}
+                                value={detail?.unique_id}
                             />
                         )}
-                        {disciple?.email !== "" && (
+                        {detail?.email !== "" && (
                             <FieldLine
                                 label={"Email ID"}
-                                value={disciple?.email}
+                                value={detail?.email}
                             />
                         )}
                     </View>
                 </View>
-                {disciple?.history.length > 0 && (
+                {detail?.history.length > 0 && (
                     <TouchableOpacity
                         onPress={() =>
                             navigation.push("History", {
-                                history: disciple?.history,
+                                history: detail?.history,
                             })
                         }
                         style={styles.historyBtn}
@@ -510,11 +520,11 @@ const Profile = ({ route, navigation }) => {
                 <View style={{ marginVertical: 15 }}>
                     <Field
                         label={
-                            disciple?.history.length > 0
-                                ? `Punar Updesh ${disciple?.history.length}`
+                            detail?.history.length > 0
+                                ? `Punar Updesh ${detail?.history.length}`
                                 : "Pratham Naam"
                         }
-                        value={disciple?.form_date}
+                        value={detail?.form_date}
                         enable={false}
                     />
                     {arr.map(({ label, value, minDate, enable }, i) => {
@@ -549,10 +559,10 @@ const Profile = ({ route, navigation }) => {
                         }
                     })}
                     {entryType !== "Satnaam Entry" &&
-                        disciple?.satnam_exam.length > 0 && (
+                        detail?.satnam_exam.length > 0 && (
                             <Field
                                 label="Satnaam"
-                                value={disciple?.satnam_date}
+                                value={detail?.satnam_date}
                                 enable={false}
                             >
                                 <View
@@ -561,30 +571,28 @@ const Profile = ({ route, navigation }) => {
                                         paddingHorizontal: 5,
                                     }}
                                 >
-                                    {disciple?.satnam_exam.map(
-                                        (item, index) => {
-                                            return (
-                                                <Field3
-                                                    key={index}
-                                                    label={`Exam ${index + 1}`}
-                                                    value={item.exam_date}
-                                                    enable={false}
-                                                    optionValue={
-                                                        item.result === "Pass"
-                                                            ? true
-                                                            : false
-                                                    }
-                                                />
-                                            );
-                                        }
-                                    )}
+                                    {detail?.satnam_exam.map((item, index) => {
+                                        return (
+                                            <Field3
+                                                key={index}
+                                                label={`Exam ${index + 1}`}
+                                                value={item.exam_date}
+                                                enable={false}
+                                                optionValue={
+                                                    item.result === "Pass"
+                                                        ? true
+                                                        : false
+                                                }
+                                            />
+                                        );
+                                    })}
                                 </View>
                             </Field>
                         )}
                     {entryType === "Satnaam Entry" && showSatnam ? (
                         <Field
                             label="Satnaam"
-                            value={disciple?.satnam_date}
+                            value={detail?.satnam_date}
                             enable={false}
                         >
                             <View
@@ -593,7 +601,7 @@ const Profile = ({ route, navigation }) => {
                                     paddingHorizontal: 5,
                                 }}
                             >
-                                {disciple?.satnam_exam.map((item, index) => {
+                                {detail?.satnam_exam.map((item, index) => {
                                     return (
                                         <Field3
                                             key={index}
@@ -611,21 +619,21 @@ const Profile = ({ route, navigation }) => {
                                 {enableSatnam && (
                                     <Field3
                                         label={`Exam ${
-                                            disciple?.satnam_exam.length + 1
+                                            detail?.satnam_exam.length + 1
                                         }`}
                                         value={selectedDate}
                                         enable={enableSatnam}
                                         onOptionChange={setPass}
                                         optionValue={pass}
                                         minDate={
-                                            disciple?.satnam_exam.length < 1
+                                            detail?.satnam_exam.length < 1
                                                 ? moment(
-                                                      disciple?.form_date,
+                                                      detail?.form_date,
                                                       "YYYY-MM-DD"
                                                   ).add(4, "M")
                                                 : moment(
-                                                      disciple?.satnam_exam[
-                                                          disciple?.satnam_exam
+                                                      detail?.satnam_exam[
+                                                          detail?.satnam_exam
                                                               .length - 1
                                                       ].exam_date,
                                                       "YYYY-MM-DD"
@@ -638,11 +646,11 @@ const Profile = ({ route, navigation }) => {
                         </Field>
                     ) : null}
                     {entryType !== "Sarnaam Entry" &&
-                        disciple?.sarnam_date !== "" && (
+                        detail?.sarnam_date !== "" && (
                             <Field
                                 label="Sarnaam"
                                 enable={false}
-                                value={disciple?.sarnam_date}
+                                value={detail?.sarnam_date}
                                 minDate={null}
                                 onDateChange={(e) => {}}
                             />
@@ -654,27 +662,27 @@ const Profile = ({ route, navigation }) => {
                                 enable={enableSarnam}
                                 value={selectedDate}
                                 minDate={moment(
-                                    disciple?.satnam_date,
+                                    detail?.satnam_date,
                                     "YYYY-MM-DD"
                                 ).add("1", "d")}
                                 onDateChange={setSelectedDate}
                             />
-                        ) : disciple?.sarnam_date !== "" ? (
+                        ) : detail?.sarnam_date !== "" ? (
                             <Field
                                 label="Sarnaam"
                                 enable={false}
-                                value={disciple?.sarnam_date}
+                                value={detail?.sarnam_date}
                                 minDate={null}
                                 onDateChange={(e) => {}}
                             />
                         ) : null
                     ) : null}
                     {entryType !== "Sarshabd Entry" &&
-                        disciple?.sarshabd_date !== "" && (
+                        detail?.sarshabd_date !== "" && (
                             <Field
                                 label="Sarshabd"
                                 enable={false}
-                                value={disciple?.sarshabd_date}
+                                value={detail?.sarshabd_date}
                                 minDate={null}
                                 onDateChange={(e) => {}}
                             />
@@ -686,22 +694,22 @@ const Profile = ({ route, navigation }) => {
                                 enable={true}
                                 value={selectedDate}
                                 minDate={moment(
-                                    disciple?.rules.sarshabd_date,
+                                    detail?.rules.sarshabd_date,
                                     "YYYY-MM-DD"
                                 ).add("1", "d")}
                                 onDateChange={setSelectedDate}
                             />
-                        ) : disciple?.sarshabd_date !== "" ? (
+                        ) : detail?.sarshabd_date !== "" ? (
                             <Field
                                 label="Sarshabd"
                                 enable={false}
-                                value={disciple?.sarshabd_date}
+                                value={detail?.sarshabd_date}
                                 minDate={null}
                                 onDateChange={(e) => {}}
                             />
                         ) : null
                     ) : null}
-                    {disciple?.shuddhikaran.length > 0 && (
+                    {detail?.shuddhikaran.length > 0 && (
                         <>
                             <View
                                 style={{
@@ -710,7 +718,7 @@ const Profile = ({ route, navigation }) => {
                                     height: 2,
                                 }}
                             />
-                            {disciple?.shuddhikaran.map((item, index) => (
+                            {detail?.shuddhikaran.map((item, index) => (
                                 <Field2
                                     key={index}
                                     label={`Shuddhikaran ${index + 1}`}
@@ -726,20 +734,20 @@ const Profile = ({ route, navigation }) => {
                     {entryType === "Shuddhikaran Entry" && (
                         <Field2
                             label={`Shuddhikaran ${
-                                disciple?.shuddhikaran.length + 1
+                                detail?.shuddhikaran.length + 1
                             }`}
                             value={selectedDate}
                             enable={true}
                             reason={reason}
                             minDate={
-                                disciple?.shuddhikaran.length === 0
+                                detail?.shuddhikaran.length === 0
                                     ? moment(
-                                          disciple?.form_date,
+                                          detail?.form_date,
                                           "YYYY-MM-DD"
                                       ).add(1, "d")
                                     : moment(
-                                          disciple?.shuddhikaran[
-                                              disciple?.shuddhikaran.length - 1
+                                          detail?.shuddhikaran[
+                                              detail?.shuddhikaran.length - 1
                                           ].date,
                                           "YYYY-MM_DD"
                                       ).add(1, "d")
@@ -750,14 +758,12 @@ const Profile = ({ route, navigation }) => {
                     )}
                     {entryType === "Punar Updesh Entry" && (
                         <Field2
-                            label={`Punar Updesh ${
-                                disciple?.history.length + 1
-                            }`}
+                            label={`Punar Updesh ${detail?.history.length + 1}`}
                             value={selectedDate}
                             enable={true}
                             reason={reason}
                             minDate={moment(
-                                disciple?.form_date,
+                                detail?.form_date,
                                 "YYYY-MM-DD"
                             ).add(1, "d")}
                             onReasonChange={(text) => setReason(text)}
@@ -828,7 +834,7 @@ const Profile = ({ route, navigation }) => {
                     <Image
                         resizeMode="contain"
                         style={{ width: SIZES.width, height: SIZES.height }}
-                        source={{ uri: disciple?.avatar }}
+                        source={{ uri: detail?.avatar }}
                     />
                 </View>
             </Modal>
@@ -836,4 +842,4 @@ const Profile = ({ route, navigation }) => {
     );
 };
 
-export default Profile;
+export default withDetailContext(Profile);

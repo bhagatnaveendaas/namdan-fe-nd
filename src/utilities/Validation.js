@@ -63,10 +63,10 @@ export const NewNonIndianDiscipleSchema = Yup.object().shape({
         .required("Please fill Pincode")
         .min(6, "Enter valid pin code, it must be 6 characters long"),
     email: Yup.string().email("Enter a valid email address."),
-    otp: Yup.string()
-        .required("Please enter otp.")
-        .length(6, "OTP must be 6 characters long"),
-    file1: Yup.string(),
+    // otp: Yup.string()
+    //     .required("Please enter otp.")
+    //     .length(6, "OTP must be 6 characters long"),
+    file1: Yup.string().nullable(),
 });
 export const NewIndianDiscipleSchema = Yup.object().shape({
     avatar: Yup.string().required("Please provide profile picture."),
@@ -129,9 +129,9 @@ export const NewIndianDiscipleSchema = Yup.object().shape({
         .required("Please fill Pincode")
         .min(6, "Enter valid pin code, it must be 6 characters long"),
     email: Yup.string().email("Enter a valid email address."),
-    otp: Yup.string()
-        .required("Please enter otp.")
-        .length(6, "OTP must be 6 characters long"),
-    file1: Yup.string(),
-    file2: Yup.string(),
+    // otp: Yup.string()
+    //     .required("Please enter otp.")
+    //     .length(6, "OTP must be 6 characters long"),
+    file1: Yup.string().nullable(),
+    file2: Yup.string().nullable(),
 });

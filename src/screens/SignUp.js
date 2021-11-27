@@ -80,6 +80,7 @@ const SignUp = ({ navigation }) => {
     const scrollRef = useRef();
     const [namdan_takenAt, setNamedanTakenAt] = useState([]);
     const [relations, setRelations] = useState([]);
+    const [occupations, setOccupations] = useState([]);
     const [isDisable, setIsDisable] = useState(false);
     const [showOtp, setShowOtp] = useState(false);
     const [otp, setOtp] = useState("");
@@ -135,10 +136,10 @@ const SignUp = ({ navigation }) => {
     };
     const getOccupationOption = async () => {
         try {
-            const { data } = await getData("/misc/list?slug=occupations");
+            const { data } = await getData("/misc/list?slug=occupation");
             if (data.success) {
                 const temp = [...data?.data].map((item) => item.name);
-                console.log(temp);
+                setOccupations(temp);
             }
         } catch (error) {
             console.log("error", error);
@@ -880,14 +881,16 @@ const SignUp = ({ navigation }) => {
                     <Image source={userIcon} style={styles.appendIcon} />
                 }
             />
-            <FormTextInput
+            <FormSelectInput
                 label="Occupation"
                 value={userData.occupation}
-                placeholder="Enter Your Occupation"
+                onValueChange={(value) => onChange(value, "occupation")}
+                options={occupations}
                 required={true}
-                containerStyle={styles.textFieldContainer}
-                onChangeText={(text) => onChange(text, "occupation")}
+                containerStyle={styles.selectFieldContainer}
+                placeholder="Select Occupation"
             />
+
             <DatePicker
                 label="Date of Birth"
                 placeholder="Select Date of birth"

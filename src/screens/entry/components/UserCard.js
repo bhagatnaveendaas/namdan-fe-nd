@@ -17,11 +17,13 @@ const UserCard = ({ user, onPress }) => {
         district_name,
         state_name,
         country_name,
+        form_date,
         satnam_date,
         sarnam_date,
+        sarshabd_date,
     } = user;
     let avatar = user?.avatar;
-    const naamLevel = ["pratham_date", satnam_date, sarnam_date, null];
+    const naamLevel = [form_date, satnam_date, sarnam_date, sarshabd_date];
     return (
         <TouchableHighlight
             activeOpacity={1}
