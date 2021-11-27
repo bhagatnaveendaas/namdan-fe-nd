@@ -124,6 +124,7 @@ const EditDisciple = ({ navigation, route, ...props }) => {
                     ...userData,
                     ...rest,
                     guardianName: guardian_name,
+                    ...formFields,
                 });
             }
         } catch (error) {
