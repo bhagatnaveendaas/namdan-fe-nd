@@ -635,7 +635,6 @@ const SignUp = ({ navigation }) => {
                 label="Form No."
                 value={userData.form_no}
                 placeholder={"Enter Form Number"}
-                required={true}
                 containerStyle={styles.textFieldContainer}
                 onChangeText={(text) => onChange(text, "form_no")}
             />
@@ -908,10 +907,10 @@ const SignUp = ({ navigation }) => {
             />
             {userData.occupation === "Other" && (
                 <FormTextInput
-                    label="Other Occupation Name"
+                    label="Other Occupation "
                     autoFocus={true}
                     value={userData.otherOccupation}
-                    placeholder={"Enter your other occupation name"}
+                    placeholder={"Enter your other occupation"}
                     required={true}
                     containerStyle={styles.textFieldContainer}
                     onChangeText={(text) => onChange(text, "otherOccupation")}
@@ -1008,10 +1007,10 @@ const SignUp = ({ navigation }) => {
             ) : null}
             {userData?.tehsil_id === -1 ? (
                 <FormTextInput
-                    label="Other Districts"
+                    label="Other Tehsil"
                     value={userData?.tehsil_name}
                     required={true}
-                    placeholder="Enter District Name"
+                    placeholder="Enter Tehsil Name"
                     containerStyle={styles.textFieldContainer}
                     onChangeText={(text) => onChange(text, "tehsil_name")}
                 />
@@ -1144,7 +1143,7 @@ const SignUp = ({ navigation }) => {
                             <Timer
                                 color={"blue"}
                                 start={showOtp}
-                                time={300}
+                                time={60}
                                 onPress={requestOtp}
                             />
                         }

@@ -114,22 +114,38 @@ const Field = ({
                     source={calenderImage}
                 />
             </View>
-            <TextInput
-                value={reason}
-                placeholder="Enter the reason...."
-                multiline
-                editable={enable}
-                autoFocus
-                onChangeText={onReasonChange}
-                style={{
-                    backgroundColor: theme.colors.white,
-                    padding: 0,
-                    paddingHorizontal: 5,
-                    ...FONTS.body5,
-                    marginTop: 5,
-                    borderRadius: 5,
-                }}
-            />
+            {enable ? (
+                <TextInput
+                    value={reason}
+                    placeholder="Enter the reason...."
+                    multiline
+                    editable={enable}
+                    autoFocus
+                    onChangeText={onReasonChange}
+                    style={{
+                        backgroundColor: theme.colors.white,
+                        padding: 0,
+                        paddingHorizontal: 5,
+                        ...FONTS.body5,
+                        marginTop: 5,
+                        borderRadius: 5,
+                    }}
+                />
+            ) : (
+                <Text
+                    allowFontScaling={false}
+                    style={{
+                        backgroundColor: theme.colors.white,
+                        padding: 0,
+                        paddingHorizontal: 5,
+                        ...FONTS.body5,
+                        marginTop: 5,
+                        borderRadius: 5,
+                    }}
+                >
+                    {reason.trim()}
+                </Text>
+            )}
             {show && (
                 <DateTimePicker
                     testID="profilechange"

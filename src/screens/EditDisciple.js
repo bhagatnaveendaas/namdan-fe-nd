@@ -714,7 +714,6 @@ const EditDisciple = ({ navigation, route, ...props }) => {
                     label="Form No."
                     value={userData.form_no}
                     placeholder={"Enter Form Number"}
-                    required={true}
                     containerStyle={styles.textFieldContainer}
                     onChangeText={(text) => onChange(text, "form_no")}
                 />
