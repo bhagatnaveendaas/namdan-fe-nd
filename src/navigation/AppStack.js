@@ -14,6 +14,7 @@ import Messages from "../screens/Messages";
 import CreateMessage from "../screens/CreateMessage";
 import MessageDetails from "../screens/MessageDetails";
 import Entry from "../screens/entry/index";
+import EditDate from "../screens/EditDate";
 import theme from "../constants/theme";
 import AddSewadaar from "../screens/AddSewadaar";
 import SearchScreen from "../screens/Search";
@@ -49,15 +50,16 @@ const AppStack = () => {
             />
             <Stack.Screen name="Search" component={SearchScreen} />
             <Stack.Screen name="Entry" component={Entry} />
-           
-                <Stack.Screen name="Profile" component={Profile} />
-                <Stack.Screen name="Edit" component={EditDisciple} />
-                <Stack.Screen
-                    name="History"
-                    component={History}
-                    options={{ title: "Punar Updesh History" }}
-                />
-            
+
+            <Stack.Screen name="Profile" component={Profile} />
+            <Stack.Screen name="Edit" component={EditDisciple} />
+            <Stack.Screen name="EditDate" component={EditDate} />
+            <Stack.Screen
+                name="History"
+                component={History}
+                options={{ title: "Punar Updesh History" }}
+            />
+
             <Stack.Screen name="Pratham Naam" component={SignUp} />
             <Stack.Screen
                 name="CountryDashboard"

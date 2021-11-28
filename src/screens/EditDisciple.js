@@ -51,6 +51,45 @@ const pinIcon = require("../../assets/icons/locationPin.png");
 const userIcon = require("../../assets/icons/userFilled.png");
 import { useAuth } from "../context/AuthContext";
 import { withDetailContext } from "../context/DetailContex";
+import { FONTS } from "../constants/fonts";
+
+const EditDateButton = ({ label, value, onPress }) => {
+    let date = moment(value, "YYYY-MM-DD").format("DD-MM-YYYY");
+    return (
+        <TouchableOpacity
+            style={{
+                alignItems: "center",
+                justifyContent: "space-between",
+                padding: 10,
+                flexDirection: "row",
+                marginBottom: 10,
+                backgroundColor: theme.colors.lightGray,
+                borderRadius: 20,
+                paddingHorizontal: 22,
+            }}
+            onPress={onPress}
+        >
+            <Text
+                allowFontScaling={false}
+                style={{
+                    ...FONTS.h4,
+                    color: theme.colors.primary,
+                }}
+            >
+                {label}
+            </Text>
+            <Text
+                allowFontScaling={false}
+                style={{
+                    ...FONTS.body4,
+                    color: theme.colors.primary,
+                }}
+            >
+                {date}
+            </Text>
+        </TouchableOpacity>
+    );
+};
 
 const threeYearsBack = new Date().setDate(new Date().getDate() - 365 * 3 - 1);
 const EditDisciple = ({ navigation, route, ...props }) => {
@@ -62,14 +101,17 @@ const EditDisciple = ({ navigation, route, ...props }) => {
         state: { detail },
         dispatch,
     } = props.global;
-    // console.log(props.global.state);
+
     const formFields = {
-        unique_id: user?.unique_id || "",
-        mobile_no: user?.mobile_no.substr(user?.mobile_no.length - 10) || "",
+        unique_id: detail?.unique_id || "",
+        mobile_no:
+            detail?.mobile_no.substr(detail?.mobile_no.length - 10) || "",
         whatsapp_no:
-            user?.whatsapp_no.substr(user?.whatsapp_no.length - 10) || "",
-        whatsapp_country_code: user?.whatsapp_country_code || "+91",
-        country_code: user?.ountry_code || "+91",
+            detail?.whatsapp_no.substr(detail?.whatsapp_no.length - 10) || "",
+        whatsapp_country_code: detail?.whatsapp_country_code || "+91",
+        guardianName: detail?.guardian_name,
+        country_code: detail?.ountry_code || "+91",
+        tehsil_name: "",
     };
     const isIndian = authUser?.country === 2;
     const scrollRef = useRef();
@@ -105,40 +147,8 @@ const EditDisciple = ({ navigation, route, ...props }) => {
         }
     };
 
-    const [userData, setUserData] = useState(detail);
-    const fetchDiscipleDetails = async (id) => {
-        setLoading(true);
-        try {
-            const { data } = await getData(getUniqueDispleUrl(id));
-            if (data?.data) {
-                const {
-                    unique_id,
-                    whatsapp_no,
-                    mobile_no,
-                    guardian_name,
-                    whatsapp_country_code,
-                    country_code,
-                    ...rest
-                } = data?.data;
-                setUserData({
-                    ...userData,
-                    ...rest,
-                    guardianName: guardian_name,
-                    ...formFields,
-                });
-            }
-        } catch (error) {
-            if (error && error.response) {
-                console.error(`Error which searching disciple.`, error);
-                console.error(error.response.data.error);
-                alert(error.response.data.error);
-            } else {
-                console.error(`Error which searching disciple.`, error);
-            }
-        }
-        setLoading(false);
-    };
-    // console.log(userData?.satnam_attendance);
+    const [userData, setUserData] = useState({ ...detail, ...formFields });
+
     const getCountries = async () => {
         const { data } = await getData("/country/list?page=1&limit=1000");
         const temp = data?.data.countries;
@@ -183,7 +193,6 @@ const EditDisciple = ({ navigation, route, ...props }) => {
         getNaamDanTakenOption();
         getRelationOption();
         getOccupationOption();
-        fetchDiscipleDetails(user?.id);
     }, []);
     useEffect(() => {
         getStates(userData.country_id);
@@ -327,10 +336,9 @@ const EditDisciple = ({ navigation, route, ...props }) => {
             });
             if (data?.success) {
                 setDisableScreen(false);
-                fetchDiscipleDetails(user?.id);
                 dispatch({
                     type: "EDIT_DETAILS",
-                    payload: { satnam_date: userData?.satnam_date },
+                    payload: { ...userData },
                 });
             }
         } catch (error) {
@@ -350,24 +358,9 @@ const EditDisciple = ({ navigation, route, ...props }) => {
             });
             if (data?.success) {
                 setDisableScreen(false);
-                fetchDiscipleDetails(user?.id);
                 dispatch({
                     type: "EDIT_DETAILS",
-                    payload: {
-                        ...detail,
-                        satnam_attendance: [
-                            ...detail.satnam_attendance.map((j, i) =>
-                                i == index
-                                    ? {
-                                          ...j,
-                                          attendance_date:
-                                              userData.satnam_attendance[index]
-                                                  .attendance_date,
-                                      }
-                                    : j
-                            ),
-                        ],
-                    },
+                    payload: { ...userData },
                 });
             }
         } catch (error) {
@@ -386,10 +379,9 @@ const EditDisciple = ({ navigation, route, ...props }) => {
             });
             if (data?.success) {
                 setDisableScreen(false);
-                fetchDiscipleDetails(user?.id);
                 dispatch({
                     type: "EDIT_DETAILS",
-                    payload: { sarnam_date: userData?.sarnam_date },
+                    payload: { ...userData },
                 });
             }
         } catch (error) {
@@ -408,10 +400,9 @@ const EditDisciple = ({ navigation, route, ...props }) => {
             });
             if (data?.success) {
                 setDisableScreen(false);
-                fetchDiscipleDetails(user?.id);
                 dispatch({
                     type: "EDIT_DETAILS",
-                    payload: { sarshabd_date: userData?.sarshabd_date },
+                    payload: { ...userData },
                 });
             }
         } catch (error) {
@@ -454,8 +445,7 @@ const EditDisciple = ({ navigation, route, ...props }) => {
         if (userData.unique_id !== "" && userData.unique_id.length >= 12) {
             formData.append("unique_id", userData.unique_id);
         }
-
-        if (userData.avatar !== user?.avatar) {
+        if (userData.avatar !== detail?.avatar) {
             formData.append("avatar", {
                 uri:
                     Platform.OS === "android"
@@ -465,7 +455,7 @@ const EditDisciple = ({ navigation, route, ...props }) => {
                 name: "avatar.jpg",
             });
         }
-        if (userData.file1 !== user?.file1) {
+        if (userData.file1 !== detail?.file1) {
             formData.append("file1", {
                 uri:
                     Platform.OS === "android"
@@ -475,7 +465,7 @@ const EditDisciple = ({ navigation, route, ...props }) => {
                 name: "file1.jpg",
             });
         }
-        if (userData.file2 !== user?.file2) {
+        if (userData.file2 !== detail?.file2) {
             formData.append("file2", {
                 uri:
                     Platform.OS === "android"
@@ -487,7 +477,7 @@ const EditDisciple = ({ navigation, route, ...props }) => {
         }
         const config = {
             method: "put",
-            url: `${appConfig.api_url}/disciple/${user.id}/edit`,
+            url: `${appConfig.api_url}/disciple/${userData.id}/edit`,
             headers: {
                 key: "dsv213a213sfv21123fs31d3fd132c3dv31dsf33",
                 Accept: "multipart/form-data",
@@ -498,6 +488,7 @@ const EditDisciple = ({ navigation, route, ...props }) => {
         setIsDisable(true);
 
         console.log(formData);
+        console.log(userData.avatar);
         axios(config)
             .then((response) => {
                 setUserData(formFields);
@@ -506,7 +497,7 @@ const EditDisciple = ({ navigation, route, ...props }) => {
                 setTimeout(() => {
                     setShowAlert(false);
                     setIsDisable(false);
-                    navigation.navigate("AshramDashboard");
+                    navigation.pop();
                 }, 1500);
             })
             .catch((error) => {
@@ -593,7 +584,7 @@ const EditDisciple = ({ navigation, route, ...props }) => {
                 const { data } = await postJsonData(searchDiscipleUrl(1), {
                     search_by: "unique_id",
                     search_value: text,
-                    country_id: user.country,
+                    country_id: userData?.country_id,
                 });
                 if (data?.data.disciples.length > 0) {
                     setShowAadharRef(true);
@@ -617,7 +608,7 @@ const EditDisciple = ({ navigation, route, ...props }) => {
                 const { data } = await postJsonData(searchDiscipleUrl(1), {
                     search_by: "mobile_no",
                     search_value: userData.whatsapp_country_code + text,
-                    country_id: user.country,
+                    country_id: userData?.country_id,
                 });
 
                 if (data?.data.disciples.length > 0) {
@@ -642,7 +633,7 @@ const EditDisciple = ({ navigation, route, ...props }) => {
                 const { data } = await postJsonData(searchDiscipleUrl(1), {
                     search_by: "mobile_no",
                     search_value: userData.country_code + text,
-                    country_id: user.country,
+                    country_id: userData?.country_id,
                 });
                 if (data?.data.disciples.length > 0) {
                     setShowRef(true);
@@ -1174,132 +1165,84 @@ const EditDisciple = ({ navigation, route, ...props }) => {
                     <>
                         <UploadButton
                             label={
-                                userData.file1 == ""
+                                userData.file1 == "" || userData.file1 == null
                                     ? `Upload ${fields.file1Field}`
                                     : `Uploaded ${fields.file1Field}`
                             }
-                            tintColor={userData.file1 == "" ? "" : "#83e85a"}
-                            icon={userData.file1 == "" ? "" : checkIcon}
+                            tintColor={
+                                userData.file1 == "" || userData.file1 == null
+                                    ? ""
+                                    : "#83e85a"
+                            }
+                            icon={
+                                userData.file1 == "" || userData.file1 == null
+                                    ? ""
+                                    : checkIcon
+                            }
                             onPressFn={openAadharFrontSheet}
                         />
                         {fields.file2Field !== "" &&
                             fields.file2Field !== null && (
                                 <UploadButton
                                     label={
-                                        userData.file2 == ""
+                                        userData.file2 == "" ||
+                                        userData.file2 == null
                                             ? `Upload ${fields.file2Field}`
                                             : `Uploaded ${fields.file2Field}`
                                     }
                                     tintColor={
-                                        userData.file2 == "" ? "" : "#83e85a"
+                                        userData.file2 == "" ||
+                                        userData.file2 == null
+                                            ? ""
+                                            : "#83e85a"
                                     }
-                                    icon={userData.file2 == "" ? "" : checkIcon}
+                                    icon={
+                                        userData.file2 == "" ||
+                                        userData.file2 == null
+                                            ? ""
+                                            : checkIcon
+                                    }
                                     onPressFn={openAadharBackSheet}
                                 />
                             )}
                     </>
                 )}
-                <View>
-                    {/* {detail?.satnam_attendance.map((item, index) => {
+                <View style={{ marginTop: 10 }}>
+                    {detail?.satnam_attendance.map((item, index) => {
                         return (
-                            <DatePicker
+                            <EditDateButton
                                 key={index}
-                                label={`Hajri${index + 1} Date`}
-                                date={item?.attendance_date}
-                                value={moment(
-                                    item?.attendance_date,
-                                    "YYYY-MM-DD"
-                                )}
-                                setDate={(date) => {
-                                    setUserData({
-                                        ...userData,
-                                        satnam_attendance: [
-                                            ...userData.satnam_attendance.map(
-                                                (j, i) =>
-                                                    i == index
-                                                        ? {
-                                                              ...j,
-                                                              attendance_date:
-                                                                  date,
-                                                          }
-                                                        : j
-                                            ),
-                                        ],
+                                value={item.attendance_date}
+                                onPress={() => {
+                                    navigation.navigate("EditDate", {
+                                        dateType: "Hajri",
+                                        index,
                                     });
                                 }}
-                                maximumDate={new Date()}
-                                containerStyle={styles.dateContainer}
-                                appendComponent={
-                                    <>
-                                        {item?.attendance_date !==
-                                            (userData &&
-                                                userData?.satnam_attendance[
-                                                    index
-                                                ]?.attendance_date) && (
-                                            <SelfDisableButton
-                                                label="Update date"
-                                                onPress={() =>
-                                                    updateHajri(item.id, index)
-                                                }
-                                            />
-                                        )}
-                                        <Image
-                                            source={calendarIcon}
-                                            style={styles.appendIcon}
-                                        />
-                                    </>
-                                }
+                                label={`Hajri ${index + 1}`}
                             />
                         );
-                    })} */}
-                    {userData?.satnam_date !== "" && (
-                        <DatePicker
-                            label="Satnam Date"
-                            date={userData.satnam_date}
-                            value={moment(userData.satnam_date, "YYYY-MM-DD")}
-                            setDate={(date) => onChange(date, "satnam_date")}
-                            maximumDate={new Date()}
-                            containerStyle={styles.dateContainer}
-                            appendComponent={
-                                <>
-                                    {userData?.satnam_date !==
-                                        detail?.satnam_date && (
-                                        <SelfDisableButton
-                                            label="Update date"
-                                            onPress={updateSatnam}
-                                        />
-                                    )}
-                                    <Image
-                                        source={calendarIcon}
-                                        style={styles.appendIcon}
-                                    />
-                                </>
-                            }
+                    })}
+                    {detail?.satnam_date !== "" && (
+                        <EditDateButton
+                            value={detail?.satnam_date}
+                            onPress={() => {
+                                navigation.navigate("EditDate", {
+                                    dateType: "Satnam",
+                                });
+                            }}
+                            label={"Satnam"}
                         />
                     )}
-                    {userData?.sarnam_date !== "" && (
-                        <DatePicker
-                            label="Sarnam Date"
-                            date={userData?.sarnam_date}
-                            value={moment(userData?.sarnam_date, "YYYY-MM-DD")}
-                            setDate={(date) => onChange(date, "sarnam_date")}
-                            maximumDate={new Date()}
-                            containerStyle={styles.dateContainer}
-                            appendComponent={
-                                <>
-                                    {userData?.sarnam_date !==
-                                        detail?.sarnam_date && (
-                                        <SelfDisableButton
-                                            label="Update date"
-                                            onPress={updateSarnam}
-                                        />
-                                    )}
-                                    <Image
-                                        source={calendarIcon}
-                                        style={styles.appendIcon}
-                                    />
-                                </>
-                            }
+                    {detail?.sarnam_date !== "" && (
+                        <EditDateButton
+                            value={detail?.sarnam_date}
+                            onPress={() => {
+                                navigation.navigate("EditDate", {
+                                    dateType: "Sarnam",
+                                });
+                            }}
+                            label={"Sarnam"}
                         />
                     )}
                     {userData?.sarshabd_date !== "" && (
