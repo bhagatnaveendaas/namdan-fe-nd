@@ -262,12 +262,12 @@ const Profile = ({ route, navigation, ...props }) => {
         showSubmitButton = true;
     }
     const enableSarnam =
-        countDays(userData?.satnam_date, userData?.rules?.sarnam_date) >= 1 &&
+        countDays(userData?.satnam_date, userData?.rules?.sarnam_date) >= 0 &&
         entryType === "Sarnaam Entry" &&
         userData?.sarnam_date === "";
 
     const enableSarshabd =
-        countDays(userData?.sarnam_date, userData?.rules?.sarshabd_date) >= 1 &&
+        countDays(userData?.sarnam_date, userData?.rules?.sarshabd_date) >= 0 &&
         userData?.sarnam_date !== "" &&
         userData?.sarshabd_date === "";
 
@@ -404,6 +404,7 @@ const Profile = ({ route, navigation, ...props }) => {
                             style={{
                                 color: theme.colors.primary,
                                 ...FONTS.h3,
+                                textAlign: "center",
                             }}
                         >
                             {/* {user.name} */}
@@ -707,7 +708,7 @@ const Profile = ({ route, navigation, ...props }) => {
                                 minDate={moment(
                                     userData?.rules.sarshabd_date,
                                     "YYYY-MM-DD"
-                                ).add("1", "d")}
+                                ).add(1, "d")}
                                 onDateChange={setSelectedDate}
                             />
                         ) : userData?.sarshabd_date !== "" ? (

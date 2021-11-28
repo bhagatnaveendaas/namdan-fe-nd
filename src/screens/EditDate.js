@@ -134,7 +134,17 @@ const EditDate = ({ route, navigation, ...props }) => {
                 }
             })
             .catch((error) => {
-                console.log(error);
+                if (error && error.response) {
+                    console.error(error.response.data.error);
+                    alert(error.response.data.error);
+                } else {
+                    if (error && error.response) {
+                        console.error(error.response.data.error);
+                        alert(error.response.data.error);
+                    } else {
+                        console.error(`Error.`, error);
+                    }
+                }
             })
             .finally(() => {
                 setDisableScreen(false);
@@ -158,7 +168,12 @@ const EditDate = ({ route, navigation, ...props }) => {
                 }
             })
             .catch((error) => {
-                console.log(error);
+                if (error && error.response) {
+                    console.error(error.response.data.error);
+                    alert(error.response.data.error);
+                } else {
+                    console.error(`Error.`, error);
+                }
             })
             .finally(() => {
                 setDisableScreen(false);
@@ -182,7 +197,12 @@ const EditDate = ({ route, navigation, ...props }) => {
                 }
             })
             .catch((error) => {
-                console.log(error);
+                if (error && error.response) {
+                    console.error(error.response.data.error);
+                    alert(error.response.data.error);
+                } else {
+                    console.error(`Error.`, error);
+                }
             })
             .finally(() => {
                 setDisableScreen(false);
