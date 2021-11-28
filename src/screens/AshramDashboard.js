@@ -107,9 +107,9 @@ const Home = ({ navigation }) => {
                     prathams={kpiCounts.prathams}
                     satnams={kpiCounts.satnams}
                     sarnams={kpiCounts.sarnams}
-                    sarshabd={kpiCounts?.sarshabd ?? 0}
-                    prathamVsSatnam={kpiCounts.pending_satnams}
-                    punarUpdesh={0}
+                    sarshabd={kpiCounts?.sarshabds}
+                    prathamVsSatnam={kpiCounts?.pending_satnams}
+                    punarUpdesh={kpiCounts?.reupdesh}
                 />
                 {roleId === 8 && (
                     <View>
