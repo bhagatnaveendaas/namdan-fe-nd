@@ -46,6 +46,16 @@ export const NewNonIndianDiscipleSchema = Yup.object().shape({
     occupation: Yup.string()
         .required("Please fill Occupation.")
         .matches(/^[a-zA-Z ]*$/, "Occupation must contain alphabets only."),
+    otherOccupation: Yup.string().when("occupation", (occupation) => {
+        if (occupation === "Other" || occupation === "other") {
+            return Yup.string()
+                .required("Please fill Occupation.")
+                .matches(
+                    /^[a-zA-Z ]*$/,
+                    "Occupation must contain alphabets only."
+                );
+        }
+    }),
     dob: Yup.string().required("Date of birth is required."),
     country_id: Yup.number()
         .required("Please fill Country.")
@@ -110,6 +120,16 @@ export const NewIndianDiscipleSchema = Yup.object().shape({
     occupation: Yup.string()
         .required("Please fill Occupation.")
         .matches(/^[a-zA-Z ]*$/, "Occupation must contain alphabets only."),
+    otherOccupation: Yup.string().when("occupation", (occupation) => {
+        if (occupation === "Other" || occupation === "other") {
+            return Yup.string()
+                .required("Please fill Occupation.")
+                .matches(
+                    /^[a-zA-Z ]*$/,
+                    "Occupation must contain alphabets only."
+                );
+        }
+    }),
     dob: Yup.string().required("Date of birth is required."),
 
     country_id: Yup.number()
@@ -121,7 +141,14 @@ export const NewIndianDiscipleSchema = Yup.object().shape({
     district_id: Yup.number()
         .required("Please fill District.")
         .min(1, "Please fill District."),
-    tehsil_id: Yup.number(),
+    tehsil_id: Yup.number()
+        .required("Please Select Tehsil")
+        .min(1, "Please fill District."),
+    tehsil_name: Yup.string().when("tehsil_id", (tehsil_id) => {
+        if (tehsil_id < 0) {
+            return Yup.string().required("Please fill other tehsil name");
+        }
+    }),
     address: Yup.string()
         .required("Please fill Address.")
         .min(3, "Address must be atleast 3 characters long"),

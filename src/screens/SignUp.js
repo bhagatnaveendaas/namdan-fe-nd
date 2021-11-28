@@ -74,6 +74,8 @@ const SignUp = ({ navigation }) => {
         namdan_taken: "",
         country_code: "+91",
         whatsapp_country_code: "+91",
+        tehsil_name: "",
+        otherOccupation: "",
     };
 
     const isIndian = user?.country === 2;
@@ -91,11 +93,16 @@ const SignUp = ({ navigation }) => {
     const [cities, setCities] = useState([]);
     const [emailError, setEmailError] = useState("");
     const [showAlert, setShowAlert] = useState(false);
+    const [tehsilOther, setTehsilOther] = useState(false);
     const [fields, setFields] = useState({
         uniqueNoField: "",
         file1Field: "",
         file2Field: "",
     });
+    const other = {
+        id: -1,
+        name: "Other",
+    };
     const getFields = async (countryId) => {
         try {
             const { data } = await getData(`/country_id/${countryId}/id`);
@@ -340,7 +347,12 @@ const SignUp = ({ navigation }) => {
         formData.append("state_id", userData.state_id);
         if (isIndian) {
             formData.append("district_id", userData.district_id);
-            formData.append("tehsil_id", userData.tehsil_id);
+
+            if (userData.tehsil_id > 0) {
+                formData.append("tehsil_id", userData.tehsil_id);
+            } else {
+                formData.append("tehsil_name", userData.tehsil_name);
+            }
         } else {
             formData.append("city_id", userData.city_id);
         }
@@ -359,7 +371,11 @@ const SignUp = ({ navigation }) => {
             formData.append("form_no", userData.form_no);
         }
         formData.append("form_date", userData.form_date);
-        formData.append("occupation", userData.occupation);
+        if (userData.occupation === "Other") {
+            formData.append("occupation", userData.otherOccupation);
+        } else {
+            formData.append("occupation", userData.occupation);
+        }
         formData.append("namdan_taken", userData.namdan_taken);
         formData.append("email", userData.email);
         if (userData.aadhaar_no !== "" && userData.aadhaar_no.length >= 12) {
@@ -890,7 +906,17 @@ const SignUp = ({ navigation }) => {
                 containerStyle={styles.selectFieldContainer}
                 placeholder="Select Occupation"
             />
-
+            {userData.occupation === "Other" && (
+                <FormTextInput
+                    label="Other Occupation Name"
+                    autoFocus={true}
+                    value={userData.otherOccupation}
+                    placeholder={"Enter your other occupation name"}
+                    required={true}
+                    containerStyle={styles.textFieldContainer}
+                    onChangeText={(text) => onChange(text, "otherOccupation")}
+                />
+            )}
             <DatePicker
                 label="Date of Birth"
                 placeholder="Select Date of birth"
@@ -973,12 +999,23 @@ const SignUp = ({ navigation }) => {
                     onValueChange={(value) => {
                         onChange(value, "tehsil_id");
                     }}
-                    data={tehsils}
+                    required={true}
+                    data={[other, ...tehsils]}
                     containerStyle={styles.textFieldContainer}
                     placeholderText="Select Tehsil"
+                    setOtherSelected={setTehsilOther}
                 />
             ) : null}
-
+            {userData?.tehsil_id === -1 ? (
+                <FormTextInput
+                    label="Other Districts"
+                    value={userData?.tehsil_name}
+                    required={true}
+                    placeholder="Enter District Name"
+                    containerStyle={styles.textFieldContainer}
+                    onChangeText={(text) => onChange(text, "tehsil_name")}
+                />
+            ) : null}
             <FormTextInput
                 label="Address"
                 value={userData.address}
