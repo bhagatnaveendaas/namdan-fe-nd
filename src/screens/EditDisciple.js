@@ -104,14 +104,17 @@ const EditDisciple = ({ navigation, route, ...props }) => {
 
     const formFields = {
         unique_id: detail?.unique_id || "",
+        tehsil_name: "",
+        otherOccupation: detail.occupation,
+        ...detail,
+        tehsil_id: detail.tehsil_id === null ? -1 : detail.tehsil_id,
         mobile_no:
             detail?.mobile_no.substr(detail?.mobile_no.length - 10) || "",
         whatsapp_no:
             detail?.whatsapp_no.substr(detail?.whatsapp_no.length - 10) || "",
         whatsapp_country_code: detail?.whatsapp_country_code || "+91",
         guardianName: detail?.guardian_name,
-        country_code: detail?.ountry_code || "+91",
-        tehsil_name: "",
+        country_code: detail?.country_code || "+91",
     };
     const isIndian = authUser?.country === 2;
     const scrollRef = useRef();
@@ -147,8 +150,7 @@ const EditDisciple = ({ navigation, route, ...props }) => {
         }
     };
 
-    const [userData, setUserData] = useState({ ...detail, ...formFields });
-
+    const [userData, setUserData] = useState(formFields);
     const getCountries = async () => {
         const { data } = await getData("/country/list?page=1&limit=1000");
         const temp = data?.data.countries;
@@ -156,6 +158,7 @@ const EditDisciple = ({ navigation, route, ...props }) => {
     };
 
     const getRelationOption = async () => {
+        setLoading(true);
         try {
             const { data } = await getData("/misc/list?slug=relation");
             if (data.success) {
@@ -165,8 +168,10 @@ const EditDisciple = ({ navigation, route, ...props }) => {
         } catch (error) {
             console.log("error", error);
         }
+        setLoading(false);
     };
     const getNaamDanTakenOption = async () => {
+        setLoading(true);
         try {
             const { data } = await getData("/misc/list?slug=namdan_taken");
             if (data.success) {
@@ -176,17 +181,33 @@ const EditDisciple = ({ navigation, route, ...props }) => {
         } catch (error) {
             console.log("error", error);
         }
+        setLoading(false);
     };
     const getOccupationOption = async () => {
+        setLoading(true);
         try {
             const { data } = await getData("/misc/list?slug=occupation");
             if (data.success) {
                 const temp = [...data?.data].map((item) => item.name);
+                if (temp.includes(detail.occupation)) {
+                    setUserData({
+                        ...userData,
+                        occupation: detail.occupation,
+                        otherOccupation: "",
+                    });
+                } else {
+                    setUserData({
+                        ...userData,
+                        occupation: "Other",
+                        otherOccupation: detail.occupation,
+                    });
+                }
                 setOccupations(temp);
             }
         } catch (error) {
             console.log("error", error);
         }
+        setLoading(false);
     };
     useEffect(() => {
         getCountries();
@@ -422,7 +443,11 @@ const EditDisciple = ({ navigation, route, ...props }) => {
         formData.append("state_id", userData.state_id);
         if (isIndian) {
             formData.append("district_id", userData.district_id);
-            formData.append("tehsil_id", userData.tehsil_id);
+            if (userData.tehsil_id > 0) {
+                formData.append("tehsil_id", userData.tehsil_id);
+            } else {
+                formData.append("tehsil_name", userData.tehsil_name);
+            }
         } else {
             formData.append("city_id", userData.city_id);
         }
@@ -439,7 +464,11 @@ const EditDisciple = ({ navigation, route, ...props }) => {
         }
         formData.append("form_no", userData.form_no);
         formData.append("form_date", userData.form_date);
-        formData.append("occupation", userData.occupation);
+        if (userData.occupation === "Other") {
+            formData.append("occupation", userData.otherOccupation);
+        } else {
+            formData.append("occupation", userData.occupation);
+        }
         formData.append("namdan_taken", userData.namdan_taken);
         formData.append("email", userData.email);
         if (userData.unique_id !== "" && userData.unique_id.length >= 12) {
@@ -982,8 +1011,20 @@ const EditDisciple = ({ navigation, route, ...props }) => {
                     options={occupations}
                     required={true}
                     containerStyle={styles.selectFieldContainer}
-                    placeholder="Select Relation"
+                    placeholder="Select Occupation"
                 />
+                {userData.occupation === "Other" && (
+                    <FormTextInput
+                        label="Other Occupation "
+                        value={userData.otherOccupation}
+                        placeholder={"Enter your other occupation"}
+                        required={true}
+                        containerStyle={styles.textFieldContainer}
+                        onChangeText={(text) =>
+                            onChange(text, "otherOccupation")
+                        }
+                    />
+                )}
                 <DatePicker
                     label="Date of Birth"
                     date={userData.dob}
@@ -1068,12 +1109,22 @@ const EditDisciple = ({ navigation, route, ...props }) => {
                         onValueChange={(value) => {
                             onChange(value, "tehsil_id");
                         }}
-                        data={tehsils}
+                        required={true}
+                        data={[{ id: -1, name: "Other" }, ...tehsils]}
                         containerStyle={styles.textFieldContainer}
                         placeholderText="Select Tehsil"
                     />
                 ) : null}
-
+                {userData?.tehsil_id === -1 ? (
+                    <FormTextInput
+                        label="Other Tehsil"
+                        value={userData?.tehsil_name}
+                        required={true}
+                        placeholder="Enter Tehsil Name"
+                        containerStyle={styles.textFieldContainer}
+                        onChangeText={(text) => onChange(text, "tehsil_name")}
+                    />
+                ) : null}
                 <FormTextInput
                     label="Address"
                     value={userData.address}
