@@ -6,7 +6,7 @@ const LoadingScreen = () => {
   return (
     <View>
       <ImageBackground
-        source={require('../../../assets/loadingScreen/mockup.png')}
+        source={require('../../../assets/loadingScreen/background.png')}
         style={styles.background}>
         <Image
           source={require('../../../assets/loadingScreen/guruji_photo.png')}
