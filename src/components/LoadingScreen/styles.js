@@ -6,12 +6,13 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
   gurujiPic: {
-    marginTop: '12%',
-    height: 370,
-    width: 400,
+    height: 462,
+    width: 400
   },
   banner: {
-    height: 108,
+    position: 'absolute',
+    marginTop: '103%',
+    height: 128,
     width: 390,
   }
 });
