@@ -1,10 +1,11 @@
 import React from 'react'
-import { Image, ImageBackground, View } from 'react-native'
+import { StatusBar, Image, ImageBackground, View } from 'react-native'
 import styles from "./styles";
 
 const LoadingScreen = () => {
   return (
     <View>
+      <StatusBar backgroundColor={'#50aff7'} hidden={false} />
       <ImageBackground
         source={require('../../../assets/loadingScreen/background.png')}
         style={styles.background}>

@@ -1,8 +1,8 @@
 import { StyleSheet } from 'react-native'
 export default StyleSheet.create({
   background: {
-    width: '100%',
-    height: '100%',
+    width: 'auto',
+    height: '110%',
     alignItems: 'center',
   },
   gurujiPic: {
@@ -11,7 +11,7 @@ export default StyleSheet.create({
   },
   banner: {
     position: 'absolute',
-    marginTop: '103%',
+    marginTop: 405,
     height: 128,
     width: 390,
   }
