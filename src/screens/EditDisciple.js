@@ -104,9 +104,9 @@ const EditDisciple = ({ navigation, route, ...props }) => {
 
     const formFields = {
         unique_id: detail?.unique_id || "",
-        tehsil_name: "",
         otherOccupation: detail.occupation,
         ...detail,
+        tehsil_name: "",
         tehsil_id: detail.tehsil_id === null ? -1 : detail.tehsil_id,
         mobile_no:
             detail?.mobile_no.substr(detail?.mobile_no.length - 10) || "",
@@ -136,6 +136,7 @@ const EditDisciple = ({ navigation, route, ...props }) => {
         file1Field: "",
         file2Field: "",
     });
+
     const getFields = async (countryId) => {
         try {
             const { data } = await getData(`/country_id/${countryId}/id`);
@@ -1004,14 +1005,18 @@ const EditDisciple = ({ navigation, route, ...props }) => {
                         <Image source={userIcon} style={styles.appendIcon} />
                     }
                 />
-                <FormSelectInput
-                    label="Occupation"
-                    value={userData.occupation}
-                    onValueChange={(value) => onChange(value, "occupation")}
-                    options={occupations}
+                <SearchableFlatlist
+                    defaultValue={userData.occupation}
+                    setEnableSearch={setEnableSearch}
+                    containerStyle={styles.textFieldContainer}
+                    label={"Occupation"}
+                    placeholderText={"Select Occupation"}
+                    data={occupations}
                     required={true}
-                    containerStyle={styles.selectFieldContainer}
-                    placeholder="Select Occupation"
+                    onValueChange={(value) => {
+                        onChange(value, "occupation");
+                        // getStates(value);
+                    }}
                 />
                 {userData.occupation === "Other" && (
                     <FormTextInput
