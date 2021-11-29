@@ -1289,6 +1289,21 @@ const EditDisciple = ({ navigation, route, ...props }) => {
                             label={"Satnam"}
                         />
                     )}
+                    {detail?.satnam_exam.map((item, index) => {
+                        return (
+                            <EditDateButton
+                                key={index}
+                                value={item.exam_date}
+                                onPress={() => {
+                                    navigation.navigate("EditDate", {
+                                        dateType: "Satnam Exam",
+                                        index,
+                                    });
+                                }}
+                                label={`Satnam Exam ${index + 1}`}
+                            />
+                        );
+                    })}
                     {detail?.sarnam_date !== "" && (
                         <EditDateButton
                             value={detail?.sarnam_date}
@@ -1326,6 +1341,18 @@ const EditDisciple = ({ navigation, route, ...props }) => {
                                     />
                                 </>
                             }
+                        />
+                    )}
+                    {detail?.reupdesh.length > 0 && (
+                        <EditDateButton
+                            value={detail?.reupdesh.slice(-1)[0].reupdesh_date}
+                            onPress={() => {
+                                navigation.navigate("EditDate", {
+                                    dateType: "Reupdesh",
+                                    index: detail?.reupdesh.length - 1,
+                                });
+                            }}
+                            label={`Punar Updesh ${detail?.reupdesh.length}`}
                         />
                     )}
                 </View>

@@ -115,6 +115,68 @@ const EditDate = ({ route, navigation, ...props }) => {
                     ),
                 ],
             });
+    } else if (dateType === "Satnam Exam") {
+        date = userData.satnam_exam[id].exam_date;
+        _update = () => updateSatnamExam(userData.satnam_exam[id].id, id);
+        compare =
+            userData.satnam_exam[id].exam_date ===
+            detail.satnam_exam[id].exam_date;
+        num = id + 1;
+        _setDate = (date) =>
+            setUserData({
+                ...userData,
+                satnam_exam: [
+                    ...userData.satnam_exam.map((j, i) =>
+                        i == id
+                            ? {
+                                  ...j,
+                                  exam_date: date,
+                              }
+                            : j
+                    ),
+                ],
+            });
+    } else if (dateType === "Shuddhikaran") {
+        date = userData.shuddhikaran[id].date;
+        _update = () => updateShuddhikaran(userData.shuddhikaran[id].id, id);
+        compare =
+            userData.shuddhikaran[id].date === detail.shuddhikaran[id].date;
+        num = id + 1;
+        _setDate = (date) =>
+            setUserData({
+                ...userData,
+                shuddhikaran: [
+                    ...userData.shuddhikaran.map((j, i) =>
+                        i == id
+                            ? {
+                                  ...j,
+                                  date: date,
+                              }
+                            : j
+                    ),
+                ],
+            });
+    } else if (dateType === "Reupdesh") {
+        date = userData.reupdesh[id].reupdesh_date;
+        _update = () => updatePunarUpdesh(userData.reupdesh[id].id, id);
+        compare =
+            userData.reupdesh[id].reupdesh_date ===
+            detail.reupdesh[id].reupdesh_date;
+        num = id + 1;
+        _setDate = (date) =>
+            setUserData({
+                ...userData,
+                reupdesh: [
+                    ...userData.reupdesh.map((j, i) =>
+                        i == id
+                            ? {
+                                  ...j,
+                                  reupdesh_date: date,
+                              }
+                            : j
+                    ),
+                ],
+            });
     }
 
     const updateSatnam = async () => {
@@ -179,7 +241,34 @@ const EditDate = ({ route, navigation, ...props }) => {
                 setDisableScreen(false);
             });
     };
-
+    const updateSatnamExam = async (id, index) => {
+        setDisableScreen(true);
+        putJsonData(editSatnamExamUrl(id), {
+            disciple_id: userData?.id,
+            result: userData.satnam_exam[index].result,
+            exam_date: userData.satnam_exam[index].exam_date,
+        })
+            .then(({ data }) => {
+                if (data.success) {
+                    detailDispatch({
+                        type: "EDIT_DETAILS",
+                        payload: { ...userData },
+                    });
+                    navigation.pop();
+                }
+            })
+            .catch((error) => {
+                if (error && error.response) {
+                    console.error(error.response.data.error);
+                    alert(error.response.data.error);
+                } else {
+                    console.error(`Error.`, error);
+                }
+            })
+            .finally(() => {
+                setDisableScreen(false);
+            });
+    };
     const updateHajri = async (id, index) => {
         setDisableScreen(true);
         putJsonData(editHajriUrl(id), {
@@ -198,6 +287,66 @@ const EditDate = ({ route, navigation, ...props }) => {
             })
             .catch((error) => {
                 if (error && error.response) {
+                    console.error(error.response.data.error);
+                    alert(error.response.data.error);
+                } else {
+                    console.error(`Error.`, error);
+                }
+            })
+            .finally(() => {
+                setDisableScreen(false);
+            });
+    };
+
+    const updateShuddhikaran = async (id, index) => {
+        setDisableScreen(true);
+        putJsonData(editShuddhikaranUrl(id), {
+            disciple_id: userData?.id,
+            description: userData.shuddhikaran[index].description,
+            date: userData.shuddhikaran[index].date,
+        })
+            .then(({ data }) => {
+                if (data.success) {
+                    detailDispatch({
+                        type: "EDIT_DETAILS",
+                        payload: { ...userData },
+                    });
+                    navigation.pop();
+                }
+            })
+            .catch((error) => {
+                if (error && error.response) {
+                    console.log(error);
+                    console.error(error.response.data.error);
+                    alert(error.response.data.error);
+                } else {
+                    console.error(`Error.`, error);
+                }
+            })
+            .finally(() => {
+                setDisableScreen(false);
+            });
+    };
+
+    const updatePunarUpdesh = async (id, index) => {
+        setDisableScreen(true);
+        putJsonData(editPunarUpdeshUrl(id), {
+            disciple_id: userData?.id,
+            remark: userData.reupdesh[index].remark,
+            reupdesh_date: userData.reupdesh[index].reupdesh_date,
+        })
+            .then(({ data }) => {
+                if (data.success) {
+                    detailDispatch({
+                        type: "EDIT_DETAILS",
+                        payload: { ...userData },
+                    });
+                    navigation.pop();
+                }
+            })
+            .catch((error) => {
+                if (error && error.response) {
+                    console.log(error);
                     console.error(error.response.data.error);
                     alert(error.response.data.error);
                 } else {
