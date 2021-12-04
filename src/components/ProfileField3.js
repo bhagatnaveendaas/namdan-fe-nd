@@ -141,6 +141,7 @@ const Field = ({
                     />
                 </View>
             )}
+            {children}
             {show && (
                 <DateTimePicker
                     testID="profilechange"

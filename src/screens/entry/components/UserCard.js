@@ -1,9 +1,10 @@
-import React from "react";
+import React, { memo } from "react";
 import {
     StyleSheet,
     Text,
     View,
     Image,
+    Linking,
     TouchableHighlight,
 } from "react-native";
 import theme from "../../../constants/theme";
@@ -50,13 +51,24 @@ const UserCard = ({ user, onPress }) => {
 
                     <Text style={styles.address}>
                         {[
-                            tehsil_name,
+                            tehsil_name ?? user?.tehsil_name_1,
                             district_name,
                             state_name,
                             country_name,
                         ].join(", ")}
                     </Text>
-                    <Text style={styles.phone}>{user.mobile_no}</Text>
+                    <Text
+                        onPress={() => {
+                            Linking.openURL(
+                                `tel:${user.mobile_no.substr(
+                                    user.mobile_no.length - 10
+                                )}`
+                            );
+                        }}
+                        style={styles.phone}
+                    >
+                        {user.mobile_no}
+                    </Text>
                 </View>
                 <View style={{ width: 35 }}>
                     {naamLevel.map((item, index) => {
@@ -96,7 +108,7 @@ const UserCard = ({ user, onPress }) => {
     );
 };
 
-export default UserCard;
+export default memo(UserCard);
 
 const styles = StyleSheet.create({
     container: {

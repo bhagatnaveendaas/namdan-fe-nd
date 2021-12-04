@@ -3,11 +3,12 @@ import { View, Text, ScrollView, Image, StyleSheet } from "react-native";
 import { FONTS } from "../constants/fonts";
 import theme from "../constants/theme";
 import moment from "moment";
-import { lastIndexOf } from "lodash";
 const clockImage = require("../../assets/icons/clock.png");
 
 const History = ({ route }) => {
     let history = route.params?.history;
+
+    // console.log(history);
 
     let newTemp = [...history].map((h, j) => {
         let pratham = h.detail.filter(
@@ -125,42 +126,51 @@ const History = ({ route }) => {
                             ...FONTS.h2,
                         }}
                     >
-                        History
+                        <Text>History</Text>
                     </Text>
                     <Image style={styles.image} source={clockImage} />
                 </View>
-                {newHistory.map((item, i) => {
-                    return (
-                        <View key={i}>
-                            {item.map((d, j) => {
-                                return (
-                                    <View key={j}>
-                                        {d.map((k, l) => {
-                                            return (
-                                                <View
-                                                    key={l}
-                                                    style={{ marginBottom: 5 }}
-                                                >
-                                                    <View style={styles.row}>
-                                                        <Text
-                                                            style={styles.text}
-                                                            allowFontScaling={
-                                                                false
-                                                            }
+                <View style={{ marginTop: 10 }}>
+                    {newHistory.map((item, i) => {
+                        return (
+                            <View key={i}>
+                                {item.map((d, j) => {
+                                    return (
+                                        <View key={j}>
+                                            {d.map((k, l) => {
+                                                return (
+                                                    <View
+                                                        key={l}
+                                                        style={{
+                                                            marginBottom: 5,
+                                                        }}
+                                                    >
+                                                        <View
+                                                            style={styles.row}
                                                         >
-                                                            {k.name}
-                                                        </Text>
-                                                        <Text
-                                                            style={styles.date}
-                                                            allowFontScaling={
-                                                                false
-                                                            }
-                                                        >
-                                                            {k.date}
-                                                        </Text>
-                                                    </View>
-                                                    {k.remark &&
-                                                        k.remark !== "ok" && (
+                                                            <Text
+                                                                style={
+                                                                    styles.text
+                                                                }
+                                                                allowFontScaling={
+                                                                    false
+                                                                }
+                                                            >
+                                                                {k.name}
+                                                            </Text>
+                                                            <Text
+                                                                style={
+                                                                    styles.date
+                                                                }
+                                                                allowFontScaling={
+                                                                    false
+                                                                }
+                                                            >
+                                                                {k.date}
+                                                            </Text>
+                                                        </View>
+                                                        {k.remark &&
+                                                        k.remark !== "ok" ? (
                                                             <Text
                                                                 style={{
                                                                     ...FONTS.body4,
@@ -187,19 +197,20 @@ const History = ({ route }) => {
                                                             >
                                                                 {k.remark.trim()}
                                                             </Text>
-                                                        )}
-                                                </View>
-                                            );
-                                        })}
-                                    </View>
-                                );
-                            })}
-                            {i <= history.length - 2 && (
-                                <View style={styles.line} />
-                            )}
-                        </View>
-                    );
-                })}
+                                                        ) : null}
+                                                    </View>
+                                                );
+                                            })}
+                                        </View>
+                                    );
+                                })}
+                                {i <= history.length - 2 && (
+                                    <View style={styles.line} />
+                                )}
+                            </View>
+                        );
+                    })}
+                </View>
             </View>
         </ScrollView>
     );

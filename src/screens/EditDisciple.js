@@ -106,7 +106,7 @@ const EditDisciple = ({ navigation, route, ...props }) => {
         unique_id: detail?.unique_id || "",
         otherOccupation: detail.occupation,
         ...detail,
-        tehsil_name: "",
+        tehsil_name: detail.tehsil_name === null ? "" : detail.tehsil_name,
         tehsil_id: detail.tehsil_id === null ? -1 : detail.tehsil_id,
         mobile_no:
             detail?.mobile_no.substr(detail?.mobile_no.length - 10) || "",
@@ -411,7 +411,6 @@ const EditDisciple = ({ navigation, route, ...props }) => {
             console.log(error.response.data.error);
         }
     };
-
     const updateSarshabd = async () => {
         setDisableScreen(true);
         try {
@@ -518,7 +517,6 @@ const EditDisciple = ({ navigation, route, ...props }) => {
         setIsDisable(true);
 
         console.log(formData);
-        console.log(userData.avatar);
         axios(config)
             .then((response) => {
                 setUserData(formFields);
@@ -1343,6 +1341,21 @@ const EditDisciple = ({ navigation, route, ...props }) => {
                             }
                         />
                     )}
+                    {detail?.shuddhikaran.map((item, index) => {
+                        return (
+                            <EditDateButton
+                                key={index}
+                                value={item.date}
+                                onPress={() => {
+                                    navigation.navigate("EditDate", {
+                                        dateType: "Shuddhikaran",
+                                        index,
+                                    });
+                                }}
+                                label={`Shuddhikaran ${index + 1}`}
+                            />
+                        );
+                    })}
                     {detail?.reupdesh.length > 0 && (
                         <EditDateButton
                             value={detail?.reupdesh.slice(-1)[0].reupdesh_date}
