@@ -329,7 +329,7 @@ const UserProfile = () => {
                                 marginBottom: 5,
                             }}
                         >
-                            {item.toUpperCase()}
+                            {item.toUpperCase().replace(/_/g, " ")}
                         </Text>
                     ))}
                 </View>
