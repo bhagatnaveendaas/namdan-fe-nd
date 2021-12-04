@@ -19,6 +19,7 @@ import theme from "../constants/theme";
 import AddSewadaar from "../screens/AddSewadaar";
 import SearchScreen from "../screens/Search";
 import Profile from "../screens/Profile";
+import UniquePending from "../screens/UniquePending";
 import History from "../screens/History";
 import { useAuth } from "../context/AuthContext";
 import { DetailProvider } from "../context/DetailContex";
@@ -54,6 +55,7 @@ const AppStack = () => {
             <Stack.Screen name="Profile" component={Profile} />
             <Stack.Screen name="Edit" component={EditDisciple} />
             <Stack.Screen name="EditDate" component={EditDate} />
+            <Stack.Screen name="Pending" component={UniquePending} />
             <Stack.Screen
                 name="History"
                 component={History}

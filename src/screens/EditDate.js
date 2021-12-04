@@ -1,16 +1,6 @@
-import axios from "axios";
 import moment from "moment";
-import React, { useEffect, useRef, useState, useCallbak } from "react";
-import {
-    AsyncStorage,
-    Image,
-    Text,
-    TouchableOpacity,
-    View,
-    Platform,
-    ActivityIndicator,
-    ScrollView,
-} from "react-native";
+import React, { useState } from "react";
+import { Image, Text, View, TextInput } from "react-native";
 import {
     editHajriUrl,
     editPunarUpdeshUrl,
@@ -19,42 +9,25 @@ import {
     editSatnamExamUrl,
     editSatnamUrl,
     editShuddhikaranUrl,
-    getUniqueDispleUrl,
+    deleteHajriUrl,
+    deletePunarUpdeshUrl,
+    deleteSarnamUrl,
+    deleteSarshabdUrl,
+    deleteSatnamExamUrl,
+    deleteSatnamUrl,
+    deleteShuddhikaranUrl,
 } from "../constants/routes";
-import CountryCodePicker from "../components/CountryCodePicker";
-import DatePicker from "../components/DatePicker";
-import FormTextInput from "../components/FormTextInput";
-import FormSelectInput from "../components/FormSelectInput";
-import UploadButton from "../components/UploadButton";
-import ImagePicker from "../components/ImagePicker";
-import Success from "../components/Alert/Success";
-import SelfDisableButton from "../components/SelfDisableButton";
-import appConfig from "../config";
-import Constants from "../constants/text/Signup";
+import { putJsonData, deleteData } from "../httpClient/apiRequest";
 import theme from "../constants/theme";
 import Button from "../components/Button";
 import styles from "../styles/Singup";
-import {
-    NewIndianDiscipleSchema,
-    NewNonIndianDiscipleSchema,
-} from "../utilities/Validation";
-import FormData from "form-data";
-import { getData, postJsonData, putJsonData } from "../httpClient/apiRequest";
-import SearchableFlatlist from "../components/SearchableFlatlist/SearchableFlatlist";
-import { searchDiscipleUrl } from "../constants/routes";
+import DatePicker from "../components/DatePicker";
 const calendarIcon = require("../../assets/icons/calenderFilled.png");
-const checkIcon = require("../../assets/icons/check-circletick.png");
-const crossIcon = require("../../assets/icons/cross.png");
-const messageIcon = require("../../assets/icons/messageFilled.png");
-const mobileIcon = require("../../assets/icons/mobileFilled.png");
-const buildingIcon = require("../../assets/icons/building.png");
-const pinIcon = require("../../assets/icons/locationPin.png");
-const userIcon = require("../../assets/icons/userFilled.png");
-import { useAuth } from "../context/AuthContext";
 import { withDetailContext } from "../context/DetailContex";
 import { FONTS } from "../constants/fonts";
+
 const EditDate = ({ route, navigation, ...props }) => {
-    const dateType = route.params.dateType;
+    const { dateType } = route.params;
     const index = route.params.index ?? 0;
 
     const {
@@ -64,13 +37,18 @@ const EditDate = ({ route, navigation, ...props }) => {
 
     const [userData, setUserData] = useState(detail);
     const [disableScreen, setDisableScreen] = useState(false);
+    const [showTextInput, setShowTextInput] = useState(false);
+
     let date;
     let _update = () => {};
+    let _delete = () => {};
     let compare = false;
-    let key = "";
-    let id = index;
+    const id = index;
     let _setDate = () => {};
     let num = 0;
+    let key = "";
+    let remark = "";
+    let _onTextChange = () => {};
 
     const onChange = (value, key) => {
         setUserData({ ...userData, [key]: value });
@@ -78,6 +56,7 @@ const EditDate = ({ route, navigation, ...props }) => {
     if (dateType === "Satnam") {
         date = userData.satnam_date;
         _update = () => updateSatnam();
+        _delete = () => deleteSatnam();
         compare = userData.satnam_date === detail.satnam_date;
         key = "satnam_date";
         _setDate = (date) => onChange(date, "satnam_date");
@@ -115,8 +94,178 @@ const EditDate = ({ route, navigation, ...props }) => {
                     ),
                 ],
             });
+    } else if (dateType === "Satnam Exam") {
+        date = userData.satnam_exam[id].exam_date;
+        _update = () => updateSatnamExam(userData.satnam_exam[id].id, id);
+        compare =
+            userData.satnam_exam[id].exam_date ===
+            detail.satnam_exam[id].exam_date;
+        num = id + 1;
+        remark =
+            userData.satnam_exam.result === "Fail"
+                ? userData.satnam_exam[id].reason
+                : "";
+        _onTextChange = (text) =>
+            setUserData({
+                ...userData,
+                satnam_exam: [
+                    ...userData.satnam_exam.map((j, i) =>
+                        i == id
+                            ? {
+                                  ...j,
+                                  reason: text,
+                              }
+                            : j
+                    ),
+                ],
+            });
+        _setDate = (date) =>
+            setUserData({
+                ...userData,
+                satnam_exam: [
+                    ...userData.satnam_exam.map((j, i) =>
+                        i == id
+                            ? {
+                                  ...j,
+                                  exam_date: date,
+                              }
+                            : j
+                    ),
+                ],
+            });
+    } else if (dateType === "Shuddhikaran") {
+        date = userData.shuddhikaran[id].date;
+        _update = () => updateShuddhikaran(userData.shuddhikaran[id].id, id);
+        compare =
+            userData.shuddhikaran[id].date === detail.shuddhikaran[id].date &&
+            userData.shuddhikaran[id].description ===
+                detail.shuddhikaran[id].description;
+        num = id + 1;
+        remark = userData.shuddhikaran[id].description;
+        _onTextChange = (text) =>
+            setUserData({
+                ...userData,
+                shuddhikaran: [
+                    ...userData.shuddhikaran.map((j, i) =>
+                        i == id
+                            ? {
+                                  ...j,
+                                  description: text,
+                              }
+                            : j
+                    ),
+                ],
+            });
+        _setDate = (date) =>
+            setUserData({
+                ...userData,
+                shuddhikaran: [
+                    ...userData.shuddhikaran.map((j, i) =>
+                        i == id
+                            ? {
+                                  ...j,
+                                  date,
+                              }
+                            : j
+                    ),
+                ],
+            });
+    } else if (dateType === "Reupdesh") {
+        date = userData.reupdesh[id].reupdesh_date;
+        _update = () => updatePunarUpdesh(userData.reupdesh[id].id, id);
+        remark = userData.reupdesh[id].remark;
+        compare =
+            userData.reupdesh[id].reupdesh_date ===
+                detail.reupdesh[id].reupdesh_date &&
+            userData.reupdesh[id].remark === detail.reupdesh[id].remark;
+        num = id + 1;
+        _onTextChange = (text) =>
+            setUserData({
+                ...userData,
+                reupdesh: [
+                    ...userData.reupdesh.map((j, i) =>
+                        i == id
+                            ? {
+                                  ...j,
+                                  remark: text,
+                              }
+                            : j
+                    ),
+                ],
+            });
+        _setDate = (date) =>
+            setUserData({
+                ...userData,
+                reupdesh: [
+                    ...userData.reupdesh.map((j, i) =>
+                        i == id
+                            ? {
+                                  ...j,
+                                  reupdesh_date: date,
+                              }
+                            : j
+                    ),
+                ],
+            });
     }
+    const deleteSatnam = async () => {
+        setDisableScreen(true);
+        deleteData(deleteSatnamUrl(userData?.id))
+            .then(({ data }) => {
+                if (data?.success) {
+                    setUserData({ ...userData, satnam_date: "" });
+                    navigation.pop();
+                }
+            })
+            .catch((error) => {
+                if (error && error.response) {
+                    console.error(error.response.data.error);
+                    alert(error.response.data.error);
+                } else {
+                    console.error(`Error.`, error);
+                }
+            })
+            .finally(() => setDisableScreen(false));
+    };
 
+    const deleteSarnam = async () => {
+        setDisableScreen(true);
+        deleteData(deleteSarnamUrl(userData?.id))
+            .then(({ data }) => {
+                if (data?.success) {
+                    setUserData({ ...userData, sarnam_date: "" });
+                    navigation.pop();
+                }
+            })
+            .catch((error) => {
+                if (error && error.response) {
+                    console.error(error.response.data.error);
+                    alert(error.response.data.error);
+                } else {
+                    console.error(`Error.`, error);
+                }
+            })
+            .finally(() => setDisableScreen(false));
+    };
+    const deleteSarshabd = async () => {
+        setDisableScreen(true);
+        deleteData(deleteSarshabdUrl(userData?.id))
+            .then(({ data }) => {
+                if (data?.success) {
+                    setUserData({ ...userData, sarshabd_date: "" });
+                    navigation.pop();
+                }
+            })
+            .catch((error) => {
+                if (error && error.response) {
+                    console.error(error.response.data.error);
+                    alert(error.response.data.error);
+                } else {
+                    console.error(`Error.`, error);
+                }
+            })
+            .finally(() => setDisableScreen(false));
+    };
     const updateSatnam = async () => {
         setDisableScreen(true);
         putJsonData(editSatnamUrl(userData?.id), {
@@ -138,12 +287,7 @@ const EditDate = ({ route, navigation, ...props }) => {
                     console.error(error.response.data.error);
                     alert(error.response.data.error);
                 } else {
-                    if (error && error.response) {
-                        console.error(error.response.data.error);
-                        alert(error.response.data.error);
-                    } else {
-                        console.error(`Error.`, error);
-                    }
+                    console.error(`Error.`, error);
                 }
             })
             .finally(() => {
@@ -179,7 +323,34 @@ const EditDate = ({ route, navigation, ...props }) => {
                 setDisableScreen(false);
             });
     };
-
+    const updateSatnamExam = async (id, index) => {
+        setDisableScreen(true);
+        putJsonData(editSatnamExamUrl(id), {
+            disciple_id: userData?.id,
+            result: userData.satnam_exam[index].result,
+            exam_date: userData.satnam_exam[index].exam_date,
+        })
+            .then(({ data }) => {
+                if (data.success) {
+                    detailDispatch({
+                        type: "EDIT_DETAILS",
+                        payload: { ...userData },
+                    });
+                    navigation.pop();
+                }
+            })
+            .catch((error) => {
+                if (error && error.response) {
+                    console.error(error.response.data.error);
+                    alert(error.response.data.error);
+                } else {
+                    console.error(`Error.`, error);
+                }
+            })
+            .finally(() => {
+                setDisableScreen(false);
+            });
+    };
     const updateHajri = async (id, index) => {
         setDisableScreen(true);
         putJsonData(editHajriUrl(id), {
@@ -198,6 +369,66 @@ const EditDate = ({ route, navigation, ...props }) => {
             })
             .catch((error) => {
                 if (error && error.response) {
+                    console.error(error.response.data.error);
+                    alert(error.response.data.error);
+                } else {
+                    console.error(`Error.`, error);
+                }
+            })
+            .finally(() => {
+                setDisableScreen(false);
+            });
+    };
+
+    const updateShuddhikaran = async (id, index) => {
+        setDisableScreen(true);
+        putJsonData(editShuddhikaranUrl(id), {
+            disciple_id: userData?.id,
+            description: userData.shuddhikaran[index].description,
+            date: userData.shuddhikaran[index].date,
+        })
+            .then(({ data }) => {
+                if (data.success) {
+                    detailDispatch({
+                        type: "EDIT_DETAILS",
+                        payload: { ...userData },
+                    });
+                    navigation.pop();
+                }
+            })
+            .catch((error) => {
+                if (error && error.response) {
+                    console.log(error);
+                    console.error(error.response.data.error);
+                    alert(error.response.data.error);
+                } else {
+                    console.error(`Error.`, error);
+                }
+            })
+            .finally(() => {
+                setDisableScreen(false);
+            });
+    };
+
+    const updatePunarUpdesh = async (id, index) => {
+        setDisableScreen(true);
+        putJsonData(editPunarUpdeshUrl(id), {
+            disciple_id: userData?.id,
+            remark,
+            reupdesh_date: userData.reupdesh[index].reupdesh_date,
+        })
+            .then(({ data }) => {
+                if (data.success) {
+                    detailDispatch({
+                        type: "EDIT_DETAILS",
+                        payload: { ...userData },
+                    });
+                    navigation.pop();
+                }
+            })
+            .catch((error) => {
+                if (error && error.response) {
+                    console.log(error);
                     console.error(error.response.data.error);
                     alert(error.response.data.error);
                 } else {
@@ -265,6 +496,28 @@ const EditDate = ({ route, navigation, ...props }) => {
                         />
                     }
                 />
+                {(dateType === "Shuddhikaran" ||
+                    dateType === "Reupdesh" ||
+                    dateType === "Satnam Exam") && (
+                    <View
+                        style={{
+                            marginVertical: 30,
+                            backgroundColor: theme.colors.primaryLight,
+                        }}
+                    >
+                        <TextInput
+                            value={remark}
+                            onChangeText={_onTextChange}
+                            style={{
+                                backgroundColor: theme.colors.white,
+                                ...FONTS.body4,
+                                color: theme.colors.primary,
+                                padding: 10,
+                                margin: 5,
+                            }}
+                        />
+                    </View>
+                )}
                 {!compare && (
                     <Button
                         onPress={_update}

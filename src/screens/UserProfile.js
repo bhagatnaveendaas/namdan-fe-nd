@@ -15,7 +15,6 @@ import AwesomeAlert from "react-native-awesome-alerts";
 import Field from "../components/ProfileField";
 import Field2 from "../components/ProfileField2";
 import Field3 from "../components/ProfileField3";
-import { useAuth } from "../context/AuthContext";
 import { FONTS, SIZES } from "../constants/fonts";
 import { getData, postJsonData } from "../httpClient/apiRequest";
 import styles from "../styles/Profile";
@@ -23,6 +22,7 @@ import moment from "moment";
 import { countMonths, countDays } from "../utilities/DateUtils";
 const userDefaultImage = require("../../assets/icons/user.png");
 const clockImage = require("../../assets/icons/clock.png");
+import { useAuth } from "../context/AuthContext";
 
 const FieldLine = ({ label, value }) => {
     return (
@@ -55,6 +55,11 @@ const FieldLine = ({ label, value }) => {
 const UserProfile = () => {
     const [user, setUser] = useState(null);
     const [showModal, setShowModal] = useState(false);
+
+    const { state } = useAuth();
+    const AuthUser = state?.user;
+    const permissions = AuthUser?.permissions;
+    console.log(permissions);
     const getProfileData = async () => {
         try {
             const { data } = await getData("/user/profile");
@@ -303,6 +308,29 @@ const UserProfile = () => {
                             value={item.date}
                             reason={item.description}
                         />
+                    ))}
+                </View>
+                <View style={{ marginTop: 10 }}>
+                    <Text
+                        style={{
+                            ...FONTS.h3,
+                            color: theme.colors.primary,
+                            marginBottom: 10,
+                        }}
+                    >
+                        Permissions
+                    </Text>
+                    {permissions.map((item, index) => (
+                        <Text
+                            key={index}
+                            style={{
+                                ...FONTS.body4,
+                                color: theme.colors.primary,
+                                marginBottom: 5,
+                            }}
+                        >
+                            {item.toUpperCase()}
+                        </Text>
                     ))}
                 </View>
             </View>

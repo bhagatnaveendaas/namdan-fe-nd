@@ -20,19 +20,23 @@ const SearchableFlatlist = ({
     defaultValue,
 }) => {
     const defaultOption = data.filter((item) => {
-        return item.id == defaultValue;
+        if (typeof item === "string") {
+            return item === defaultValue;
+        } else return item.id == defaultValue;
     });
     const [search, setSearch] = useState("");
     const [open, setOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState(defaultOption[0]);
 
     const sortedItems = data.filter((item) =>
-        new RegExp(`${search}`, "gi").test(item.name)
+        new RegExp(`${search}`, "gi").test(
+            typeof item === "string" ? item : item?.name
+        )
     );
 
     const onItemSelected = (item) => {
         setSelectedItem(item);
-        onValueChange(item.id);
+        onValueChange(typeof item === "string" ? item : item?.id);
         setSearch("");
         setOpen(false);
     };
@@ -79,7 +83,19 @@ const SearchableFlatlist = ({
                             allowFontScaling={false}
                             style={searchbleFlatlistStyles.itemText}
                         >
-                            {defaultValue !== 0 ? (
+                            {typeof defaultValue === "string" ? (
+                                defaultValue === "" ? (
+                                    <Text
+                                        style={
+                                            searchbleFlatlistStyles.placeholderText
+                                        }
+                                    >
+                                        {placeholderText}
+                                    </Text>
+                                ) : (
+                                    defaultOption[0]
+                                )
+                            ) : defaultValue !== 0 ? (
                                 defaultOption[0]?.name
                             ) : (
                                 <Text
@@ -112,7 +128,9 @@ const SearchableFlatlist = ({
                                     <Text
                                         style={searchbleFlatlistStyles.itemText}
                                     >
-                                        {item.name}
+                                        {typeof item === "string"
+                                            ? item
+                                            : item.name}
                                     </Text>
                                 </TouchableOpacity>
                             </View>

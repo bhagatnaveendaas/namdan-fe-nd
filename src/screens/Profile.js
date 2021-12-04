@@ -34,6 +34,7 @@ const userDefaultImage = require("../../assets/icons/user.png");
 const clockImage = require("../../assets/icons/clock.png");
 import styles from "../styles/Profile";
 import { withDetailContext } from "../context/DetailContex";
+import { TextInput } from "react-native-gesture-handler";
 
 const FieldLine = ({ label, value }) => {
     return (
@@ -95,7 +96,6 @@ const Profile = ({ route, navigation, ...props }) => {
                         type: "LOAD_DETAILS",
                         payload: { detail: { ...user, ...data.data } },
                     });
-                    console.log(data.data.avatar);
                 }
             } catch (error) {
                 if (error && error.response) {
@@ -109,6 +109,8 @@ const Profile = ({ route, navigation, ...props }) => {
         },
         [user?.id]
     );
+
+    let update_at = userData?.updated_at.split("T")[0];
     const createEntry = async () => {
         if (selectedDate === "") {
             alert("Please select a date for entry.");
@@ -147,6 +149,7 @@ const Profile = ({ route, navigation, ...props }) => {
                 exam_date: selectedDate,
                 result: pass ? "pass" : "fail",
                 disciple_id: userData?.id,
+                reason: pass ? "" : reason,
             };
         }
         if (entryType === "Sarnaam Entry") {
@@ -282,7 +285,6 @@ const Profile = ({ route, navigation, ...props }) => {
     ) {
         showSubmitButton = true;
     }
-
     useEffect(() => {
         const unsubscribe = navigation.addListener("focus", () => {
             fetchDiscipleDetails(user?.id);
@@ -625,7 +627,24 @@ const Profile = ({ route, navigation, ...props }) => {
                                                     ? true
                                                     : false
                                             }
-                                        />
+                                        >
+                                            {item.result === "Fail" ? (
+                                                <TextInput
+                                                    value={item.reason}
+                                                    editable={false}
+                                                    onChangeText={(text) => {}}
+                                                    style={{
+                                                        backgroundColor:
+                                                            theme.colors.white,
+                                                        padding: 0,
+                                                        paddingHorizontal: 5,
+                                                        ...FONTS.body5,
+                                                        marginTop: 5,
+                                                        borderRadius: 5,
+                                                    }}
+                                                />
+                                            ) : null}
+                                        </Field3>
                                     );
                                 })}
                                 {enableSatnam && (
@@ -652,7 +671,29 @@ const Profile = ({ route, navigation, ...props }) => {
                                                   ).add(1, "d")
                                         }
                                         onDateChange={setSelectedDate}
-                                    />
+                                    >
+                                        {pass === false && (
+                                            <TextInput
+                                                value={reason}
+                                                placeholder="Enter the reason...."
+                                                multiline
+                                                editable={pass === false}
+                                                autoFocus
+                                                onChangeText={(text) =>
+                                                    setReason(text)
+                                                }
+                                                style={{
+                                                    backgroundColor:
+                                                        theme.colors.white,
+                                                    padding: 0,
+                                                    paddingHorizontal: 5,
+                                                    ...FONTS.body5,
+                                                    marginTop: 5,
+                                                    borderRadius: 5,
+                                                }}
+                                            />
+                                        )}
+                                    </Field3>
                                 )}
                             </View>
                         </Field>
@@ -753,16 +794,14 @@ const Profile = ({ route, navigation, ...props }) => {
                             reason={reason}
                             minDate={
                                 userData?.shuddhikaran.length === 0
-                                    ? moment(
-                                          userData?.form_date,
-                                          "YYYY-MM-DD"
-                                      ).add(1, "d")
-                                    : moment(
-                                          userData?.shuddhikaran[
-                                              userData?.shuddhikaran.length - 1
-                                          ].date,
-                                          "YYYY-MM_DD"
-                                      ).add(1, "d")
+                                    ? moment(update_at, "YYYY-MM-DD").add(
+                                          1,
+                                          "d"
+                                      )
+                                    : moment(update_at, "YYYY-MM_DD").add(
+                                          1,
+                                          "d"
+                                      )
                             }
                             onReasonChange={(text) => setReason(text)}
                             onDateChange={setSelectedDate}
@@ -776,10 +815,10 @@ const Profile = ({ route, navigation, ...props }) => {
                             value={selectedDate}
                             enable={true}
                             reason={reason}
-                            minDate={moment(
-                                userData?.form_date,
-                                "YYYY-MM-DD"
-                            ).add(1, "d")}
+                            minDate={moment(update_at, "YYYY-MM-DD").add(
+                                1,
+                                "d"
+                            )}
                             onReasonChange={(text) => setReason(text)}
                             onDateChange={setSelectedDate}
                         />

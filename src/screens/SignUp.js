@@ -896,14 +896,18 @@ const SignUp = ({ navigation }) => {
                     <Image source={userIcon} style={styles.appendIcon} />
                 }
             />
-            <FormSelectInput
-                label="Occupation"
-                value={userData.occupation}
-                onValueChange={(value) => onChange(value, "occupation")}
-                options={occupations}
+            <SearchableFlatlist
+                defaultValue={userData.occupation}
+                setEnableSearch={setEnableSearch}
+                containerStyle={styles.textFieldContainer}
+                label={"Occupation"}
+                placeholderText={"Select Occupation"}
+                data={occupations}
                 required={true}
-                containerStyle={styles.selectFieldContainer}
-                placeholder="Select Occupation"
+                onValueChange={(value) => {
+                    onChange(value, "occupation");
+                    // getStates(value);
+                }}
             />
             {userData.occupation === "Other" && (
                 <FormTextInput

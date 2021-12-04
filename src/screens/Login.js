@@ -48,6 +48,7 @@ const Login = ({ navigation }) => {
             }
         } catch (error) {
             if (error && error.response) {
+                console.log(error);
                 console.error(error.response.data.error);
                 setShowAlert({
                     ...showAlert,
@@ -56,6 +57,7 @@ const Login = ({ navigation }) => {
                     message: error.response.data.error,
                 });
             } else {
+                console.log(error);
                 console.error("Error in login request.", error.message);
             }
         }

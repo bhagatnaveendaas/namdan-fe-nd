@@ -18,3 +18,12 @@ export const editSarnamUrl = (id) => `/sarnam/${id}/edit`;
 export const editShuddhikaranUrl = (id) => `/shuddhikaran/${id}/edit`;
 export const editPunarUpdeshUrl = (id) => `/reupdesh/${id}/edit`;
 export const editSarshabdUrl = (id) => `/sarshabd/${id}/edit`;
+
+// Delete
+export const deleteHajriUrl = (id) => `/satnam_attendance/${id}/delete`;
+export const deleteSatnamUrl = (id) => `/satnam/${id}/delete`;
+export const deleteSatnamExamUrl = (id) => `/satnam_exam/${id}/delete`;
+export const deleteSarnamUrl = (id) => `/sarnam/${id}/delete`;
+export const deleteShuddhikaranUrl = (id) => `/shuddhikaran/${id}/delete`;
+export const deletePunarUpdeshUrl = (id) => `/reupdesh/${id}/delete`;
+export const deleteSarshabdUrl = (id) => `/sarshabd/${id}/delete`;
