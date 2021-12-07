@@ -58,12 +58,12 @@ const Field = ({ label, enable, onDateChange, value, minDate, children }) => {
                                 allowFontScaling={false}
                                 style={{ ...FONTS.body5 }}
                             >
-                                {dateText !== ""
+                                {dateText !== "" && dateText !== null
                                     ? moment(dateText).format("DD-MM-YYYY")
                                     : null}
                             </Text>
                         )}
-                        {enable && dateText !== "" && (
+                        {enable && dateText !== "" && dateText !== null && (
                             <Text
                                 allowFontScaling={false}
                                 style={{ ...FONTS.body5, marginRight: 5 }}

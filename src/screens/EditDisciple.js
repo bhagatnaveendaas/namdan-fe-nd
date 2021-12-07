@@ -1182,17 +1182,18 @@ const EditDisciple = ({ navigation, route, ...props }) => {
                             />
                         );
                     })}
-                    {detail?.satnam_date !== "" && (
-                        <EditDateButton
-                            value={detail?.satnam_date}
-                            onPress={() => {
-                                navigation.navigate("EditDate", {
-                                    dateType: "Satnam",
-                                });
-                            }}
-                            label={"Satnam"}
-                        />
-                    )}
+                    {detail?.satnam_date !== "" &&
+                        detail?.satnam_date !== null && (
+                            <EditDateButton
+                                value={detail?.satnam_date}
+                                onPress={() => {
+                                    navigation.navigate("EditDate", {
+                                        dateType: "Satnam",
+                                    });
+                                }}
+                                label={"Satnam"}
+                            />
+                        )}
                     {detail?.satnam_exam.map((item, index) => {
                         return (
                             <EditDateButton
@@ -1208,45 +1209,49 @@ const EditDisciple = ({ navigation, route, ...props }) => {
                             />
                         );
                     })}
-                    {detail?.sarnam_date !== "" && (
-                        <EditDateButton
-                            value={detail?.sarnam_date}
-                            onPress={() => {
-                                navigation.navigate("EditDate", {
-                                    dateType: "Sarnam",
-                                });
-                            }}
-                            label={"Sarnam"}
-                        />
-                    )}
-                    {userData?.sarshabd_date !== "" && (
-                        <DatePicker
-                            label="Sarshabd Date"
-                            date={userData?.sarshabd_date}
-                            value={moment(
-                                userData?.sarshabd_date,
-                                "YYYY-MM-DD"
-                            )}
-                            setDate={(date) => onChange(date, "satshabd_date")}
-                            maximumDate={new Date()}
-                            containerStyle={styles.dateContainer}
-                            appendComponent={
-                                <>
-                                    {userData?.sarshabd_date !==
-                                        detail?.sarshabd_date && (
-                                        <SelfDisableButton
-                                            label="Update date"
-                                            onPress={updateSarshabd}
+                    {detail?.sarnam_date !== "" &&
+                        detail?.sarnam_date !== null && (
+                            <EditDateButton
+                                value={detail?.sarnam_date}
+                                onPress={() => {
+                                    navigation.navigate("EditDate", {
+                                        dateType: "Sarnam",
+                                    });
+                                }}
+                                label={"Sarnam"}
+                            />
+                        )}
+                    {userData?.sarshabd_date !== "" &&
+                        detail?.sarshabd_date !== null && (
+                            <DatePicker
+                                label="Sarshabd Date"
+                                date={userData?.sarshabd_date}
+                                value={moment(
+                                    userData?.sarshabd_date,
+                                    "YYYY-MM-DD"
+                                )}
+                                setDate={(date) =>
+                                    onChange(date, "satshabd_date")
+                                }
+                                maximumDate={new Date()}
+                                containerStyle={styles.dateContainer}
+                                appendComponent={
+                                    <>
+                                        {userData?.sarshabd_date !==
+                                            detail?.sarshabd_date && (
+                                            <SelfDisableButton
+                                                label="Update date"
+                                                onPress={updateSarshabd}
+                                            />
+                                        )}
+                                        <Image
+                                            source={calendarIcon}
+                                            style={styles.appendIcon}
                                         />
-                                    )}
-                                    <Image
-                                        source={calendarIcon}
-                                        style={styles.appendIcon}
-                                    />
-                                </>
-                            }
-                        />
-                    )}
+                                    </>
+                                }
+                            />
+                        )}
                     {detail?.shuddhikaran.map((item, index) => {
                         return (
                             <EditDateButton

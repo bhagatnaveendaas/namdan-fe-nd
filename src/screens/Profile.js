@@ -478,7 +478,7 @@ const Profile = ({ route, navigation, ...props }) => {
                             label={"Address"}
                             value={[
                                 userData?.address,
-                                userData?.tehsil_name,
+                                userData?.tehsil_name ?? userData?.tehsil_name1,
                                 userData?.district_name,
                                 userData?.state_name,
                                 userData?.country_name,
@@ -699,7 +699,8 @@ const Profile = ({ route, navigation, ...props }) => {
                         </Field>
                     ) : null}
                     {entryType !== "Sarnaam Entry" &&
-                        userData?.sarnam_date !== "" && (
+                        userData?.sarnam_date !== "" &&
+                        userData?.sarnam_date !== null && (
                             <Field
                                 label="Sarnaam"
                                 enable={false}
@@ -720,7 +721,8 @@ const Profile = ({ route, navigation, ...props }) => {
                                 ).add("1", "d")}
                                 onDateChange={setSelectedDate}
                             />
-                        ) : userData?.sarnam_date !== "" ? (
+                        ) : userData?.sarnam_date !== "" &&
+                          userData?.sarnam_date !== null ? (
                             <Field
                                 label="Sarnaam"
                                 enable={false}
@@ -731,7 +733,8 @@ const Profile = ({ route, navigation, ...props }) => {
                         ) : null
                     ) : null}
                     {entryType !== "Sarshabd Entry" &&
-                        userData?.sarshabd_date !== "" && (
+                        userData?.sarshabd_date !== "" &&
+                        userData?.sarshabd_date !== null && (
                             <Field
                                 label="Sarshabd"
                                 enable={false}
@@ -752,7 +755,8 @@ const Profile = ({ route, navigation, ...props }) => {
                                 ).add(1, "d")}
                                 onDateChange={setSelectedDate}
                             />
-                        ) : userData?.sarshabd_date !== "" ? (
+                        ) : userData?.sarshabd_date !== null &&
+                          userData?.sarshabd_date !== "" ? (
                             <Field
                                 label="Sarshabd"
                                 enable={false}
