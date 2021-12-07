@@ -94,6 +94,7 @@ const SignUp = ({ navigation }) => {
     const [emailError, setEmailError] = useState("");
     const [showAlert, setShowAlert] = useState(false);
     const [tehsilOther, setTehsilOther] = useState(false);
+    const [pic, setPic] = useState(null);
     const [fields, setFields] = useState({
         uniqueNoField: "",
         file1Field: "",
@@ -389,7 +390,7 @@ const SignUp = ({ navigation }) => {
                     ? userData.avatar
                     : userData.avatar.replace("file://", ""),
             type: "image/jpeg",
-            name: "avatar.jpg",
+            name: pic,
         });
         if (userData.file1 !== "") {
             formData.append("file1", {
@@ -486,8 +487,9 @@ const SignUp = ({ navigation }) => {
 
     const onAvatarSelected = (imageData) => {
         closeAvatarSheet();
-        const { uri } = imageData;
+        const { uri, fileName } = imageData;
         setUserData({ ...userData, avatar: uri });
+        setPic(fileName);
     };
 
     const onAadhdarFrontSelected = (imageData) => {

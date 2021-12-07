@@ -131,6 +131,7 @@ const EditDisciple = ({ navigation, route, ...props }) => {
     const [cities, setCities] = useState([]);
     const [emailError, setEmailError] = useState("");
     const [showAlert, setShowAlert] = useState(false);
+    const [pic, setPic] = useState(null);
     const [fields, setFields] = useState({
         uniqueNoField: "",
         file1Field: "",
@@ -481,7 +482,7 @@ const EditDisciple = ({ navigation, route, ...props }) => {
                         ? userData.avatar
                         : userData.avatar.replace("file://", ""),
                 type: "image/jpeg",
-                name: "avatar.jpg",
+                name: pic,
             });
         }
         if (userData.file1 !== detail?.file1) {
@@ -579,7 +580,8 @@ const EditDisciple = ({ navigation, route, ...props }) => {
 
     const onAvatarSelected = (imageData) => {
         closeAvatarSheet();
-        const { uri } = imageData;
+        const { uri, fileName } = imageData;
+        setPic(fileName);
         setUserData({ ...userData, avatar: uri });
     };
 
