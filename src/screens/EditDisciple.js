@@ -1072,7 +1072,7 @@ const EditDisciple = ({ navigation, route, ...props }) => {
                 {userData?.tehsil_id === -1 ? (
                     <FormTextInput
                         label="Other Tehsil"
-                        value={userData?.tehsil_name}
+                        value={userData?.tehsil_name1}
                         required={true}
                         placeholder="Enter Tehsil Name"
                         containerStyle={styles.textFieldContainer}
