@@ -131,6 +131,7 @@ const EditDisciple = ({ navigation, route, ...props }) => {
     const [cities, setCities] = useState([]);
     const [emailError, setEmailError] = useState("");
     const [showAlert, setShowAlert] = useState(false);
+    const [pic, setPic] = useState(null);
     const [fields, setFields] = useState({
         uniqueNoField: "",
         file1Field: "",
@@ -481,29 +482,10 @@ const EditDisciple = ({ navigation, route, ...props }) => {
                         ? userData.avatar
                         : userData.avatar.replace("file://", ""),
                 type: "image/jpeg",
-                name: "avatar.jpg",
+                name: pic,
             });
         }
-        if (userData.file1 !== detail?.file1) {
-            formData.append("file1", {
-                uri:
-                    Platform.OS === "android"
-                        ? userData.file1
-                        : userData.file1.replace("file://", ""),
-                type: "image/jpeg",
-                name: "file1.jpg",
-            });
-        }
-        if (userData.file2 !== detail?.file2) {
-            formData.append("file2", {
-                uri:
-                    Platform.OS === "android"
-                        ? userData.file2
-                        : userData.file2.replace("file://", ""),
-                type: "image/jpeg",
-                name: "file2.jpg",
-            });
-        }
+
         const config = {
             method: "put",
             url: `${appConfig.api_url}/disciple/${userData.id}/edit`,
@@ -543,55 +525,24 @@ const EditDisciple = ({ navigation, route, ...props }) => {
     };
 
     const avatarSheetRef = useRef(null);
-    const aadharFrontRef = useRef(null);
-    const aadharBackRef = useRef(null);
 
     const closeAvatarSheet = () => {
         if (avatarSheetRef.current) {
             avatarSheetRef.current.close();
         }
     };
-    const closeAadharFrontSheet = () => {
-        if (aadharFrontRef.current) {
-            aadharFrontRef.current.close();
-        }
-    };
-    const closeAadharBackSheet = () => {
-        if (aadharBackRef.current) {
-            aadharBackRef.current.close();
-        }
-    };
+
     const openAvatarSheet = () => {
         if (avatarSheetRef.current) {
             avatarSheetRef.current.open();
         }
     };
-    const openAadharFrontSheet = () => {
-        if (aadharFrontRef.current) {
-            aadharFrontRef.current.open();
-        }
-    };
-    const openAadharBackSheet = () => {
-        if (aadharBackRef.current) {
-            aadharBackRef.current.open();
-        }
-    };
 
     const onAvatarSelected = (imageData) => {
         closeAvatarSheet();
-        const { uri } = imageData;
+        const { uri, fileName } = imageData;
+        setPic(fileName);
         setUserData({ ...userData, avatar: uri });
-    };
-
-    const onAadhdarFrontSelected = (imageData) => {
-        closeAadharFrontSheet();
-        const { uri } = imageData;
-        setUserData({ ...userData, file1: uri });
-    };
-    const onAadhdarBackSelected = (imageData) => {
-        closeAadharBackSheet();
-        const { uri } = imageData;
-        setUserData({ ...userData, file2: uri });
     };
 
     const mobileRef = useRef();
@@ -1121,7 +1072,7 @@ const EditDisciple = ({ navigation, route, ...props }) => {
                 {userData?.tehsil_id === -1 ? (
                     <FormTextInput
                         label="Other Tehsil"
-                        value={userData?.tehsil_name}
+                        value={userData?.tehsil_name1}
                         required={true}
                         placeholder="Enter Tehsil Name"
                         containerStyle={styles.textFieldContainer}
@@ -1214,52 +1165,7 @@ const EditDisciple = ({ navigation, route, ...props }) => {
                         </View>
                     }
                 />
-                {userData.unique_id !== "" && userData.unique_id.length >= 12 && (
-                    <>
-                        <UploadButton
-                            label={
-                                userData.file1 == "" || userData.file1 == null
-                                    ? `Upload ${fields.file1Field}`
-                                    : `Uploaded ${fields.file1Field}`
-                            }
-                            tintColor={
-                                userData.file1 == "" || userData.file1 == null
-                                    ? ""
-                                    : "#83e85a"
-                            }
-                            icon={
-                                userData.file1 == "" || userData.file1 == null
-                                    ? ""
-                                    : checkIcon
-                            }
-                            onPressFn={openAadharFrontSheet}
-                        />
-                        {fields.file2Field !== "" &&
-                            fields.file2Field !== null && (
-                                <UploadButton
-                                    label={
-                                        userData.file2 == "" ||
-                                        userData.file2 == null
-                                            ? `Upload ${fields.file2Field}`
-                                            : `Uploaded ${fields.file2Field}`
-                                    }
-                                    tintColor={
-                                        userData.file2 == "" ||
-                                        userData.file2 == null
-                                            ? ""
-                                            : "#83e85a"
-                                    }
-                                    icon={
-                                        userData.file2 == "" ||
-                                        userData.file2 == null
-                                            ? ""
-                                            : checkIcon
-                                    }
-                                    onPressFn={openAadharBackSheet}
-                                />
-                            )}
-                    </>
-                )}
+
                 <View style={{ marginTop: 10 }}>
                     {detail?.satnam_attendance.map((item, index) => {
                         return (
@@ -1276,17 +1182,18 @@ const EditDisciple = ({ navigation, route, ...props }) => {
                             />
                         );
                     })}
-                    {detail?.satnam_date !== "" && (
-                        <EditDateButton
-                            value={detail?.satnam_date}
-                            onPress={() => {
-                                navigation.navigate("EditDate", {
-                                    dateType: "Satnam",
-                                });
-                            }}
-                            label={"Satnam"}
-                        />
-                    )}
+                    {detail?.satnam_date !== "" &&
+                        detail?.satnam_date !== null && (
+                            <EditDateButton
+                                value={detail?.satnam_date}
+                                onPress={() => {
+                                    navigation.navigate("EditDate", {
+                                        dateType: "Satnam",
+                                    });
+                                }}
+                                label={"Satnam"}
+                            />
+                        )}
                     {detail?.satnam_exam.map((item, index) => {
                         return (
                             <EditDateButton
@@ -1302,45 +1209,49 @@ const EditDisciple = ({ navigation, route, ...props }) => {
                             />
                         );
                     })}
-                    {detail?.sarnam_date !== "" && (
-                        <EditDateButton
-                            value={detail?.sarnam_date}
-                            onPress={() => {
-                                navigation.navigate("EditDate", {
-                                    dateType: "Sarnam",
-                                });
-                            }}
-                            label={"Sarnam"}
-                        />
-                    )}
-                    {userData?.sarshabd_date !== "" && (
-                        <DatePicker
-                            label="Sarshabd Date"
-                            date={userData?.sarshabd_date}
-                            value={moment(
-                                userData?.sarshabd_date,
-                                "YYYY-MM-DD"
-                            )}
-                            setDate={(date) => onChange(date, "satshabd_date")}
-                            maximumDate={new Date()}
-                            containerStyle={styles.dateContainer}
-                            appendComponent={
-                                <>
-                                    {userData?.sarshabd_date !==
-                                        detail?.sarshabd_date && (
-                                        <SelfDisableButton
-                                            label="Update date"
-                                            onPress={updateSarshabd}
+                    {detail?.sarnam_date !== "" &&
+                        detail?.sarnam_date !== null && (
+                            <EditDateButton
+                                value={detail?.sarnam_date}
+                                onPress={() => {
+                                    navigation.navigate("EditDate", {
+                                        dateType: "Sarnam",
+                                    });
+                                }}
+                                label={"Sarnam"}
+                            />
+                        )}
+                    {userData?.sarshabd_date !== "" &&
+                        detail?.sarshabd_date !== null && (
+                            <DatePicker
+                                label="Sarshabd Date"
+                                date={userData?.sarshabd_date}
+                                value={moment(
+                                    userData?.sarshabd_date,
+                                    "YYYY-MM-DD"
+                                )}
+                                setDate={(date) =>
+                                    onChange(date, "satshabd_date")
+                                }
+                                maximumDate={new Date()}
+                                containerStyle={styles.dateContainer}
+                                appendComponent={
+                                    <>
+                                        {userData?.sarshabd_date !==
+                                            detail?.sarshabd_date && (
+                                            <SelfDisableButton
+                                                label="Update date"
+                                                onPress={updateSarshabd}
+                                            />
+                                        )}
+                                        <Image
+                                            source={calendarIcon}
+                                            style={styles.appendIcon}
                                         />
-                                    )}
-                                    <Image
-                                        source={calendarIcon}
-                                        style={styles.appendIcon}
-                                    />
-                                </>
-                            }
-                        />
-                    )}
+                                    </>
+                                }
+                            />
+                        )}
                     {detail?.shuddhikaran.map((item, index) => {
                         return (
                             <EditDateButton
@@ -1403,16 +1314,6 @@ const EditDisciple = ({ navigation, route, ...props }) => {
                     ref={avatarSheetRef}
                     onImageSelected={onAvatarSelected}
                     onClose={closeAvatarSheet}
-                />
-                <ImagePicker
-                    ref={aadharFrontRef}
-                    onImageSelected={onAadhdarFrontSelected}
-                    onClose={closeAadharFrontSheet}
-                />
-                <ImagePicker
-                    ref={aadharBackRef}
-                    onImageSelected={onAadhdarBackSelected}
-                    onClose={closeAadharBackSheet}
                 />
             </View>
         </ScrollView>

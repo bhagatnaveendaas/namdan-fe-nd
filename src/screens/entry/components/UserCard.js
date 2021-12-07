@@ -51,7 +51,7 @@ const UserCard = ({ user, onPress }) => {
 
                     <Text style={styles.address}>
                         {[
-                            tehsil_name ?? user?.tehsil_name_1,
+                            tehsil_name ?? user?.tehsil_name1,
                             district_name,
                             state_name,
                             country_name,

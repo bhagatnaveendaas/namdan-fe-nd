@@ -231,7 +231,9 @@ const Home = ({ navigation }) => {
                                     justifyContent: "center",
                                     alignItems: "center",
                                 }}
-                                onPress={() => {}}
+                                onPress={() => {
+                                    navigation.navigate("Pending");
+                                }}
                             >
                                 <Image
                                     source={require("../../assets/icons/message.png")}

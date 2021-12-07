@@ -20,6 +20,7 @@ import {
 import { putJsonData, deleteData } from "../httpClient/apiRequest";
 import theme from "../constants/theme";
 import Button from "../components/Button";
+import RadioButton from "../components/RadioButton";
 import styles from "../styles/Singup";
 import DatePicker from "../components/DatePicker";
 const calendarIcon = require("../../assets/icons/calenderFilled.png");
@@ -40,6 +41,7 @@ const EditDate = ({ route, navigation, ...props }) => {
     const [showTextInput, setShowTextInput] = useState(false);
 
     let date;
+    let pass = null;
     let _update = () => {};
     let _delete = () => {};
     let compare = false;
@@ -49,6 +51,7 @@ const EditDate = ({ route, navigation, ...props }) => {
     let key = "";
     let remark = "";
     let _onTextChange = () => {};
+    let _onOptionChange = () => {};
 
     const onChange = (value, key) => {
         setUserData({ ...userData, [key]: value });
@@ -96,15 +99,29 @@ const EditDate = ({ route, navigation, ...props }) => {
             });
     } else if (dateType === "Satnam Exam") {
         date = userData.satnam_exam[id].exam_date;
+        pass = userData.satnam_exam[id].result;
+        remark = userData.satnam_exam[id].reason;
         _update = () => updateSatnamExam(userData.satnam_exam[id].id, id);
         compare =
             userData.satnam_exam[id].exam_date ===
-            detail.satnam_exam[id].exam_date;
+                detail.satnam_exam[id].exam_date &&
+            pass === detail.satnam_exam[id].result &&
+            remark === detail.satnam_exam[id].reason;
         num = id + 1;
-        remark =
-            userData.satnam_exam.result === "Fail"
-                ? userData.satnam_exam[id].reason
-                : "";
+        _onOptionChange = (text) =>
+            setUserData({
+                ...userData,
+                satnam_exam: [
+                    ...userData.satnam_exam.map((j, i) =>
+                        i == id
+                            ? {
+                                  ...j,
+                                  result: text,
+                              }
+                            : j
+                    ),
+                ],
+            });
         _onTextChange = (text) =>
             setUserData({
                 ...userData,
@@ -329,6 +346,7 @@ const EditDate = ({ route, navigation, ...props }) => {
             disciple_id: userData?.id,
             result: userData.satnam_exam[index].result,
             exam_date: userData.satnam_exam[index].exam_date,
+            reason: userData.satnam_exam[index].reason,
         })
             .then(({ data }) => {
                 if (data.success) {
@@ -496,6 +514,39 @@ const EditDate = ({ route, navigation, ...props }) => {
                         />
                     }
                 />
+                {dateType === "Satnam Exam" ? (
+                    <View
+                        style={{
+                            marginTop: 20,
+                            flexDirection: "row",
+                            justifyContent: "space-around",
+                            alignItems: "center",
+                        }}
+                    >
+                        <RadioButton
+                            selected={pass === "Pass"}
+                            color={theme.colors.primary}
+                            id="mno"
+                            labelStyle={{
+                                ...FONTS.h5,
+                            }}
+                            size={16}
+                            label="Pass"
+                            onPress={() => _onOptionChange("Pass")}
+                        />
+                        <RadioButton
+                            selected={pass === "Fail"}
+                            color={theme.colors.primary}
+                            id="mno"
+                            labelStyle={{
+                                ...FONTS.h5,
+                            }}
+                            size={16}
+                            label="Fail"
+                            onPress={() => _onOptionChange("Fail")}
+                        />
+                    </View>
+                ) : null}
                 {(dateType === "Shuddhikaran" ||
                     dateType === "Reupdesh" ||
                     dateType === "Satnam Exam") && (
