@@ -1,5 +1,6 @@
 export const loginUrl = "/auth/login";
 export const searchDiscipleUrl = (page) => `/disciple/search?page=${page}`;
+export const getDiscipleList = (page) => `/search/disciple?page=${page}`;
 export const getUniqueDispleUrl = (id) => `/disciple/${id}/show`;
 // Create
 export const createHajriUrl = "/satnam_attendance/create";

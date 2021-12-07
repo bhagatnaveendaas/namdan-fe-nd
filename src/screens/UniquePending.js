@@ -6,39 +6,65 @@ import {
     FlatList,
     TouchableOpacity,
     Animated,
+    Image,
 } from "react-native";
 import { getData, postJsonData } from "../httpClient/apiRequest";
 import { useAuth } from "../context/AuthContext";
 import theme from "../constants/theme";
 import UserCard from "./entry/components/UserCard";
-import { FONTS } from "../constants/fonts";
-import { duration } from "moment";
+import DatePicker from "../components/DatePicker";
+import FormSelectInput from "../components/FormSelectInput";
+import styles from "../styles/Singup";
+import moment from "moment";
+import { getDiscipleList } from "../constants/routes";
+const calendarIcon = require("../../assets/icons/calenderFilled.png");
 
-const Options = [
-    { name: "All", ref: React.createRef() },
-    { name: "Pending", ref: React.createRef() },
-    { name: "Satnam", ref: React.createRef() },
-];
 const UniquePending = ({ navigation }) => {
     const {
         state: { user },
     } = useAuth();
     const [loading, setLoading] = useState(false);
     const [disciples, setDisciples] = useState([]);
+    const [searchOption, setSearchOption] = useState([]);
+    const [searchType, setSearchType] = useState(null);
+    const [fromDate, setFromDate] = useState("");
+    const [toDate, setToDate] = useState("");
     const [stopFetchMore, setStopFetchMore] = useState(false);
-    const [selectedIndex, setSelectedIndex] = useState(0);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalDisciples, settotalDisciples] = useState(0);
+    const [notFoundText, setNotFoundText] = useState("");
 
-    const translateX = useRef(new Animated.Value(0)).current;
-
-    const getPendingList = async () => {
+    const getOptions = async () => {
+        try {
+            const { data } = await getData("/misc/list?slug=search_type");
+            if (data.success) {
+                const temp = [...data?.data].map((item) => item.name);
+                setSearchOption(temp);
+                setSearchType(temp[0]);
+            }
+        } catch (error) {
+            console.log("error", error);
+        }
+    };
+    const getList = async (page) => {
         setLoading(true);
         try {
-            const { data } = await postJsonData(
-                "/disciple/search_unique?page=1&limit=10",
-                { country_id: user.country }
-            );
+            const { data } = await postJsonData(getDiscipleList(page), {
+                country_id: user.country,
+                search_type: searchType,
+                from_date: fromDate,
+                to_date: toDate,
+            });
             if (data?.success) {
-                setDisciples(data?.data?.disciples);
+                if (data?.data.disciples.length === 0) {
+                    setStopFetchMore(true);
+                    if (page === 1) {
+                        setNotFoundText("No desciple found");
+                    }
+                }
+                setDisciples([...disciples, ...data?.data.disciples]);
+                setCurrentPage((pre) => pre + 1);
+                settotalDisciples(data?.data.total);
             }
         } catch (error) {
             if (error && error.response) {
@@ -52,101 +78,74 @@ const UniquePending = ({ navigation }) => {
         setLoading(false);
     };
 
-    const handleSlide = useCallback((item) => {
-        item.ref.current.measureInWindow((x) => {
-            Animated.spring(translateX, {
-                toValue: x - 25,
-                duration: 300,
-                useNativeDriver: true,
-            }).start();
-        });
-    });
-
     useEffect(() => {
-        getPendingList();
+        getOptions();
     }, []);
 
-    if (loading) {
-        return (
-            <ActivityIndicator
-                size={"large"}
-                animating={loading}
-                style={{ marginVertical: 60 }}
-                color={theme.colors.primaryLight}
-            />
-        );
-    }
+    useEffect(() => {
+        if (searchType !== null) {
+            getList(1);
+        }
+    }, [searchType]);
+
     return (
         <View
             style={{
                 backgroundColor: theme.colors.white,
                 flex: 1,
+                paddingBottom: 10,
             }}
         >
             <View
                 style={{
                     marginVertical: 20,
                     marginHorizontal: 20,
-                    alignItems: "center",
-                    justifyContent: "space-around",
-                    borderRadius: 8,
-                    overflow: "hidden",
-                    backgroundColor: theme.colors.lightGray,
                 }}
             >
-                <View
-                    style={{
-                        margin: 5,
-                        alignItems: "center",
-                        flexDirection: "row",
-                        justifyContent: "space-around",
+                <FormSelectInput
+                    value={searchType}
+                    onValueChange={(value) => {
+                        setSearchType(value);
+                        setCurrentPage(1);
+                        setDisciples([]);
+                        settotalDisciples(0);
                     }}
-                >
-                    <Animated.View
-                        style={{
-                            position: "absolute",
-                            backgroundColor: theme.colors.primary,
-                            width: 114,
-                            height: 30,
-                            alignItems: "center",
-                            justifyContent: "center",
-                            borderRadius: 5,
-                            transform: [{ translateX }],
-                        }}
-                    />
-                    {Options.map((item, index) => {
-                        return (
-                            <TouchableOpacity
-                                ref={item.ref}
-                                onPress={() => {
-                                    handleSlide(item);
-                                    setSelectedIndex(index);
-                                }}
-                                key={index}
-                                style={{
-                                    flex: 1,
-                                    height: 30,
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    borderRadius: 5,
-                                }}
-                            >
-                                <Text
-                                    style={{
-                                        textAlign: "center",
-                                        ...FONTS.h3,
-                                        color:
-                                            index === selectedIndex
-                                                ? theme.colors.white
-                                                : theme.colors.primary,
-                                    }}
-                                >
-                                    {item.name}
-                                </Text>
-                            </TouchableOpacity>
-                        );
-                    })}
-                </View>
+                    options={searchOption}
+                    containerStyle={styles.selectFieldContainer}
+                    placeholder="Select Option"
+                />
+                <DatePicker
+                    placeholder="Pick From Date"
+                    date={fromDate}
+                    value={moment()}
+                    setDate={(date) => {
+                        setFromDate(date);
+                        console.log(date);
+                    }}
+                    maximumDate={new Date()}
+                    containerStyle={styles.dateContainer}
+                    appendComponent={
+                        <Image
+                            source={calendarIcon}
+                            style={styles.appendIcon}
+                        />
+                    }
+                />
+
+                <DatePicker
+                    placeholder="Pick To Date"
+                    date={toDate}
+                    value={moment()}
+                    setDate={(date) => setToDate(date)}
+                    maximumDate={new Date()}
+                    containerStyle={styles.dateContainer}
+                    appendComponent={
+                        <Image
+                            source={calendarIcon}
+                            style={styles.appendIcon}
+                        />
+                    }
+                />
             </View>
             <FlatList
                 data={disciples}
@@ -154,6 +153,11 @@ const UniquePending = ({ navigation }) => {
                 keyExtractor={(item) => item.id.toString()}
                 showsVerticalScrollIndicator={false}
                 onEndReachedThreshold={0.01}
+                onEndReached={() => {
+                    if (!stopFetchMore) {
+                        getList(currentPage);
+                    }
+                }}
                 ListFooterComponent={() => (
                     <>
                         {loading && (
@@ -164,10 +168,37 @@ const UniquePending = ({ navigation }) => {
                                 size={"large"}
                             />
                         )}
+                        {stopFetchMore && totalDisciples >= 10 && (
+                            <Text
+                                style={{
+                                    alignSelf: "center",
+                                    textAlign: "center",
+                                    padding: 5,
+                                    width: 150,
+                                    color: theme.colors.primaryLight,
+                                    marginBottom: 20,
+                                    borderRadius: 10,
+                                    marginTop: 10,
+                                    ...FONTS.h5,
+                                }}
+                            >
+                                No more desciples
+                            </Text>
+                        )}
                     </>
                 )}
                 renderItem={({ item }) => {
-                    return <UserCard user={item} />;
+                    return (
+                        <UserCard
+                            user={item}
+                            onPress={() =>
+                                navigation.navigate("Profile", {
+                                    user: item,
+                                    entryType: null,
+                                })
+                            }
+                        />
+                    );
                 }}
             />
         </View>

@@ -25,6 +25,7 @@ import {
     createSarshabdUrl,
     createSatnamExamUrl,
     createShuddhikaranUrl,
+    editHajriUrl,
     getUniqueDispleUrl,
 } from "../constants/routes";
 import { useEffect } from "react";
@@ -110,7 +111,7 @@ const Profile = ({ route, navigation, ...props }) => {
         [user?.id]
     );
 
-    let update_at = userData?.updated_at.split("T")[0];
+    let update_at = userData?.updated_at?.split("T")[0];
     const createEntry = async () => {
         if (selectedDate === "") {
             alert("Please select a date for entry.");
@@ -224,9 +225,11 @@ const Profile = ({ route, navigation, ...props }) => {
                 enable:
                     i == 0
                         ? countMonths(userData?.form_date, today) >= 1 &&
-                          userData?.satnam_date === ""
+                          (userData?.satnam_date === "" ||
+                              userData?.satnam_date === null)
                         : arr[i - 1].value !== "" &&
-                          userData?.satnam_date === "" &&
+                          (userData?.satnam_date === "" ||
+                              userData?.satnam_date === null) &&
                           countMonths(userData?.form_date, today) >= i + 1,
                 minDate:
                     i == 0
@@ -260,19 +263,21 @@ const Profile = ({ route, navigation, ...props }) => {
             userData?.rules?.min_satnam_month &&
         countYears(userData?.dob, today) >= userData?.rules?.satnam_age;
     const enableSatnam =
-        showSatnam && userData?.satnam_date === "" && minDateforSatnam;
+        showSatnam &&
+        (userData?.satnam_date === null || userData?.satnam_date === "") &&
+        minDateforSatnam;
     if (entryType === "Satnaam Entry" && enableSatnam) {
         showSubmitButton = true;
     }
     const enableSarnam =
         countDays(userData?.satnam_date, userData?.rules?.sarnam_date) >= 0 &&
         entryType === "Sarnaam Entry" &&
-        userData?.sarnam_date === "";
+        (userData?.sarnam_date === "" || userData?.sarnam_date === null);
 
     const enableSarshabd =
         countDays(userData?.sarnam_date, userData?.rules?.sarshabd_date) >= 0 &&
-        userData?.sarnam_date !== "" &&
-        userData?.sarshabd_date === "";
+        (userData?.sarnam_date !== "" || userData?.sarnam_date !== null) &&
+        (userData?.sarshabd_date === "" || userData?.sarshabd_date === null);
 
     if (enableSarnam) showSubmitButton = true;
     if (entryType === "Sarshabd Entry" && enableSarshabd) {
