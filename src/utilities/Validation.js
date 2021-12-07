@@ -7,9 +7,6 @@ const threeYears = moment(new Date().setDate(new Date().getDate() - 365 * 3));
 export const NewNonIndianDiscipleSchema = Yup.object().shape({
     avatar: Yup.string().required("Please provide profile picture."),
     form_date: Yup.string().required("Please fill Form date."),
-    // form_no: Yup.string()
-    //     .required("Please fill Form number.")
-    //     .min(6, "Form number must be atleast of 6 characters."),
     aadhaar_no: Yup.lazy((value) => {
         if (value !== "") {
             return Yup.string().min(
@@ -73,18 +70,11 @@ export const NewNonIndianDiscipleSchema = Yup.object().shape({
         .required("Please fill Pincode")
         .min(6, "Enter valid pin code, it must be 6 characters long"),
     email: Yup.string().email("Enter a valid email address."),
-    // otp: Yup.string()
-    //     .required("Please enter otp.")
-    //     .length(6, "OTP must be 6 characters long"),
-    file1: Yup.string().nullable(),
 });
 export const NewIndianDiscipleSchema = Yup.object().shape(
     {
         avatar: Yup.string().required("Please provide profile picture."),
         form_date: Yup.string().required("Please fill Form date."),
-        // form_no: Yup.string()
-        //     .required("Please fill Form number.")
-        //     .min(6, "Form number must be atleast of 6 characters."),
         aadhaar_no: Yup.lazy((value) => {
             if (value !== "") {
                 return Yup.string().min(
@@ -163,11 +153,6 @@ export const NewIndianDiscipleSchema = Yup.object().shape(
             .required("Please fill Pincode")
             .min(6, "Enter valid pin code, it must be 6 characters long"),
         email: Yup.string().email("Enter a valid email address."),
-        // otp: Yup.string()
-        //     .required("Please enter otp.")
-        //     .length(6, "OTP must be 6 characters long"),
-        file1: Yup.string().nullable(),
-        file2: Yup.string().nullable(),
     },
     ["tehsil_id", "tehsil_id"]
 );

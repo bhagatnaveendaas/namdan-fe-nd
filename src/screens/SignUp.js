@@ -65,8 +65,6 @@ const SignUp = ({ navigation }) => {
         mobile_no: "",
         whatsapp_no: "",
         avatar: "",
-        file2: "",
-        file1: "",
         email: "",
         pincode: "",
         occupation: "",
@@ -392,26 +390,7 @@ const SignUp = ({ navigation }) => {
             type: "image/jpeg",
             name: pic,
         });
-        if (userData.file1 !== "") {
-            formData.append("file1", {
-                uri:
-                    Platform.OS === "android"
-                        ? userData.file1
-                        : userData.file1.replace("file://", ""),
-                type: "image/jpeg",
-                name: "file1.jpg",
-            });
-        }
-        if (userData.file2 !== "") {
-            formData.append("file2", {
-                uri:
-                    Platform.OS === "android"
-                        ? userData.file2
-                        : userData.file2.replace("file://", ""),
-                type: "image/jpeg",
-                name: "file2.jpg",
-            });
-        }
+
         const config = {
             method: "post",
             url: `${appConfig.api_url}/disciple/create`,
@@ -451,56 +430,23 @@ const SignUp = ({ navigation }) => {
     };
 
     const avatarSheetRef = useRef(null);
-    const aadharFrontRef = useRef(null);
-    const aadharBackRef = useRef(null);
 
     const closeAvatarSheet = () => {
         if (avatarSheetRef.current) {
             avatarSheetRef.current.close();
         }
     };
-    const closeAadharFrontSheet = () => {
-        if (aadharFrontRef.current) {
-            aadharFrontRef.current.close();
-        }
-    };
-    const closeAadharBackSheet = () => {
-        if (aadharBackRef.current) {
-            aadharBackRef.current.close();
-        }
-    };
+
     const openAvatarSheet = () => {
         if (avatarSheetRef.current) {
             avatarSheetRef.current.open();
         }
     };
-    const openAadharFrontSheet = () => {
-        if (aadharFrontRef.current) {
-            aadharFrontRef.current.open();
-        }
-    };
-    const openAadharBackSheet = () => {
-        if (aadharBackRef.current) {
-            aadharBackRef.current.open();
-        }
-    };
-
     const onAvatarSelected = (imageData) => {
         closeAvatarSheet();
         const { uri, fileName } = imageData;
         setUserData({ ...userData, avatar: uri });
         setPic(fileName);
-    };
-
-    const onAadhdarFrontSelected = (imageData) => {
-        closeAadharFrontSheet();
-        const { uri } = imageData;
-        setUserData({ ...userData, file1: uri });
-    };
-    const onAadhdarBackSelected = (imageData) => {
-        closeAadharBackSheet();
-        const { uri } = imageData;
-        setUserData({ ...userData, file2: uri });
     };
 
     const mobileRef = useRef();
@@ -1103,32 +1049,7 @@ const SignUp = ({ navigation }) => {
                     </View>
                 }
             />
-            {userData.aadhaar_no !== "" && userData.aadhaar_no.length >= 12 && (
-                <>
-                    <UploadButton
-                        label={
-                            userData.file1 == ""
-                                ? `Upload ${fields.file1Field}`
-                                : `Uploaded ${fields.file1Field}`
-                        }
-                        tintColor={userData.file1 == "" ? "" : "#83e85a"}
-                        icon={userData.file1 == "" ? "" : checkIcon}
-                        onPressFn={openAadharFrontSheet}
-                    />
-                    {fields.file2Field !== "" && fields.file2Field !== null && (
-                        <UploadButton
-                            label={
-                                userData.file2 == ""
-                                    ? `Upload ${fields.file2Field}`
-                                    : `Uploaded ${fields.file2Field}`
-                            }
-                            tintColor={userData.file2 == "" ? "" : "#83e85a"}
-                            icon={userData.file2 == "" ? "" : checkIcon}
-                            onPressFn={openAadharBackSheet}
-                        />
-                    )}
-                </>
-            )}
+
             {!showOtp ? (
                 <TouchableOpacity onPress={requestOtp} style={styles.button}>
                     <Text allowFontScaling={false} style={styles.buttonText}>
@@ -1190,16 +1111,6 @@ const SignUp = ({ navigation }) => {
                 ref={avatarSheetRef}
                 onImageSelected={onAvatarSelected}
                 onClose={closeAvatarSheet}
-            />
-            <ImagePicker
-                ref={aadharFrontRef}
-                onImageSelected={onAadhdarFrontSelected}
-                onClose={closeAadharFrontSheet}
-            />
-            <ImagePicker
-                ref={aadharBackRef}
-                onImageSelected={onAadhdarBackSelected}
-                onClose={closeAadharBackSheet}
             />
         </ScrollView>
     );
