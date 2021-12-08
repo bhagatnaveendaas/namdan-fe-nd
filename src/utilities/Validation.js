@@ -141,7 +141,7 @@ export const NewIndianDiscipleSchema = Yup.object().shape(
                 return Yup.number().required("Please Select Tehsil");
             }
         }),
-        tehsil_name: Yup.string().when("tehsil_id", (tehsil_id) => {
+        tehsil_name1: Yup.string().when("tehsil_id", (tehsil_id) => {
             if (tehsil_id < 0) {
                 return Yup.string().required("Please fill other tehsil name");
             }

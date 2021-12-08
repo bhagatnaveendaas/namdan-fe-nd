@@ -72,7 +72,7 @@ const SignUp = ({ navigation }) => {
         namdan_taken: "",
         country_code: "+91",
         whatsapp_country_code: "+91",
-        tehsil_name: "",
+        tehsil_name1: "",
         otherOccupation: "",
     };
 
@@ -350,7 +350,7 @@ const SignUp = ({ navigation }) => {
             if (userData.tehsil_id > 0) {
                 formData.append("tehsil_id", userData.tehsil_id);
             } else {
-                formData.append("tehsil_name", userData.tehsil_name);
+                formData.append("tehsil_name", userData.tehsil_name1);
             }
         } else {
             formData.append("city_id", userData.city_id);
@@ -960,11 +960,11 @@ const SignUp = ({ navigation }) => {
             {userData?.tehsil_id === -1 ? (
                 <FormTextInput
                     label="Other Tehsil"
-                    value={userData?.tehsil_name}
+                    value={userData?.tehsil_name1}
                     required={true}
                     placeholder="Enter Tehsil Name"
                     containerStyle={styles.textFieldContainer}
-                    onChangeText={(text) => onChange(text, "tehsil_name")}
+                    onChangeText={(text) => onChange(text, "tehsil_name1")}
                 />
             ) : null}
             <FormTextInput

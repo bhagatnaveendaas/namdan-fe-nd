@@ -3,6 +3,7 @@ import { Image, SafeAreaView, StatusBar, Text, View } from "react-native";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import ScoreBoard from "../components/ScoreBoard";
 import VerticalIconButton from "../components/VerticalIconButton";
+import Button from "../components/Button";
 import { FONTS } from "../constants/fonts";
 import theme from "../constants/theme";
 import { postJsonData } from "../httpClient/apiRequest";
@@ -102,7 +103,12 @@ const Home = ({ navigation }) => {
                     />
                 </TouchableOpacity>
             </View>
-            <ScrollView style={{ paddingHorizontal: "3.5%", paddingTop: "5%" }}>
+            <ScrollView
+                style={{
+                    paddingHorizontal: "3.5%",
+                    paddingTop: "5%",
+                }}
+            >
                 <ScoreBoard
                     prathams={kpiCounts.prathams}
                     satnams={kpiCounts.satnams}
@@ -201,61 +207,25 @@ const Home = ({ navigation }) => {
                         </View>
                     </View>
                 )}
-
                 {roleId === 8 && (
-                    <View
-                        style={{
-                            justifyContent: "center",
-                            paddingTop: "2%",
-                            flex: 1,
-                            paddingHorizontal: "1.3%",
-                            paddingBottom: "10%",
+                    <Button
+                        onPress={() => navigation.navigate("Pending")}
+                        buttonStyle={{
+                            padding: 12,
+                            backgroundColor: theme.colors.primary,
+                            elevation: 3,
+                            borderRadius: 10,
                             alignItems: "center",
+                            marginTop: 20,
+                            marginBottom: 30,
                         }}
-                    >
-                        <View
-                            style={{
-                                justifyContent: "center",
-                                width: "100%",
-                                borderRadius: 10,
-                                backgroundColor: theme.colors.primary,
-                                elevation: 5,
-                                flexDirection: "row",
-                                paddingVertical: 7,
-                                alignItems: "center",
-                            }}
-                        >
-                            <TouchableOpacity
-                                style={{
-                                    flexDirection: "row",
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                }}
-                                onPress={() => {
-                                    navigation.navigate("Pending");
-                                }}
-                            >
-                                <Image
-                                    source={require("../../assets/icons/message.png")}
-                                    style={{
-                                        height: 40,
-                                        width: 40,
-                                        tintColor: theme.colors.white,
-                                    }}
-                                />
-                                <Text
-                                    allowFontScaling={false}
-                                    style={{
-                                        color: theme.colors.white,
-                                        paddingLeft: 10,
-                                        ...FONTS.body3,
-                                    }}
-                                >
-                                    Messages
-                                </Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
+                        textStyle={{
+                            color: theme.colors.white,
+                            ...FONTS.h3,
+                            fontSize: 18,
+                        }}
+                        text={"View List"}
+                    />
                 )}
             </ScrollView>
         </SafeAreaView>

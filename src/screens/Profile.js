@@ -243,7 +243,7 @@ const Profile = ({ route, navigation, ...props }) => {
     if (entryType === "Attendance Entry") {
         if (
             userData?.satnam_attendance.length < 3 &&
-            userData?.satnam_date === "" &&
+            (userData?.satnam_date === "" || userData?.satnam_date === null) &&
             countMonths(moment(userData?.form_date, "YYYY-MM-DD"), today) >= 1
         ) {
             showSubmitButton = true;
@@ -494,7 +494,8 @@ const Profile = ({ route, navigation, ...props }) => {
                             label={"Occupation"}
                             value={userData?.occupation}
                         />
-                        {userData?.unique_id !== "" && (
+                        {(userData?.unique_id !== "" ||
+                            userData?.unique_id !== null) && (
                             <FieldLine
                                 label={"Aadhaar No."}
                                 value={userData?.unique_id}
