@@ -8,7 +8,7 @@ const clockImage = require("../../assets/icons/clock.png");
 const History = ({ route }) => {
     let history = route.params?.history;
 
-    // console.log(history);
+    console.log(history[0].detail);
 
     let newTemp = [...history].map((h, j) => {
         let pratham = h.detail.filter(
@@ -24,6 +24,7 @@ const History = ({ route }) => {
         let sarnam_exam = h.detail.filter(
             (item) => item.name === "sarnam_exam"
         );
+        let sarshabd = h.detail.filter((item) => item.name === "sarshabd");
         let shuddhikaran = h.detail.filter((item) =>
             item.name.includes("shuddhikaran")
         );
@@ -35,6 +36,7 @@ const History = ({ route }) => {
             satnam_exam,
             sarnam,
             sarnam_exam,
+            sarshabd,
             shuddhikaran,
             reupdesh,
         ];

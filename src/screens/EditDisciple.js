@@ -1182,18 +1182,17 @@ const EditDisciple = ({ navigation, route, ...props }) => {
                             />
                         );
                     })}
-                    {detail?.satnam_date !== "" &&
-                        detail?.satnam_date !== null && (
-                            <EditDateButton
-                                value={detail?.satnam_date}
-                                onPress={() => {
-                                    navigation.navigate("EditDate", {
-                                        dateType: "Satnam",
-                                    });
-                                }}
-                                label={"Satnam"}
-                            />
-                        )}
+                    {detail?.satnam_date !== null && (
+                        <EditDateButton
+                            value={detail?.satnam_date}
+                            onPress={() => {
+                                navigation.navigate("EditDate", {
+                                    dateType: "Satnam",
+                                });
+                            }}
+                            label={"Satnam"}
+                        />
+                    )}
                     {detail?.satnam_exam.map((item, index) => {
                         return (
                             <EditDateButton
@@ -1209,30 +1208,28 @@ const EditDisciple = ({ navigation, route, ...props }) => {
                             />
                         );
                     })}
-                    {detail?.sarnam_date !== "" &&
-                        detail?.sarnam_date !== null && (
-                            <EditDateButton
-                                value={detail?.sarnam_date}
-                                onPress={() => {
-                                    navigation.navigate("EditDate", {
-                                        dateType: "Sarnam",
-                                    });
-                                }}
-                                label={"Sarnam"}
-                            />
-                        )}
-                    {userData?.sarshabd_date !== "" &&
-                        detail?.sarshabd_date !== null && (
-                            <EditDateButton
-                                value={detail?.sarshabd_date}
-                                onPress={() => {
-                                    navigation.navigate("EditDate", {
-                                        dateType: "Sarshabd",
-                                    });
-                                }}
-                                label={"Sarshabd"}
-                            />
-                        )}
+                    {detail?.sarnam_date !== null && (
+                        <EditDateButton
+                            value={detail?.sarnam_date}
+                            onPress={() => {
+                                navigation.navigate("EditDate", {
+                                    dateType: "Sarnam",
+                                });
+                            }}
+                            label={"Sarnam"}
+                        />
+                    )}
+                    {detail?.sarshabd_date !== null && (
+                        <EditDateButton
+                            value={detail?.sarshabd_date}
+                            onPress={() => {
+                                navigation.navigate("EditDate", {
+                                    dateType: "Sarshabd",
+                                });
+                            }}
+                            label={"Sarshabd"}
+                        />
+                    )}
                     {detail?.shuddhikaran.map((item, index) => {
                         return (
                             <EditDateButton

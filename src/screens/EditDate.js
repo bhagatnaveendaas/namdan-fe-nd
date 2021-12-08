@@ -60,34 +60,33 @@ const EditDate = ({ route, navigation, ...props }) => {
         date = userData.satnam_date;
         _update = () => updateSatnam();
         _delete = () => deleteSatnam();
-        compare = userData.satnam_date === detail.satnam_date;
+        // compare = userData.satnam_date === detail.satnam_date;
         key = "satnam_date";
         _setDate = (date) => onChange(date, "satnam_date");
     } else if (dateType === "Sarnam") {
         date = userData.sarnam_date;
         _update = () => updateSarnam();
-        compare = userData.sarnam_date === detail.sarnam_date;
+        _delete = () => deleteSarnam();
+        // compare = userData.sarnam_date === detail.sarnam_date;
         key = "sarnam_date";
         _setDate = (date) => onChange(date, "sarnam_date");
     } else if (dateType === "Sarshabd") {
         date = userData.sarnam_date;
         _update = () => updateSarshabd();
-        compare = userData.sarshabd_date === detail.sarshabd_date;
+        _delete = () => deleteSarshabd();
+        // compare = userData.sarshabd_date === detail.sarshabd_date;
         key = "sarshabd_date";
         _setDate = (date) => onChange(date, "sarshabd_date");
     } else if (dateType === "Hajri") {
-        date = userData.satnam_attendance[id].attendance_date;
-        _update = () => updateHajri(userData.satnam_attendance[id].id, id);
-        compare =
-            userData.satnam_attendance[id].attendance_date ===
-            detail.satnam_attendance[id].attendance_date;
-        key = "sarnam_date";
+        date = userData?.satnam_attendance[id].attendance_date;
+        _update = () => updateHajri(userData?.satnam_attendance[id].id, id);
+        _delete = () => deleteHajri(userData?.satnam_attendance[id].id);
         num = id + 1;
         _setDate = (date) =>
             setUserData({
                 ...userData,
                 satnam_attendance: [
-                    ...userData.satnam_attendance.map((j, i) =>
+                    ...userData?.satnam_attendance.map((j, i) =>
                         i == id
                             ? {
                                   ...j,
@@ -102,11 +101,7 @@ const EditDate = ({ route, navigation, ...props }) => {
         pass = userData.satnam_exam[id].result;
         remark = userData.satnam_exam[id].reason;
         _update = () => updateSatnamExam(userData.satnam_exam[id].id, id);
-        compare =
-            userData.satnam_exam[id].exam_date ===
-                detail.satnam_exam[id].exam_date &&
-            pass === detail.satnam_exam[id].result &&
-            remark === detail.satnam_exam[id].reason;
+        _delete = () => deleteSatnamExam(userData.satnam_exam[id].id);
         num = id + 1;
         _onOptionChange = (text) =>
             setUserData({
@@ -153,10 +148,7 @@ const EditDate = ({ route, navigation, ...props }) => {
     } else if (dateType === "Shuddhikaran") {
         date = userData.shuddhikaran[id].date;
         _update = () => updateShuddhikaran(userData.shuddhikaran[id].id, id);
-        compare =
-            userData.shuddhikaran[id].date === detail.shuddhikaran[id].date &&
-            userData.shuddhikaran[id].description ===
-                detail.shuddhikaran[id].description;
+        _delete = () => deleteShuddhikaran(userData.shuddhikaran[id].id);
         num = id + 1;
         remark = userData.shuddhikaran[id].description;
         _onTextChange = (text) =>
@@ -191,10 +183,10 @@ const EditDate = ({ route, navigation, ...props }) => {
         date = userData.reupdesh[id].reupdesh_date;
         _update = () => updatePunarUpdesh(userData.reupdesh[id].id, id);
         remark = userData.reupdesh[id].remark;
-        compare =
-            userData.reupdesh[id].reupdesh_date ===
-                detail.reupdesh[id].reupdesh_date &&
-            userData.reupdesh[id].remark === detail.reupdesh[id].remark;
+        // compare =
+        //     userData.reupdesh[id].reupdesh_date ===
+        //         detail.reupdesh[id].reupdesh_date &&
+        //     userData.reupdesh[id].remark === detail.reupdesh[id].remark;
         num = id + 1;
         _onTextChange = (text) =>
             setUserData({
@@ -225,12 +217,49 @@ const EditDate = ({ route, navigation, ...props }) => {
                 ],
             });
     }
-    const deleteSatnam = async () => {
+    const deleteHajri = async (id) => {
         setDisableScreen(true);
-        deleteData(deleteSatnamUrl(userData?.id))
+        deleteData(deleteHajriUrl(id))
             .then(({ data }) => {
                 if (data?.success) {
-                    setUserData({ ...userData, satnam_date: "" });
+                    const arr = [...detail.satnam_attendance].filter(
+                        (j, i) => j.id !== id
+                    );
+                    detailDispatch({
+                        type: "EDIT_DETAILS",
+                        payload: {
+                            ...userData,
+                            satnam_attendance: arr,
+                        },
+                    });
+                    navigation.pop(1);
+                }
+            })
+            .catch((error) => {
+                if (error && error.response) {
+                    console.error(error.response.data.error);
+                    alert(error.response.data.error);
+                } else {
+                    console.error(`Error.`, error);
+                }
+            })
+            .finally(() => setDisableScreen(false));
+    };
+    const deleteSatnamExam = async (id) => {
+        setDisableScreen(true);
+        deleteData(deleteSatnamExamUrl(id))
+            .then(({ data }) => {
+                if (data?.success) {
+                    const arr = [...detail.satnam_exam].filter(
+                        (j, i) => j.id !== id
+                    );
+                    detailDispatch({
+                        type: "EDIT_DETAILS",
+                        payload: {
+                            ...userData,
+                            satnam_exam: arr,
+                        },
+                    });
                     navigation.pop();
                 }
             })
@@ -244,13 +273,65 @@ const EditDate = ({ route, navigation, ...props }) => {
             })
             .finally(() => setDisableScreen(false));
     };
-
+    const deleteShuddhikaran = async (id) => {
+        setDisableScreen(true);
+        deleteData(deleteShuddhikaranUrl(id))
+            .then(({ data }) => {
+                if (data?.success) {
+                    const arr = [...detail.shuddhikaran].filter(
+                        (j, i) => j.id !== id
+                    );
+                    detailDispatch({
+                        type: "EDIT_DETAILS",
+                        payload: {
+                            ...userData,
+                            shuddhikaran: arr,
+                        },
+                    });
+                    navigation.pop();
+                }
+            })
+            .catch((error) => {
+                if (error && error.response) {
+                    console.error(error.response.data.error);
+                    alert(error.response.data.error);
+                } else {
+                    console.error(`Error.`, error);
+                }
+            })
+            .finally(() => setDisableScreen(false));
+    };
+    const deleteSatnam = async () => {
+        setDisableScreen(true);
+        deleteData(deleteSatnamUrl(userData?.id))
+            .then(({ data }) => {
+                if (data?.success) {
+                    detailDispatch({
+                        type: "EDIT_DETAILS",
+                        payload: { ...userData, satnam_date: null },
+                    });
+                    navigation.pop();
+                }
+            })
+            .catch((error) => {
+                if (error && error.response) {
+                    console.error(error.response.data.error);
+                    alert(error.response.data.error);
+                } else {
+                    console.error(`Error.`, error);
+                }
+            })
+            .finally(() => setDisableScreen(false));
+    };
     const deleteSarnam = async () => {
         setDisableScreen(true);
         deleteData(deleteSarnamUrl(userData?.id))
             .then(({ data }) => {
                 if (data?.success) {
-                    setUserData({ ...userData, sarnam_date: "" });
+                    detailDispatch({
+                        type: "EDIT_DETAILS",
+                        payload: { ...userData, sarnam_date: null },
+                    });
                     navigation.pop();
                 }
             })
@@ -269,7 +350,10 @@ const EditDate = ({ route, navigation, ...props }) => {
         deleteData(deleteSarshabdUrl(userData?.id))
             .then(({ data }) => {
                 if (data?.success) {
-                    setUserData({ ...userData, sarshabd_date: "" });
+                    detailDispatch({
+                        type: "EDIT_DETAILS",
+                        payload: { ...userData, sarshabd_date: null },
+                    });
                     navigation.pop();
                 }
             })
@@ -437,11 +521,16 @@ const EditDate = ({ route, navigation, ...props }) => {
         })
             .then(({ data }) => {
                 if (data.success) {
+                    const payload = {
+                        ...userData,
+                        form_date: date,
+                    };
+                    console.log("payload", payload);
                     detailDispatch({
                         type: "EDIT_DETAILS",
-                        payload: { ...userData },
+                        payload,
                     });
-                    navigation.pop();
+                    navigation.pop(2);
                 }
             })
             .catch((error) => {
@@ -552,7 +641,8 @@ const EditDate = ({ route, navigation, ...props }) => {
                     dateType === "Satnam Exam") && (
                     <View
                         style={{
-                            marginVertical: 30,
+                            marginTop: 30,
+                            marginBottom: 10,
                             backgroundColor: theme.colors.primaryLight,
                         }}
                     >
@@ -587,6 +677,26 @@ const EditDate = ({ route, navigation, ...props }) => {
                             fontSize: 18,
                         }}
                         text={`Update ${dateType}`}
+                    />
+                )}
+                {dateType === "Reupdesh" ? null : (
+                    <Button
+                        onPress={_delete}
+                        buttonStyle={{
+                            padding: 12,
+                            marginVertical: 5,
+                            backgroundColor: theme.colors.red,
+                            elevation: 3,
+                            borderRadius: 50,
+                            alignItems: "center",
+                            marginTop: 30,
+                        }}
+                        textStyle={{
+                            color: theme.colors.white,
+                            ...FONTS.h3,
+                            fontSize: 18,
+                        }}
+                        text={`Delete ${dateType}`}
                     />
                 )}
             </View>

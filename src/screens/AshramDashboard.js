@@ -110,12 +110,12 @@ const Home = ({ navigation }) => {
                 }}
             >
                 <ScoreBoard
-                    prathams={kpiCounts.prathams}
-                    satnams={kpiCounts.satnams}
-                    sarnams={kpiCounts.sarnams}
-                    sarshabd={kpiCounts?.sarshabds}
-                    prathamVsSatnam={kpiCounts?.pending_satnams}
-                    punarUpdesh={kpiCounts?.reupdesh}
+                    prathams={kpiCounts.prathams ?? 0}
+                    satnams={kpiCounts.satnams ?? 0}
+                    sarnams={kpiCounts.sarnams ?? 0}
+                    sarshabd={kpiCounts?.sarshabds ?? 0}
+                    prathamVsSatnam={kpiCounts?.pending_satnams ?? 0}
+                    punarUpdesh={kpiCounts?.reupdesh ?? 0}
                 />
                 {roleId === 8 && (
                     <View>
