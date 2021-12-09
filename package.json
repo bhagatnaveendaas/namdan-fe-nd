@@ -58,6 +58,7 @@
     "react-native-unimodules": "~0.12.0",
     "react-native-web": "^0.17.1",
     "react-native-webview": "11.0.0",
+    "recyclerlistview": "^3.0.5",
     "yup": "^0.32.11"
   },
   "devDependencies": {

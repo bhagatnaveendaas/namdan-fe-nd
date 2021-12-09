@@ -18,7 +18,7 @@ const reducer = (state, action) => {
     }
 };
 
-const AuthContext = createContext(initialState);
+export const AuthContext = createContext(initialState);
 
 export const useAuth = () => {
     return useContext(AuthContext);

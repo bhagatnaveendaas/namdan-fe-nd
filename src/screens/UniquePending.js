@@ -1,127 +1,168 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { Component } from "react";
+import { Dimensions, Image, View, ActivityIndicator } from "react-native";
+import { postJsonData, getData } from "../httpClient/apiRequest";
+import { getDiscipleList } from "../constants/routes";
 import {
-    View,
-    Text,
-    ActivityIndicator,
-    FlatList,
-    TouchableOpacity,
-    Animated,
-    Image,
-} from "react-native";
-import { getData, postJsonData } from "../httpClient/apiRequest";
-import { useAuth } from "../context/AuthContext";
-import theme from "../constants/theme";
+    RecyclerListView,
+    DataProvider,
+    LayoutProvider,
+} from "recyclerlistview";
+import { AuthContext } from "../context/AuthContext";
 import UserCard from "./entry/components/UserCard";
-import DatePicker from "../components/DatePicker";
 import FormSelectInput from "../components/FormSelectInput";
+import DatePicker from "../components/DatePicker";
+import Button from "../components/Button";
 import styles from "../styles/Singup";
 import moment from "moment";
-import { getDiscipleList } from "../constants/routes";
 const calendarIcon = require("../../assets/icons/calenderFilled.png");
+import theme from "../constants/theme";
+export class UniquePending extends Component {
+    static contextType = AuthContext;
+    constructor(props) {
+        super(props);
+        this.state = {
+            dataProvider: new DataProvider((r1, r2) => {
+                return r1 !== r2;
+            }),
+            disciples: [],
+            options: [],
+            defaultOption: "",
+            page: 1,
+            stopFetchMore: false,
+            fromDate: "",
+            toDate: "",
+            loading: false,
+        };
+    }
 
-const UniquePending = ({ navigation }) => {
-    const {
-        state: { user },
-    } = useAuth();
-    const [loading, setLoading] = useState(false);
-    const [disciples, setDisciples] = useState([]);
-    const [searchOption, setSearchOption] = useState([]);
-    const [searchType, setSearchType] = useState(null);
-    const [fromDate, setFromDate] = useState("");
-    const [toDate, setToDate] = useState("");
-    const [stopFetchMore, setStopFetchMore] = useState(false);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalDisciples, settotalDisciples] = useState(0);
-    const [notFoundText, setNotFoundText] = useState("");
+    layoutProvider = new LayoutProvider(
+        (index) => {
+            return index;
+        },
+        (type, dim) => {
+            (dim.height = 130), (dim.width = Dimensions.get("window").width);
+        }
+    );
+    getList = async (page) => {
+        this.setState({ ...this.state, loading: true });
+        postJsonData(getDiscipleList(page), {
+            country_id: this.context.state.user.country,
+            search_type: this.state.defaultOption,
+            from_date: this.state.fromDate,
+            to_date: this.state.toDate,
+        })
+            .then(({ data }) => {
+                if (data.success) {
+                    this.setState({
+                        ...this.state,
+                        dataProvider: this.state.dataProvider.cloneWithRows([
+                            ...this.state.disciples,
+                            ...data?.data?.disciples,
+                        ]),
+                        disciples: [
+                            ...this.state.disciples,
+                            ...data?.data?.disciples,
+                        ],
+                        loading: false,
+                        stopFetchMore:
+                            data?.data.disciples.length === 0 && true,
+                        page: this.state.page + 1,
+                    });
+                }
+            })
+            .catch((error) => {
+                this.setState({ ...this.state, loading: false });
+                if (error && error.response) {
+                    console.error(error.response.data.error);
+                    console.log(error);
+                    alert(error.response.data.error);
+                } else {
+                    console.log("Error: ", error);
+                }
+            });
+    };
 
-    const getOptions = async () => {
+    getOptions = async () => {
         try {
             const { data } = await getData("/misc/list?slug=search_type");
             if (data.success) {
                 const temp = [...data?.data].map((item) => item.name);
-                setSearchOption(temp);
-                setSearchType(temp[0]);
+                this.setState({
+                    ...this.state,
+                    options: temp,
+                    defaultOption: temp[0],
+                });
             }
         } catch (error) {
             console.log("error", error);
         }
     };
-    const getList = async (page) => {
-        setLoading(true);
-        try {
-            const { data } = await postJsonData(getDiscipleList(page), {
-                country_id: user.country,
-                search_type: searchType,
-                from_date: fromDate,
-                to_date: toDate,
-            });
-            if (data?.success) {
-                if (data?.data.disciples.length === 0) {
-                    setStopFetchMore(true);
-                    if (page === 1) {
-                        setNotFoundText("No desciple found");
-                    }
-                }
-                setDisciples([...disciples, ...data?.data.disciples]);
-                setCurrentPage((pre) => pre + 1);
-                settotalDisciples(data?.data.total);
-            }
-        } catch (error) {
-            if (error && error.response) {
-                console.error(error.response.data.error);
-                console.log(error);
-                alert(error.response.data.error);
-            } else {
-                console.log("Error: ", error);
-            }
-        }
-        setLoading(false);
+
+    onChange = (key, value) => {
+        this.setState({
+            ...this.state,
+            disciples: [],
+            dataProvider: new DataProvider((r1, r2) => {
+                return r1 !== r2;
+            }),
+            page: 1,
+            [key]: value,
+        });
     };
 
-    useEffect(() => {
-        getOptions();
-    }, []);
+    componentDidMount() {
+        this.getOptions();
+    }
 
-    useEffect(() => {
-        if (searchType !== null) {
-            getList(1);
-        }
-    }, [searchType]);
+    // componentDidUpdate() {
+    //     if (
+    //         this.state.defaultOption === "Full List" &&
+    //         !this.state.stopFetchMore &&
+    //         this.state.page === 1
+    //     ) {
+    //         this.getList(this.state.page);
+    //     }
+    // }
 
-    return (
-        <View
-            style={{
-                backgroundColor: theme.colors.white,
-                flex: 1,
-                paddingBottom: 10,
-            }}
-        >
+    rowRenderer = (type, item) => {
+        return (
+            <UserCard
+                user={item}
+                onPress={() =>
+                    this.props.navigation.navigate("Profile", {
+                        user: item,
+                        entryType:
+                            this.state.defaultOption === "Satnam Pending"
+                                ? "Satnaam Entry"
+                                : null,
+                    })
+                }
+            />
+        );
+    };
+    render() {
+        return (
             <View
                 style={{
-                    marginVertical: 20,
-                    marginHorizontal: 20,
+                    flex: 1,
+                    backgroundColor: "white",
+                    paddingHorizontal: 15,
                 }}
             >
                 <FormSelectInput
-                    value={searchType}
-                    onValueChange={(value) => {
-                        setSearchType(value);
-                        setCurrentPage(1);
-                        setDisciples([]);
-                        settotalDisciples(0);
-                    }}
-                    options={searchOption}
+                    value={this.state.defaultOption}
+                    options={this.state.options}
+                    onValueChange={(value) =>
+                        this.onChange("defaultOption", value)
+                    }
                     containerStyle={styles.selectFieldContainer}
                     placeholder="Select Option"
                 />
                 <DatePicker
                     placeholder="Pick From Date"
-                    date={fromDate}
+                    date={this.state.fromDate}
                     value={moment()}
-                    setDate={(date) => {
-                        setFromDate(date);
-                        console.log(date);
-                    }}
+                    setDate={(date) => this.onChange("fromDate", date)}
                     maximumDate={new Date()}
                     containerStyle={styles.dateContainer}
                     appendComponent={
@@ -134,9 +175,9 @@ const UniquePending = ({ navigation }) => {
 
                 <DatePicker
                     placeholder="Pick To Date"
-                    date={toDate}
+                    date={this.state.toDate}
                     value={moment()}
-                    setDate={(date) => setToDate(date)}
+                    setDate={(date) => this.onChange("toDate", date)}
                     maximumDate={new Date()}
                     containerStyle={styles.dateContainer}
                     appendComponent={
@@ -146,63 +187,41 @@ const UniquePending = ({ navigation }) => {
                         />
                     }
                 />
-            </View>
-            <FlatList
-                data={disciples}
-                style={{ padding: 15, paddingTop: 5 }}
-                keyExtractor={(item) => item.id.toString()}
-                showsVerticalScrollIndicator={false}
-                onEndReachedThreshold={0.01}
-                onEndReached={() => {
-                    if (!stopFetchMore) {
-                        getList(currentPage);
-                    }
-                }}
-                ListFooterComponent={() => (
-                    <>
-                        {loading && (
-                            <ActivityIndicator
-                                style={{ marginBottom: 10 }}
-                                color={theme.colors.primaryLight}
-                                animating={loading}
-                                size={"large"}
-                            />
-                        )}
-                        {stopFetchMore && totalDisciples >= 10 && (
-                            <Text
-                                style={{
-                                    alignSelf: "center",
-                                    textAlign: "center",
-                                    padding: 5,
-                                    width: 150,
-                                    color: theme.colors.primaryLight,
-                                    marginBottom: 20,
-                                    borderRadius: 10,
-                                    marginTop: 10,
-                                    ...FONTS.h5,
-                                }}
-                            >
-                                No more desciples
-                            </Text>
-                        )}
-                    </>
-                )}
-                renderItem={({ item }) => {
-                    return (
-                        <UserCard
-                            user={item}
-                            onPress={() =>
-                                navigation.navigate("Profile", {
-                                    user: item,
-                                    entryType: null,
-                                })
+                <Button
+                    onPress={() => this.getList(1)}
+                    buttonStyle={styles.button}
+                    textStyle={styles.buttonText}
+                    text={"Search"}
+                />
+                {!this.state.dataProvider._data.length ? null : (
+                    <RecyclerListView
+                        style={{ marginTop: 10 }}
+                        dataProvider={this.state.dataProvider}
+                        layoutProvider={this.layoutProvider}
+                        rowRenderer={this.rowRenderer}
+                        renderFooter={() => {
+                            return (
+                                this.state.loading && (
+                                    <ActivityIndicator
+                                        style={{ marginVertical: 10 }}
+                                        color={theme.colors.primaryLight}
+                                        animating={this.state.loading}
+                                        size={"large"}
+                                    />
+                                )
+                            );
+                        }}
+                        onEndReached={() => {
+                            if (!this.state.stopFetchMore) {
+                                this.getList(this.state.page);
                             }
-                        />
-                    );
-                }}
-            />
-        </View>
-    );
-};
+                        }}
+                        onEndReachedThreshold={0.01}
+                    />
+                )}
+            </View>
+        );
+    }
+}
 
 export default UniquePending;

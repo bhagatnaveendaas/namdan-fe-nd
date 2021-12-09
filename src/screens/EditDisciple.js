@@ -111,7 +111,9 @@ const EditDisciple = ({ navigation, route, ...props }) => {
         mobile_no:
             detail?.mobile_no.substr(detail?.mobile_no.length - 10) || "",
         whatsapp_no:
-            detail?.whatsapp_no.substr(detail?.whatsapp_no.length - 10) || "",
+            detail?.whatsapp_no !== null
+                ? detail?.whatsapp_no.substr(detail?.whatsapp_no.length - 10)
+                : "",
         whatsapp_country_code: detail?.whatsapp_country_code || "+91",
         guardianName: detail?.guardian_name,
         country_code: detail?.country_code || "+91",
@@ -698,6 +700,11 @@ const EditDisciple = ({ navigation, route, ...props }) => {
                 />
                 <FormTextInput
                     label={`${fields.uniqueNoField} Number`}
+                    onFocus={() => {
+                        if (userData.unique_id === detail.unique_id) {
+                            onChange("", "unique_id");
+                        }
+                    }}
                     value={userData.unique_id}
                     placeholder={`Enter your ${fields.uniqueNoField.toLocaleLowerCase()} number`}
                     maxLength={12}

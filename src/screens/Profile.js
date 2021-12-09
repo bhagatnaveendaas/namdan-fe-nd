@@ -228,6 +228,7 @@ const Profile = ({ route, navigation, ...props }) => {
                           (userData?.satnam_date === "" ||
                               userData?.satnam_date === null)
                         : arr[i - 1].value !== "" &&
+                          countMonths(arr[i - 1].value, today) >= 1 &&
                           (userData?.satnam_date === "" ||
                               userData?.satnam_date === null) &&
                           countMonths(userData?.form_date, today) >= i + 1,
@@ -244,6 +245,12 @@ const Profile = ({ route, navigation, ...props }) => {
         if (
             userData?.satnam_attendance.length < 3 &&
             (userData?.satnam_date === "" || userData?.satnam_date === null) &&
+            (userData?.satnam_attendance.length > 0
+                ? countMonths(
+                      arr[userData?.satnam_attendance.length - 1].value,
+                      today
+                  ) >= 1
+                : countMonths(userData?.form_date, today) >= 1) &&
             countMonths(moment(userData?.form_date, "YYYY-MM-DD"), today) >= 1
         ) {
             showSubmitButton = true;
@@ -475,7 +482,7 @@ const Profile = ({ route, navigation, ...props }) => {
                         {userData?.whatsapp_no !== "" && (
                             <FieldLine
                                 label={"Whatsapp No."}
-                                value={userData?.whatsapp_no}
+                                value={userData?.whatsapp_no ?? "NA"}
                             />
                         )}
 
@@ -498,13 +505,13 @@ const Profile = ({ route, navigation, ...props }) => {
                             userData?.unique_id !== null) && (
                             <FieldLine
                                 label={"Aadhaar No."}
-                                value={userData?.unique_id}
+                                value={userData?.unique_id ?? "NA"}
                             />
                         )}
                         {userData?.email !== "" && (
                             <FieldLine
                                 label={"Email ID"}
-                                value={userData?.email}
+                                value={userData?.email ?? "NA"}
                             />
                         )}
                     </View>

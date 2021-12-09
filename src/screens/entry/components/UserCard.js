@@ -23,6 +23,7 @@ const UserCard = ({ user, onPress }) => {
         sarnam_date,
         sarshabd_date,
     } = user;
+
     let avatar = user?.avatar;
     const naamLevel = [form_date, satnam_date, sarnam_date, sarshabd_date];
     return (
@@ -57,18 +58,32 @@ const UserCard = ({ user, onPress }) => {
                             country_name,
                         ].join(", ")}
                     </Text>
-                    <Text
-                        onPress={() => {
-                            Linking.openURL(
-                                `tel:${user.mobile_no.substr(
-                                    user.mobile_no.length - 10
-                                )}`
-                            );
-                        }}
-                        style={styles.phone}
-                    >
-                        {user.mobile_no}
-                    </Text>
+                    <View style={{ flexDirection: "row" }}>
+                        <Text
+                            onPress={() => {
+                                Linking.openURL(
+                                    `tel:${user.mobile_no.substr(
+                                        user.mobile_no.length - 10
+                                    )}`
+                                );
+                            }}
+                            style={styles.phone}
+                        >
+                            {user.mobile_no}
+                        </Text>
+                        {/* <Text
+                            onPress={() => {
+                                Linking.openURL(
+                                    `tel:${user.mobile_no.substr(
+                                        user.mobile_no.length - 10
+                                    )}`
+                                );
+                            }}
+                            style={[styles.phone, { marginLeft: 5 }]}
+                        >
+                            {user?.mobile_no}
+                        </Text> */}
+                    </View>
                 </View>
                 <View style={{ width: 35 }}>
                     {naamLevel.map((item, index) => {
@@ -132,7 +147,8 @@ const styles = StyleSheet.create({
         textTransform: "capitalize",
     },
     phone: {
-        ...FONTS.body5,
+        ...FONTS.h5,
         textTransform: "capitalize",
+        color: theme.colors.primary,
     },
 });
