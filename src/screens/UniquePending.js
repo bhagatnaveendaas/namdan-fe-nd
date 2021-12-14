@@ -110,6 +110,18 @@ export class UniquePending extends Component {
         });
     };
 
+    onSearchClick = () => {
+        this.setState({
+            ...this.state,
+            disciples: [],
+            dataProvider: new DataProvider((r1, r2) => {
+                return r1 !== r2;
+            }),
+            page: 1,
+        });
+        this.getList(1);
+    };
+
     componentDidMount() {
         this.getOptions();
     }
@@ -158,37 +170,47 @@ export class UniquePending extends Component {
                     containerStyle={styles.selectFieldContainer}
                     placeholder="Select Option"
                 />
-                <DatePicker
-                    placeholder="Pick From Date"
-                    date={this.state.fromDate}
-                    value={moment()}
-                    setDate={(date) => this.onChange("fromDate", date)}
-                    maximumDate={new Date()}
-                    containerStyle={styles.dateContainer}
-                    appendComponent={
-                        <Image
-                            source={calendarIcon}
-                            style={styles.appendIcon}
-                        />
-                    }
-                />
+                <View
+                    style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                    }}
+                >
+                    <DatePicker
+                        placeholder="Pick From Date"
+                        date={this.state.fromDate}
+                        value={moment()}
+                        setDate={(date) => this.onChange("fromDate", date)}
+                        maximumDate={new Date()}
+                        containerStyle={[styles.dateContainer]}
+                        wrapperStyle={{ width: "48%" }}
+                        appendComponent={
+                            <Image
+                                source={calendarIcon}
+                                style={styles.appendIcon}
+                            />
+                        }
+                    />
 
-                <DatePicker
-                    placeholder="Pick To Date"
-                    date={this.state.toDate}
-                    value={moment()}
-                    setDate={(date) => this.onChange("toDate", date)}
-                    maximumDate={new Date()}
-                    containerStyle={styles.dateContainer}
-                    appendComponent={
-                        <Image
-                            source={calendarIcon}
-                            style={styles.appendIcon}
-                        />
-                    }
-                />
+                    <DatePicker
+                        placeholder="Pick To Date"
+                        date={this.state.toDate}
+                        value={moment()}
+                        setDate={(date) => this.onChange("toDate", date)}
+                        maximumDate={new Date()}
+                        containerStyle={[styles.dateContainer]}
+                        wrapperStyle={{ width: "48%" }}
+                        appendComponent={
+                            <Image
+                                source={calendarIcon}
+                                style={styles.appendIcon}
+                            />
+                        }
+                    />
+                </View>
                 <Button
-                    onPress={() => this.getList(1)}
+                    onPress={() => this.onSearchClick()}
                     buttonStyle={styles.button}
                     textStyle={styles.buttonText}
                     text={"Search"}

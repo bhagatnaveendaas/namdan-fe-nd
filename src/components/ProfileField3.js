@@ -33,7 +33,7 @@ const Field = ({
             style={{
                 padding: 5,
                 paddingHorizontal: 10,
-                backgroundColor: theme.colors.lightGray,
+                backgroundColor: enable ? "#e3f2fd" : theme.colors.lightGray,
                 marginVertical: 4,
                 borderRadius: 5,
             }}
@@ -56,7 +56,7 @@ const Field = ({
                         allowFontScaling={false}
                         style={{
                             color: enable
-                                ? theme.colors.darkgray
+                                ? theme.colors.primary
                                 : optionValue
                                 ? theme.colors.green
                                 : theme.colors.red,

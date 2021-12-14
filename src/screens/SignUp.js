@@ -872,9 +872,19 @@ const SignUp = ({ navigation }) => {
                 label="Date of Birth"
                 placeholder="Select Date of birth"
                 date={userData.dob}
-                value={moment().subtract(3, "years")}
+                value={moment(userData.form_date, "YYYY-MM-DD").subtract(
+                    3,
+                    "years"
+                )}
                 setDate={(date) => onDobChange(date)}
-                maximumDate={new Date(threeYearsBack)}
+                maximumDate={
+                    new Date(
+                        moment(userData.form_date, "YYYY-MM-DD").subtract(
+                            3,
+                            "years"
+                        )
+                    )
+                }
                 containerStyle={styles.dateContainer}
                 required={true}
                 appendComponent={

@@ -21,6 +21,7 @@ import SearchScreen from "../screens/Search";
 import Profile from "../screens/Profile";
 import UniquePending from "../screens/UniquePending";
 import History from "../screens/History";
+import Message from "../screens/Message";
 import { useAuth } from "../context/AuthContext";
 import { DetailProvider } from "../context/DetailContex";
 
@@ -61,7 +62,7 @@ const AppStack = () => {
                 component={History}
                 options={{ title: "Punar Updesh History" }}
             />
-
+            <Stack.Screen name="Message" component={Message} />
             <Stack.Screen name="Pratham Naam" component={SignUp} />
             <Stack.Screen
                 name="CountryDashboard"
@@ -82,7 +83,6 @@ const AppStack = () => {
             <Stack.Screen name="Approvals" component={Approvals} />
             <Stack.Screen name="Messages" component={Messages} />
             <Stack.Screen name="Compose Message" component={CreateMessage} />
-            <Stack.Screen name="Message" component={MessageDetails} />
         </Stack.Navigator>
     );
 };

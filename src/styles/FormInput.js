@@ -1,12 +1,12 @@
 import { StyleSheet } from "react-native";
 import theme from "../constants/theme";
-import {FONTS} from '../constants/fonts'
+import { FONTS } from "../constants/fonts";
 
 export default StyleSheet.create({
     wrapper: { marginTop: 10 },
     label: {
         color: theme.colors.primary,
-        ...FONTS.body4
+        ...FONTS.body4,
     },
     container: {
         flexDirection: "row",
@@ -22,18 +22,18 @@ export default StyleSheet.create({
         flex: 1,
         lineHeight: 22,
         color: theme.colors.primary,
-        ...FONTS.body3
+        ...FONTS.body3,
     },
     dateText: {
         flex: 1,
         lineHeight: 22,
         color: theme.colors.primary,
-        ...FONTS.body3
+        ...FONTS.body3,
     },
     firstPickerItem: { color: theme.colors.primaryLight, ...FONTS.body3 },
     pickerItem: {
         color: theme.colors.primary,
-        ...FONTS.body3
+        ...FONTS.body3,
     },
     required: { color: "red" },
     placeholderColor: { color: theme.colors.primaryLight },

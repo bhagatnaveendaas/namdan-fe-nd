@@ -326,10 +326,11 @@ const UserProfile = () => {
                             style={{
                                 ...FONTS.body4,
                                 color: theme.colors.primary,
+                                textTransform: "capitalize",
                                 marginBottom: 5,
                             }}
                         >
-                            {item.toUpperCase().replace(/_/g, " ")}
+                            {item.replace(/_/g, " ")}
                         </Text>
                     ))}
                 </View>

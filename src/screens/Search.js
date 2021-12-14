@@ -100,7 +100,7 @@ const Search = ({ navigation, route }) => {
                     placeholder={
                         searchBy === "mobile_no"
                             ? "Enter your mobile number"
-                            : "Enter your aadhar number"
+                            : "Enter your unique id number"
                     }
                     autoFocus={true}
                     required={true}
@@ -186,7 +186,7 @@ const Search = ({ navigation, route }) => {
                 <RadioButton
                     selected={searchBy === "unique_id"}
                     color={theme.colors.primary}
-                    label="Aadhaar Number"
+                    label="Unique Id Number"
                     labelStyle={{
                         ...FONTS.h5,
                     }}

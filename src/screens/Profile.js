@@ -45,7 +45,7 @@ const FieldLine = ({ label, value }) => {
                 style={{
                     ...FONTS.h5,
                     width: 120,
-                    color: theme.colors.darkgray,
+                    color: theme.colors.primary,
                 }}
             >
                 {label}
@@ -111,7 +111,7 @@ const Profile = ({ route, navigation, ...props }) => {
         [user?.id]
     );
 
-    let update_at = userData?.updated_at?.split("T")[0];
+    let update_at = userData?.updated_at?.split("T")[0] ?? userData?.form_date;
     const createEntry = async () => {
         if (selectedDate === "") {
             alert("Please select a date for entry.");
@@ -504,7 +504,7 @@ const Profile = ({ route, navigation, ...props }) => {
                         {(userData?.unique_id !== "" ||
                             userData?.unique_id !== null) && (
                             <FieldLine
-                                label={"Aadhaar No."}
+                                label={"Unique ID No."}
                                 value={userData?.unique_id ?? "NA"}
                             />
                         )}

@@ -40,7 +40,7 @@ const Field = ({
             style={{
                 padding: 5,
                 paddingHorizontal: 10,
-                backgroundColor: theme.colors.lightGray,
+                backgroundColor: enable ? "#e3f2fd" : theme.colors.lightGray,
                 marginVertical: 4,
                 borderRadius: 5,
             }}
@@ -62,7 +62,7 @@ const Field = ({
                     <Text
                         allowFontScaling={false}
                         style={{
-                            color: theme.colors.darkgray,
+                            color: theme.colors.primary,
                             ...FONTS.h5,
                         }}
                     >
@@ -121,6 +121,7 @@ const Field = ({
                     multiline
                     editable={enable}
                     autoFocus
+                    placeholderTextColor={"black"}
                     onChangeText={onReasonChange}
                     style={{
                         backgroundColor: theme.colors.white,

@@ -8,8 +8,6 @@ const clockImage = require("../../assets/icons/clock.png");
 const History = ({ route }) => {
     let history = route.params?.history;
 
-    console.log(history[0].detail);
-
     let newTemp = [...history].map((h, j) => {
         let pratham = h.detail.filter(
             (item) =>
@@ -44,60 +42,69 @@ const History = ({ route }) => {
 
     let newHistory = [...newTemp].map((k, l) => {
         return k.map((h, i) => {
-            return h.map(({ name, date, remark }, j) => {
+            return h.map(({ name, date, remark, ...rest }, j) => {
                 if (name === "first_mantra")
                     return {
                         name: l === 0 ? `Pratham Naam` : `Punar Updesh ${l}`,
                         date: moment(date, "YYYY-MM-DD").format("DD-MM-YYYY"),
                         remark,
+                        ...rest,
                     };
                 if (name === "satnam_attendance")
                     return {
                         name: `Hajri${j}`,
                         date: moment(date, "YYYY-MM-DD").format("DD-MM-YYYY"),
                         remark,
+                        ...rest,
                     };
                 if (name === "satnam_exam")
                     return {
                         name: `Satnam Exam ${j + 1}`,
                         date: moment(date, "YYYY-MM-DD").format("DD-MM-YYYY"),
                         remark,
+                        ...rest,
                     };
                 if (name === `first_shuddhikaran`)
                     return {
                         name: `Pratham Shuddhikaran ${j + 1}`,
                         date: moment(date, "YYYY-MM-DD").format("DD-MM-YYYY"),
                         remark,
+                        ...rest,
                     };
                 if (name === `satnam_shuddhikaran`)
                     return {
                         name: `Satnam Shuddhikaran ${j + 1}`,
                         date: moment(date, "YYYY-MM-DD").format("DD-MM-YYYY"),
                         remark,
+                        ...rest,
                     };
                 if (name === `sarnam_shuddhikaran`)
                     return {
                         name: `Sarnam Shuddhikaran ${j + 1}`,
                         date: moment(date, "YYYY-MM-DD").format("DD-MM-YYYY"),
                         remark,
+                        ...rest,
                     };
                 if (name === `sarshabd_shuddhikaran`)
                     return {
                         name: `Sarshabd Shuddhikaran ${j + 1}`,
                         date: moment(date, "YYYY-MM-DD").format("DD-MM-YYYY"),
                         remark,
+                        ...rest,
                     };
                 if (name === "reupdesh")
                     return {
                         name: `Punar Updesh ${j + 1}`,
                         date: moment(date, "YYYY-MM-DD").format("DD-MM-YYYY"),
                         remark,
+                        ...rest,
                     };
                 else
                     return {
                         name,
                         date: moment(date, "YYYY-MM-DD").format("DD-MM-YYYY"),
                         remark,
+                        ...rest,
                     };
             });
         });
@@ -171,35 +178,56 @@ const History = ({ route }) => {
                                                                 {k.date}
                                                             </Text>
                                                         </View>
-                                                        {k.remark &&
-                                                        k.remark !== "ok" ? (
-                                                            <Text
-                                                                style={{
-                                                                    ...FONTS.body4,
-                                                                    textTransform:
-                                                                        "capitalize",
-                                                                    color:
-                                                                        k.remark ===
-                                                                        "Fail"
-                                                                            ? theme
-                                                                                  .colors
-                                                                                  .red
-                                                                            : k.remark ===
-                                                                              "Pass"
-                                                                            ? theme
-                                                                                  .colors
-                                                                                  .green
-                                                                            : theme
-                                                                                  .colors
-                                                                                  .primary,
-                                                                }}
-                                                                allowFontScaling={
-                                                                    false
-                                                                }
-                                                            >
-                                                                {k.remark.trim()}
-                                                            </Text>
-                                                        ) : null}
+                                                        <View
+                                                            style={{
+                                                                flexDirection:
+                                                                    "row",
+                                                            }}
+                                                        >
+                                                            {k.remark &&
+                                                            k.remark !==
+                                                                "ok" ? (
+                                                                <Text
+                                                                    style={{
+                                                                        ...FONTS.body4,
+                                                                        textTransform:
+                                                                            "capitalize",
+                                                                        color:
+                                                                            k.remark ===
+                                                                            "Fail"
+                                                                                ? theme
+                                                                                      .colors
+                                                                                      .red
+                                                                                : k.remark ===
+                                                                                  "Pass"
+                                                                                ? theme
+                                                                                      .colors
+                                                                                      .green
+                                                                                : theme
+                                                                                      .colors
+                                                                                      .primary,
+                                                                    }}
+                                                                    allowFontScaling={
+                                                                        false
+                                                                    }
+                                                                >
+                                                                    {k.remark.trim()}
+                                                                </Text>
+                                                            ) : null}
+                                                            {k?.reason && (
+                                                                <Text
+                                                                    style={{
+                                                                        ...FONTS.body4,
+                                                                        color: theme
+                                                                            .colors
+                                                                            .primary,
+                                                                        marginLeft: 5,
+                                                                    }}
+                                                                >
+                                                                    {k?.reason}
+                                                                </Text>
+                                                            )}
+                                                        </View>
                                                     </View>
                                                 );
                                             })}

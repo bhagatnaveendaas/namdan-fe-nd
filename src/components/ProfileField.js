@@ -24,7 +24,7 @@ const Field = ({ label, enable, onDateChange, value, minDate, children }) => {
             style={{
                 padding: 5,
                 paddingHorizontal: 10,
-                backgroundColor: theme.colors.lightGray,
+                backgroundColor: enable ? "#e3f2fd" : theme.colors.lightGray,
                 marginVertical: 4,
                 borderRadius: 5,
             }}
@@ -46,7 +46,7 @@ const Field = ({ label, enable, onDateChange, value, minDate, children }) => {
                     <Text
                         allowFontScaling={false}
                         style={{
-                            color: theme.colors.darkgray,
+                            color: theme.colors.primary,
                             ...FONTS.h5,
                         }}
                     >

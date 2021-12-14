@@ -208,24 +208,50 @@ const Home = ({ navigation }) => {
                     </View>
                 )}
                 {roleId === 8 && (
-                    <Button
-                        onPress={() => navigation.navigate("Pending")}
-                        buttonStyle={{
-                            padding: 12,
-                            backgroundColor: theme.colors.primary,
-                            elevation: 3,
-                            borderRadius: 10,
-                            alignItems: "center",
+                    <View
+                        style={{
+                            flexDirection: "row",
                             marginTop: 5,
                             marginBottom: 30,
+                            alignItems: "center",
+                            justifyContent: "space-between",
                         }}
-                        textStyle={{
-                            color: theme.colors.white,
-                            ...FONTS.h3,
-                            fontSize: 18,
-                        }}
-                        text={"View List"}
-                    />
+                    >
+                        <Button
+                            onPress={() => navigation.navigate("Message")}
+                            buttonStyle={{
+                                padding: 12,
+                                backgroundColor: theme.colors.primary,
+                                elevation: 3,
+                                borderRadius: 10,
+                                alignItems: "center",
+                                width: "48%",
+                            }}
+                            textStyle={{
+                                color: theme.colors.white,
+                                ...FONTS.h3,
+                                fontSize: 18,
+                            }}
+                            text={"Messages"}
+                        />
+                        <Button
+                            onPress={() => navigation.navigate("Pending")}
+                            buttonStyle={{
+                                padding: 12,
+                                backgroundColor: theme.colors.primary,
+                                elevation: 3,
+                                borderRadius: 10,
+                                alignItems: "center",
+                                width: "48%",
+                            }}
+                            textStyle={{
+                                color: theme.colors.white,
+                                ...FONTS.h3,
+                                fontSize: 18,
+                            }}
+                            text={"View List"}
+                        />
+                    </View>
                 )}
             </ScrollView>
         </SafeAreaView>

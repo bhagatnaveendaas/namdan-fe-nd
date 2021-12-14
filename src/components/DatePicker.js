@@ -9,13 +9,15 @@ const DatePicker = ({
     label,
     setDate,
     required,
-    appendComponent,value,
+    appendComponent,
+    value,
     placeholder,
     containerStyle,
+    wrapperStyle,
     ...props
 }) => {
     const [showPlaceholder, setShowPlaceholder] = React.useState(true);
-    const [newDate, setNewDate] = useState(value)
+    const [newDate, setNewDate] = useState(value);
     const [show, setShow] = React.useState(false);
     const onChange = (event, selectedDate) => {
         const currentDate = moment(selectedDate) || newDate;
@@ -23,11 +25,11 @@ const DatePicker = ({
         if (event.type === "set") {
             setNewDate(currentDate);
             setShowPlaceholder(false);
-            setDate(currentDate.format("YYYY-MM-DD"))
+            setDate(currentDate.format("YYYY-MM-DD"));
         } else return null;
     };
     return (
-        <View style={{ marginTop: 10 }}>
+        <View style={[{ marginTop: 10 }, wrapperStyle]}>
             {label && (
                 <Text
                     allowFontScaling={false}
