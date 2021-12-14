@@ -116,6 +116,7 @@ const Field = ({
             </View>
             {enable ? (
                 <TextInput
+                    allowFontScaling={false}
                     value={reason}
                     placeholder="Enter the reason...."
                     multiline

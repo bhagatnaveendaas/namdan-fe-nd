@@ -29,6 +29,7 @@ const FormSelectInput = ({
             )}
             <View style={[styles.container, containerStyle]}>
                 <Picker
+                    allowFontScaling={false}
                     selectedValue={value}
                     onValueChange={onValueChange}
                     style={{ flex: 1 }}

@@ -648,6 +648,7 @@ const EditDate = ({ route, navigation, ...props }) => {
                     >
                         <TextInput
                             value={remark}
+                            allowFontScaling={false}
                             onChangeText={_onTextChange}
                             style={{
                                 backgroundColor: theme.colors.white,
