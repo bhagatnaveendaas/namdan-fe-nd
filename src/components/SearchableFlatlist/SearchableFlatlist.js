@@ -18,6 +18,7 @@ const SearchableFlatlist = ({
     onValueChange,
     setEnableSearch,
     defaultValue,
+    wrapperStyle,
 }) => {
     const defaultOption = data.filter((item) => {
         if (typeof item === "string") {
@@ -42,7 +43,7 @@ const SearchableFlatlist = ({
     };
 
     return (
-        <View style={[styles.wrapper, { position: "relative" }]}>
+        <View style={[styles.wrapper, wrapperStyle, { position: "relative" }]}>
             {label && (
                 <Text
                     allowFontScaling={false}

@@ -11,11 +11,18 @@ import { AuthContext } from "../context/AuthContext";
 import UserCard from "./entry/components/UserCard";
 import FormSelectInput from "../components/FormSelectInput";
 import DatePicker from "../components/DatePicker";
+import SearchableFlatlist from "../components/SearchableFlatlist/SearchableFlatlist";
 import Button from "../components/Button";
 import styles from "../styles/Singup";
 import moment from "moment";
 const calendarIcon = require("../../assets/icons/calenderFilled.png");
 import theme from "../constants/theme";
+import {
+    getCountries,
+    getStates,
+    getDistricts,
+    getTehsils,
+} from "../utilities/location";
 export class UniquePending extends Component {
     static contextType = AuthContext;
     constructor(props) {
@@ -24,6 +31,12 @@ export class UniquePending extends Component {
             dataProvider: new DataProvider((r1, r2) => {
                 return r1 !== r2;
             }),
+            setEnableSearch: false,
+            countries: [],
+            states: [],
+            districts: [],
+            tehsils: [],
+            cities: [],
             disciples: [],
             options: [],
             defaultOption: "",
@@ -32,6 +45,10 @@ export class UniquePending extends Component {
             fromDate: "",
             toDate: "",
             loading: false,
+            country_id: 0,
+            state_id: 0,
+            district_id: 0,
+            tehsil_id: 0,
         };
     }
 
@@ -43,6 +60,13 @@ export class UniquePending extends Component {
             (dim.height = 130), (dim.width = Dimensions.get("window").width);
         }
     );
+
+    setEnableSearch = () => {
+        this.setState({
+            ...this.state,
+            setEnableSearch: !this.state.setEnableSearch,
+        });
+    };
     getList = async (page) => {
         this.setState({ ...this.state, loading: true });
         postJsonData(getDiscipleList(page), {
@@ -124,17 +148,18 @@ export class UniquePending extends Component {
 
     componentDidMount() {
         this.getOptions();
+        getCountries((data) =>
+            this.setState({ ...this.state, countries: data })
+        );
     }
 
-    // componentDidUpdate() {
-    //     if (
-    //         this.state.defaultOption === "Full List" &&
-    //         !this.state.stopFetchMore &&
-    //         this.state.page === 1
-    //     ) {
-    //         this.getList(this.state.page);
-    //     }
-    // }
+    componentDidUpdate() {
+        if (this.state.countries.length > 0) {
+            getStates(this.state.country_id, (data) =>
+                this.setState({ ...this.state, states: data })
+            );
+        }
+    }
 
     rowRenderer = (type, item) => {
         return (
@@ -207,6 +232,65 @@ export class UniquePending extends Component {
                                 style={styles.appendIcon}
                             />
                         }
+                    />
+                </View>
+                <View
+                    style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        flexWrap: "wrap",
+                        marginTop: 5,
+                    }}
+                >
+                    <SearchableFlatlist
+                        defaultValue={this.state.country_id}
+                        setEnableSearch={this.setEnableSearch}
+                        // label={"Countries"}
+                        containerStyle={styles.dateContainer}
+                        placeholderText={"Select Country"}
+                        wrapperStyle={{ width: "48%" }}
+                        data={this.state.countries}
+                        onValueChange={(value) => {
+                            console.log(value);
+                            this.setState({ ...this.state, country_id: value });
+                        }}
+                    />
+                    <SearchableFlatlist
+                        defaultValue={this.state.state_id}
+                        setEnableSearch={this.setEnableSearch}
+                        // label={"States"}
+                        containerStyle={styles.dateContainer}
+                        placeholderText={"Select State"}
+                        wrapperStyle={{ width: "48%" }}
+                        data={this.state.states}
+                        onValueChange={(value) => {
+                            console.log(value);
+                        }}
+                    />
+                    <SearchableFlatlist
+                        defaultValue={this.state.district_id}
+                        setEnableSearch={this.setEnableSearch}
+                        // label={"Districts"}
+                        containerStyle={styles.dateContainer}
+                        placeholderText={"Select District"}
+                        wrapperStyle={{ width: "48%" }}
+                        data={this.state.districts}
+                        onValueChange={(value) => {
+                            console.log(value);
+                        }}
+                    />
+                    <SearchableFlatlist
+                        defaultValue={this.state.tehsil_id}
+                        setEnableSearch={this.setEnableSearch}
+                        // label={"Tehsils"}
+                        containerStyle={styles.dateContainer}
+                        placeholderText={"Select Tehsil"}
+                        wrapperStyle={{ width: "48%" }}
+                        data={this.state.tehsils}
+                        onValueChange={(value) => {
+                            console.log(value);
+                        }}
                     />
                 </View>
                 <Button
