@@ -88,15 +88,12 @@ const Login = ({ navigation }) => {
                         setShowAlert(temp);
                     }}
                 />
+                <View>
 
                 <Image
                     style={styles.image}
                     source={require("../../assets/guruji22.png")}
                 />
-                <View>
-                    <Text allowFontScaling={false} style={styles.label}>
-                        NAMDAN APP
-                    </Text>
                     <View style={styles.inputContainer}>
                         <View style={styles.iconContainer}>
                             <TextInput
@@ -108,7 +105,7 @@ const Login = ({ navigation }) => {
                                 placeholder="Enter mobile number"
                             />
                         </View>
-                        <View style={{ marginTop: 100 }}>
+                        <View style={{ marginTop: 30 }}>
                             <RoundButton
                                 label={"Get OTP"}
                                 handlePress={() => {

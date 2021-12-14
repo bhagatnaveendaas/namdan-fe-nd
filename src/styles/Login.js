@@ -16,8 +16,11 @@ export default StyleSheet.create({
         // paddingTop: height * 0.08,
     },
     image: {
-        height: width * 0.6,
-        width: width * 0.6,
+        flex: 1,
+        marginTop: 30,
+        marginBottom: 25,
+        height: width * 0.8,
+        width: width * 0.8,
         alignSelf: "center",
     },
     textCenter: {

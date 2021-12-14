@@ -105,7 +105,7 @@ const VerifyOtp = ({ route, navigation }) => {
         >
             <Image
                 style={styles.image}
-                source={require("../../assets/Guruji2.png")}
+                source={require("../../assets/guruji22.png")}
             />
             <Text allowFontScaling={false} style={styles.label}>
                 Enter OTP
