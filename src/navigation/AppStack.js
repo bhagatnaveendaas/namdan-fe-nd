@@ -81,7 +81,13 @@ const AppStack = () => {
             />
             <Stack.Screen name="Add Sewadaar" component={AddSewadaar} />
             <Stack.Screen name="Approvals" component={Approvals} />
-            <Stack.Screen name="Messages" component={Messages} />
+            <Stack.Screen
+                name="MessageDetail"
+                options={{
+                    headerTitle: "Message Detail",
+                }}
+                component={MessageDetails}
+            />
             <Stack.Screen name="Compose Message" component={CreateMessage} />
         </Stack.Navigator>
     );

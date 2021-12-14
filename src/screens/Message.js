@@ -15,7 +15,7 @@ const messages = [
     },
 ];
 
-const Message = () => {
+const Message = ({ navigation }) => {
     return (
         <ScrollView style={{ flex: 1, backgroundColor: "white", padding: 15 }}>
             {messages.map((item, index) => {
@@ -23,7 +23,11 @@ const Message = () => {
                     <MessageCard
                         key={index}
                         message={item}
-                        onPress={() => {}}
+                        onPress={() =>
+                            navigation.navigate("MessageDetail", {
+                                message: item,
+                            })
+                        }
                     />
                 );
             })}
