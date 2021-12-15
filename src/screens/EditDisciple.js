@@ -692,7 +692,7 @@ const EditDisciple = ({ navigation, route, ...props }) => {
                 />
 
                 <FormTextInput
-                    label="Form No."
+                    label="Form No"
                     value={userData.form_no}
                     placeholder={"Enter Form Number"}
                     containerStyle={styles.textFieldContainer}
@@ -922,7 +922,7 @@ const EditDisciple = ({ navigation, route, ...props }) => {
                     }
                 />
                 <FormSelectInput
-                    label="Naamdan Taken"
+                    label="Namdan Taken"
                     value={userData.namdan_taken}
                     onValueChange={(value) => onChange(value, "namdan_taken")}
                     options={namdan_takenAt}

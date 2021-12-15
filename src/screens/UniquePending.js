@@ -11,18 +11,12 @@ import { AuthContext } from "../context/AuthContext";
 import UserCard from "./entry/components/UserCard";
 import FormSelectInput from "../components/FormSelectInput";
 import DatePicker from "../components/DatePicker";
-import SearchableFlatlist from "../components/SearchableFlatlist/SearchableFlatlist";
 import Button from "../components/Button";
 import styles from "../styles/Singup";
 import moment from "moment";
 const calendarIcon = require("../../assets/icons/calenderFilled.png");
 import theme from "../constants/theme";
-import {
-    getCountries,
-    getStates,
-    getDistricts,
-    getTehsils,
-} from "../utilities/location";
+
 export class UniquePending extends Component {
     static contextType = AuthContext;
     constructor(props) {
@@ -66,6 +60,41 @@ export class UniquePending extends Component {
             ...this.state,
             setEnableSearch: !this.state.setEnableSearch,
         });
+    };
+
+    getInitialList = async () => {
+        this.setState({ ...this.state, loading: true });
+        postJsonData(getDiscipleList(1), {
+            country_id: this.context.state.user.country,
+            search_type: this.state.defaultOption,
+            from_date: this.state.fromDate,
+            to_date: this.state.toDate,
+        })
+            .then(({ data }) => {
+                if (data.success) {
+                    this.setState({
+                        ...this.state,
+                        dataProvider: this.state.dataProvider.cloneWithRows(
+                            data?.data?.disciples
+                        ),
+                        disciples: data?.data?.disciples,
+                        loading: false,
+                        stopFetchMore:
+                            data?.data.disciples.length === 0 && true,
+                        page: 2,
+                    });
+                }
+            })
+            .catch((error) => {
+                this.setState({ ...this.state, loading: false });
+                if (error && error.response) {
+                    console.error(error.response.data.error);
+                    console.log(error);
+                    alert(error.response.data.error);
+                } else {
+                    console.log("Error: ", error);
+                }
+            });
     };
     getList = async (page) => {
         this.setState({ ...this.state, loading: true });
@@ -134,31 +163,8 @@ export class UniquePending extends Component {
         });
     };
 
-    onSearchClick = () => {
-        this.setState({
-            ...this.state,
-            disciples: [],
-            dataProvider: new DataProvider((r1, r2) => {
-                return r1 !== r2;
-            }),
-            page: 1,
-        });
-        this.getList(1);
-    };
-
     componentDidMount() {
         this.getOptions();
-        getCountries((data) =>
-            this.setState({ ...this.state, countries: data })
-        );
-    }
-
-    componentDidUpdate() {
-        if (this.state.countries.length > 0) {
-            getStates(this.state.country_id, (data) =>
-                this.setState({ ...this.state, states: data })
-            );
-        }
     }
 
     rowRenderer = (type, item) => {
@@ -234,67 +240,8 @@ export class UniquePending extends Component {
                         }
                     />
                 </View>
-                <View
-                    style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        flexWrap: "wrap",
-                        marginTop: 5,
-                    }}
-                >
-                    <SearchableFlatlist
-                        defaultValue={this.state.country_id}
-                        setEnableSearch={this.setEnableSearch}
-                        // label={"Countries"}
-                        containerStyle={styles.dateContainer}
-                        placeholderText={"Select Country"}
-                        wrapperStyle={{ width: "48%" }}
-                        data={this.state.countries}
-                        onValueChange={(value) => {
-                            console.log(value);
-                            this.setState({ ...this.state, country_id: value });
-                        }}
-                    />
-                    <SearchableFlatlist
-                        defaultValue={this.state.state_id}
-                        setEnableSearch={this.setEnableSearch}
-                        // label={"States"}
-                        containerStyle={styles.dateContainer}
-                        placeholderText={"Select State"}
-                        wrapperStyle={{ width: "48%" }}
-                        data={this.state.states}
-                        onValueChange={(value) => {
-                            console.log(value);
-                        }}
-                    />
-                    <SearchableFlatlist
-                        defaultValue={this.state.district_id}
-                        setEnableSearch={this.setEnableSearch}
-                        // label={"Districts"}
-                        containerStyle={styles.dateContainer}
-                        placeholderText={"Select District"}
-                        wrapperStyle={{ width: "48%" }}
-                        data={this.state.districts}
-                        onValueChange={(value) => {
-                            console.log(value);
-                        }}
-                    />
-                    <SearchableFlatlist
-                        defaultValue={this.state.tehsil_id}
-                        setEnableSearch={this.setEnableSearch}
-                        // label={"Tehsils"}
-                        containerStyle={styles.dateContainer}
-                        placeholderText={"Select Tehsil"}
-                        wrapperStyle={{ width: "48%" }}
-                        data={this.state.tehsils}
-                        onValueChange={(value) => {
-                            console.log(value);
-                        }}
-                    />
-                </View>
                 <Button
-                    onPress={() => this.onSearchClick()}
+                    onPress={() => this.getInitialList()}
                     buttonStyle={styles.button}
                     textStyle={styles.buttonText}
                     text={"Search"}

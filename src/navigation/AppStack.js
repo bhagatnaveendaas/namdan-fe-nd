@@ -56,14 +56,20 @@ const AppStack = () => {
             <Stack.Screen name="Profile" component={Profile} />
             <Stack.Screen name="Edit" component={EditDisciple} />
             <Stack.Screen name="EditDate" component={EditDate} />
-            <Stack.Screen name="Pending" component={UniquePending} />
+            <Stack.Screen
+                name="Pending"
+                options={{
+                    headerTitle: "List",
+                }}
+                component={UniquePending}
+            />
             <Stack.Screen
                 name="History"
                 component={History}
                 options={{ title: "Punar Updesh History" }}
             />
             <Stack.Screen name="Message" component={Message} />
-            <Stack.Screen name="Pratham Naam" component={SignUp} />
+            <Stack.Screen name="Pratham Nam" component={SignUp} />
             <Stack.Screen
                 name="CountryDashboard"
                 component={CountryDashboard}

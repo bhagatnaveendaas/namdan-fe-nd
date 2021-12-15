@@ -1,244 +1,115 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View, Text, ToastAndroid } from "react-native";
 import styles from "../styles/AshramDashboard";
 import theme from "../constants/theme";
 import { FONTS } from "../constants/fonts";
 
-const ScoreBoard = (props) => (
-    <View style={{ paddingHorizontal: "1%" }}>
-        <View style={styles.scoreBoard}>
-            <View style={{ flexDirection: "column" }}>
+const ScoreBoard = (props) => {
+    const {
+        total,
+        prathams,
+        sarnams,
+        satnams,
+        sarshabd,
+        punarUpdesh,
+        prathamVsSatnam,
+    } = props;
+    return (
+        <View
+            style={{
+                backgroundColor: theme.colors.primary,
+                padding: 15,
+                borderRadius: 15,
+                width: "100%",
+            }}
+        >
+            <View
+                style={{
+                    alignItems: "center",
+                    marginBottom: 10,
+                    paddingBottom: 5,
+                    marginHorizontal: 7.5,
+                    borderBottomColor: "white",
+                    borderBottomWidth: 2,
+                }}
+            >
+                <Text allowFontScaling={false} style={styles.number}>
+                    {total}
+                </Text>
+                <Text allowFontScaling={false} style={styles.label}>
+                    {"TOTAL NAMDAN"}
+                </Text>
+            </View>
+            <View
+                style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    flexWrap: "wrap",
+                    width: "100%",
+                    justifyContent: "space-around",
+                    position: "relative",
+                }}
+            >
                 <View
                     style={{
-                        flexDirection: "row",
-                        alignContent: "center",
-                        alignSelf: "center",
-                        paddingBottom: "3%",
-                        paddingTop: "3%",
+                        height: "100%",
+                        width: 2,
+                        backgroundColor: "white",
+                        position: "absolute",
+                        left: "49.5%",
                     }}
-                >
-                    <View
-                        style={{
-                            borderRightColor: theme.colors.white,
-                            borderRightWidth: 1,
-                            paddingVertical: "2%",
-                            width: "50%",
-                        }}
-                    >
-                        <View
-                            style={[
-                                styles.prathamDiv,
-                                {
-                                    paddingBottom: "10%",
-                                    paddingVertical: "6%",
-                                    borderBottomColor: theme.colors.white,
-                                    borderBottomWidth: 1,
-                                    width: "80%",
-                                    alignContent: "center",
-                                    alignSelf: "center",
-                                },
-                            ]}
-                        >
-                            <Text
-                                allowFontScaling={false}
-                                style={{
-                                    ...FONTS.h2,
-                                    color: theme.colors.white,
-
-                                    textAlign: "center",
-                                }}
-                            >
-                                {props.prathams}
-                            </Text>
-                            <Text
-                                allowFontScaling={false}
-                                style={{
-                                    ...FONTS.h4,
-                                    color: theme.colors.white,
-                                    textAlign: "center",
-
-                                    paddingTop: "1%",
-                                }}
-                            >
-                                PRATHAM NAAM
-                            </Text>
-                        </View>
-                        <View
-                            style={[
-                                styles.prathamDiv,
-                                {
-                                    paddingBottom: "10%",
-                                    paddingVertical: "6%",
-                                    borderBottomColor: theme.colors.white,
-                                    borderBottomWidth: 1,
-                                    width: "80%",
-                                    alignContent: "center",
-                                    alignSelf: "center",
-                                },
-                            ]}
-                        >
-                            <Text
-                                allowFontScaling={false}
-                                style={{
-                                    ...FONTS.h2,
-                                    color: theme.colors.white,
-
-                                    textAlign: "center",
-                                }}
-                            >
-                                {props.sarnams}
-                            </Text>
-                            <Text
-                                allowFontScaling={false}
-                                style={{
-                                    ...FONTS.h4,
-                                    color: theme.colors.white,
-                                    textAlign: "center",
-
-                                    paddingTop: "1%",
-                                }}
-                            >
-                                SARNAAM
-                            </Text>
-                        </View>
-                        <View
-                            style={[
-                                styles.prathamDiv,
-                                { paddingVertical: "6%" },
-                            ]}
-                        >
-                            <Text
-                                allowFontScaling={false}
-                                style={{
-                                    ...FONTS.h2,
-                                    color: theme.colors.white,
-                                    textAlign: "center",
-                                }}
-                            >
-                                {props.prathamVsSatnam}
-                            </Text>
-                            <Text
-                                allowFontScaling={false}
-                                style={{
-                                    ...FONTS.h4,
-                                    color: theme.colors.white,
-                                    textAlign: "center",
-                                    paddingTop: "1%",
-                                }}
-                            >
-                                PENDING SATNAM
-                            </Text>
-                        </View>
-                    </View>
-                    <View
-                        style={{
-                            borderRightColor: theme.colors.white,
-                            paddingVertical: "2%",
-                            width: "50%",
-                        }}
-                    >
-                        <View
-                            style={[
-                                styles.prathamDiv,
-                                {
-                                    paddingBottom: "10%",
-                                    paddingVertical: "6%",
-                                    borderBottomColor: theme.colors.white,
-                                    borderBottomWidth: 1,
-                                    width: "80%",
-                                },
-                            ]}
-                        >
-                            <Text
-                                allowFontScaling={false}
-                                style={{
-                                    ...FONTS.h2,
-                                    color: theme.colors.white,
-                                    textAlign: "center",
-                                }}
-                            >
-                                {props.satnams}
-                            </Text>
-                            <Text
-                                allowFontScaling={false}
-                                style={{
-                                    ...FONTS.h4,
-                                    color: theme.colors.white,
-                                    textAlign: "center",
-                                    paddingTop: "1%",
-                                }}
-                            >
-                                SATNAAM
-                            </Text>
-                        </View>
-                        <View
-                            style={[
-                                styles.prathamDiv,
-                                {
-                                    paddingBottom: "10%",
-                                    paddingVertical: "6%",
-                                    borderBottomColor: theme.colors.white,
-                                    borderBottomWidth: 1,
-                                    width: "80%",
-                                },
-                            ]}
-                        >
-                            <Text
-                                allowFontScaling={false}
-                                style={{
-                                    ...FONTS.h2,
-                                    color: theme.colors.white,
-                                    textAlign: "center",
-                                }}
-                            >
-                                {props.sarshabd}
-                            </Text>
-                            <Text
-                                allowFontScaling={false}
-                                style={{
-                                    ...FONTS.h4,
-                                    color: theme.colors.white,
-                                    textAlign: "center",
-                                    paddingTop: "1%",
-                                }}
-                            >
-                                SARSHABD
-                            </Text>
-                        </View>
-                        <View
-                            style={[
-                                styles.prathamDiv,
-                                { paddingVertical: "6%" },
-                            ]}
-                        >
-                            <Text
-                                allowFontScaling={false}
-                                style={{
-                                    ...FONTS.h2,
-                                    color: theme.colors.white,
-                                    textAlign: "center",
-                                }}
-                            >
-                                {props.punarUpdesh}
-                            </Text>
-                            <Text
-                                allowFontScaling={false}
-                                style={{
-                                    ...FONTS.h4,
-                                    color: theme.colors.white,
-                                    textAlign: "center",
-
-                                    paddingTop: "1%",
-                                }}
-                            >
-                                PUNAR UPDESH
-                            </Text>
-                        </View>
-                    </View>
+                />
+                <View style={[styles.item, styles.bborder]}>
+                    <Text allowFontScaling={false} style={styles.number}>
+                        {prathams}
+                    </Text>
+                    <Text allowFontScaling={false} style={styles.label}>
+                        {"PRATHAM NAM"}
+                    </Text>
+                </View>
+                <View style={[styles.item, styles.lborder, styles.bborder]}>
+                    <Text allowFontScaling={false} style={styles.number}>
+                        {satnams}
+                    </Text>
+                    <Text allowFontScaling={false} style={styles.label}>
+                        {"SATNAM"}
+                    </Text>
+                </View>
+                <View style={[styles.item, styles.bborder]}>
+                    <Text allowFontScaling={false} style={styles.number}>
+                        {sarnams}
+                    </Text>
+                    <Text allowFontScaling={false} style={styles.label}>
+                        {"SARNAM"}
+                    </Text>
+                </View>
+                <View style={[styles.item, styles.lborder, styles.bborder]}>
+                    <Text allowFontScaling={false} style={styles.number}>
+                        {sarshabd}
+                    </Text>
+                    <Text allowFontScaling={false} style={styles.label}>
+                        {"SARSHABD"}
+                    </Text>
+                </View>
+                <View style={styles.item}>
+                    <Text allowFontScaling={false} style={styles.number}>
+                        {prathamVsSatnam}
+                    </Text>
+                    <Text allowFontScaling={false} style={styles.label}>
+                        {"PENDING SATNAM"}
+                    </Text>
+                </View>
+                <View style={[styles.item, styles.lborder]}>
+                    <Text allowFontScaling={false} style={styles.number}>
+                        {punarUpdesh}
+                    </Text>
+                    <Text allowFontScaling={false} style={styles.label}>
+                        {"PUNAR UPDESH"}
+                    </Text>
                 </View>
             </View>
         </View>
-    </View>
-);
+    );
+};
 
 export default ScoreBoard;

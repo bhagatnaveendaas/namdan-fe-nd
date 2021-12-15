@@ -562,11 +562,11 @@ const SignUp = ({ navigation }) => {
                         fontFamily: theme.fonts.poppins.regular,
                     }}
                 >
-                    {Constants.uploadPhoto}
+                    {Constants.uploadPhoto + " / फोटो अपलोड करें"}
                 </Text>
             </TouchableOpacity>
             <DatePicker
-                label="Form Date"
+                label="Form Date / फॉर्म दिनांक"
                 placeholder="Select Date"
                 date={userData.form_date}
                 value={moment()}
@@ -580,14 +580,14 @@ const SignUp = ({ navigation }) => {
             />
 
             <FormTextInput
-                label="Form No."
+                label="Form No. / फॉर्म नंबर"
                 value={userData.form_no}
                 placeholder={"Enter Form Number"}
                 containerStyle={styles.textFieldContainer}
                 onChangeText={(text) => onChange(text, "form_no")}
             />
             <FormTextInput
-                label={`${fields.uniqueNoField} Number`}
+                label={`${fields.uniqueNoField} Number / यूनिक आईडी नंबर`}
                 value={userData.aadhaar_no}
                 placeholder={`Enter your ${fields.uniqueNoField.toLocaleLowerCase()} number`}
                 maxLength={12}
@@ -663,7 +663,7 @@ const SignUp = ({ navigation }) => {
                 }
             />
             <FormTextInput
-                label="Mobile Number"
+                label="Mobile Number / मोबाइल नंबर"
                 value={userData.mobile_no}
                 placeholder={"Enter your mobile number"}
                 required={true}
@@ -737,7 +737,7 @@ const SignUp = ({ navigation }) => {
             />
 
             <FormTextInput
-                label="Whatsapp Number"
+                label="Whatsapp Number / व्हाट्सएप नंबर"
                 value={userData.whatsapp_no}
                 placeholder={"Enter your whatsapp number"}
                 keyboardType={
@@ -805,7 +805,7 @@ const SignUp = ({ navigation }) => {
                 }
             />
             <FormSelectInput
-                label="Naamdan Taken"
+                label="Namdan Taken / नामदान लिया"
                 value={userData.namdan_taken}
                 onValueChange={(value) => onChange(value, "namdan_taken")}
                 options={namdan_takenAt}
@@ -814,7 +814,7 @@ const SignUp = ({ navigation }) => {
                 placeholder="Select Option"
             />
             <FormTextInput
-                label="Name"
+                label="Name / नाम"
                 value={userData.name}
                 placeholder={"Enter your name"}
                 onChangeText={(text) => onChange(text, "name")}
@@ -825,7 +825,7 @@ const SignUp = ({ navigation }) => {
                 }
             />
             <FormSelectInput
-                label="Relation"
+                label="Relation / रिश्ता"
                 value={userData.relation}
                 onValueChange={(value) => onChange(value, "relation")}
                 options={relations}
@@ -834,7 +834,7 @@ const SignUp = ({ navigation }) => {
                 placeholder="Select Relation"
             />
             <FormTextInput
-                label="Guardian Name"
+                label="Guardian Name / अभिभावक का नाम"
                 value={userData.guardianName}
                 placeholder={"Enter your guardianName"}
                 required={true}
@@ -848,7 +848,7 @@ const SignUp = ({ navigation }) => {
                 defaultValue={userData.occupation}
                 setEnableSearch={setEnableSearch}
                 containerStyle={styles.textFieldContainer}
-                label={"Occupation"}
+                label={"Occupation / पेशा"}
                 placeholderText={"Select Occupation"}
                 data={occupations}
                 required={true}
@@ -859,7 +859,7 @@ const SignUp = ({ navigation }) => {
             />
             {userData.occupation === "Other" && (
                 <FormTextInput
-                    label="Other Occupation "
+                    label="Other Occupation / अन्य पेशा"
                     autoFocus={true}
                     value={userData.otherOccupation}
                     placeholder={"Enter your other occupation"}
@@ -869,7 +869,7 @@ const SignUp = ({ navigation }) => {
                 />
             )}
             <DatePicker
-                label="Date of Birth"
+                label="Date of Birth / जन्म तारीख"
                 placeholder="Select Date of birth"
                 date={userData.dob}
                 value={moment(userData.form_date, "YYYY-MM-DD").subtract(
@@ -895,7 +895,7 @@ const SignUp = ({ navigation }) => {
                 defaultValue={userData.country_id}
                 setEnableSearch={setEnableSearch}
                 containerStyle={styles.textFieldContainer}
-                label={"Country"}
+                label={"Country / देश"}
                 placeholderText={"Select Country"}
                 data={countries}
                 required={true}
@@ -909,7 +909,7 @@ const SignUp = ({ navigation }) => {
                     defaultValue={userData.state_id}
                     setEnableSearch={setEnableSearch}
                     containerStyle={styles.textFieldContainer}
-                    label={"State"}
+                    label={"State / राज्य"}
                     placeholderText={"Select State"}
                     data={states}
                     required={true}
@@ -927,7 +927,7 @@ const SignUp = ({ navigation }) => {
                 <SearchableFlatlist
                     defaultValue={userData.city_id}
                     setEnableSearch={setEnableSearch}
-                    label="City"
+                    label="City / शहर"
                     required={true}
                     onValueChange={(value) => {
                         onChange(value, "city_id");
@@ -941,7 +941,7 @@ const SignUp = ({ navigation }) => {
                 <SearchableFlatlist
                     defaultValue={userData.district_id}
                     setEnableSearch={setEnableSearch}
-                    label="District"
+                    label="District / ज़िला"
                     required={true}
                     onValueChange={(value) => {
                         onChange(value, "district_id");
@@ -956,7 +956,7 @@ const SignUp = ({ navigation }) => {
                 <SearchableFlatlist
                     defaultValue={userData.tehsil_id}
                     setEnableSearch={setEnableSearch}
-                    label="Tehsil"
+                    label="Tehsil / तहसील"
                     onValueChange={(value) => {
                         onChange(value, "tehsil_id");
                     }}
@@ -969,7 +969,7 @@ const SignUp = ({ navigation }) => {
             ) : null}
             {userData?.tehsil_id === -1 ? (
                 <FormTextInput
-                    label="Other Tehsil"
+                    label="Other Tehsil / अन्य तहसील"
                     value={userData?.tehsil_name1}
                     required={true}
                     placeholder="Enter Tehsil Name"
@@ -978,7 +978,7 @@ const SignUp = ({ navigation }) => {
                 />
             ) : null}
             <FormTextInput
-                label="Address"
+                label="Address / पता"
                 value={userData.address}
                 placeholder="Enter Address"
                 required={true}
@@ -989,7 +989,7 @@ const SignUp = ({ navigation }) => {
                 }
             />
             <FormTextInput
-                label="Pincode"
+                label="Pincode / पिन कोड"
                 value={userData.pincode}
                 placeholder="Enter Pincode"
                 required={true}
@@ -1023,7 +1023,7 @@ const SignUp = ({ navigation }) => {
                 }
             />
             <FormTextInput
-                label="Email ID"
+                label="Email ID / ईमेल आईडी"
                 value={userData.email}
                 placeholder="Enter Email Address"
                 onChangeText={(text) => {

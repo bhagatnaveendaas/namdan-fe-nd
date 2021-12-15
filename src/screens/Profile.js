@@ -118,7 +118,7 @@ const Profile = ({ route, navigation, ...props }) => {
             return;
         }
 
-        if (entryType === "Satnaam Entry" && pass === null) {
+        if (entryType === "Satnam Entry" && pass === null) {
             alert("Please select pass or fail option.");
             return;
         }
@@ -144,7 +144,7 @@ const Profile = ({ route, navigation, ...props }) => {
                 attendance_date: selectedDate,
             };
         }
-        if (entryType === "Satnaam Entry") {
+        if (entryType === "Satnam Entry") {
             entryUrl = createSatnamExamUrl;
             entryData = {
                 exam_date: selectedDate,
@@ -153,7 +153,7 @@ const Profile = ({ route, navigation, ...props }) => {
                 reason: pass ? "" : reason,
             };
         }
-        if (entryType === "Sarnaam Entry") {
+        if (entryType === "Sarnam Entry") {
             entryUrl = createSarnamUrl;
             entryData = {
                 ...entryData,
@@ -273,12 +273,12 @@ const Profile = ({ route, navigation, ...props }) => {
         showSatnam &&
         (userData?.satnam_date === null || userData?.satnam_date === "") &&
         minDateforSatnam;
-    if (entryType === "Satnaam Entry" && enableSatnam) {
+    if (entryType === "Satnam Entry" && enableSatnam) {
         showSubmitButton = true;
     }
     const enableSarnam =
         countDays(userData?.satnam_date, userData?.rules?.sarnam_date) >= 0 &&
-        entryType === "Sarnaam Entry" &&
+        entryType === "Sarnam Entry" &&
         (userData?.sarnam_date === "" || userData?.sarnam_date === null);
 
     const enableSarshabd =
@@ -456,7 +456,7 @@ const Profile = ({ route, navigation, ...props }) => {
                                 ...FONTS.body5,
                             }}
                         >
-                            Naamdan Center:{" "}
+                            Namdan Center:{" "}
                             <Text style={{ ...FONTS.body5 }}>
                                 {userData?.namdan_center_name}
                             </Text>
@@ -468,7 +468,7 @@ const Profile = ({ route, navigation, ...props }) => {
                                 ...FONTS.body5,
                             }}
                         >
-                            Naamdan Taken:{" "}
+                            Namdan Taken:{" "}
                             <Text style={{ ...FONTS.body5 }}>
                                 {userData?.namdan_taken}
                             </Text>
@@ -547,7 +547,7 @@ const Profile = ({ route, navigation, ...props }) => {
                         label={
                             userData?.history.length > 0
                                 ? `Punar Updesh ${userData?.history.length}`
-                                : "Pratham Naam"
+                                : "Pratham Nam"
                         }
                         value={userData?.form_date}
                         enable={false}
@@ -583,10 +583,10 @@ const Profile = ({ route, navigation, ...props }) => {
                             );
                         }
                     })}
-                    {entryType !== "Satnaam Entry" &&
+                    {entryType !== "Satnam Entry" &&
                         userData?.satnam_exam.length > 0 && (
                             <Field
-                                label="Satnaam"
+                                label="Satnam"
                                 value={userData?.satnam_date}
                                 enable={false}
                             >
@@ -609,16 +609,34 @@ const Profile = ({ route, navigation, ...props }) => {
                                                             ? true
                                                             : false
                                                     }
-                                                />
+                                                >
+                                                    {item.result === "Fail" ? (
+                                                        <TextInput
+                                                            value={item.reason}
+                                                            editable={false}
+                                                            style={{
+                                                                backgroundColor:
+                                                                    theme.colors
+                                                                        .white,
+                                                                padding: 0,
+                                                                paddingHorizontal: 5,
+                                                                ...FONTS.body5,
+                                                                marginTop: 5,
+                                                                borderRadius: 5,
+                                                                color: "black",
+                                                            }}
+                                                        />
+                                                    ) : null}
+                                                </Field3>
                                             );
                                         }
                                     )}
                                 </View>
                             </Field>
                         )}
-                    {entryType === "Satnaam Entry" && showSatnam ? (
+                    {entryType === "Satnam Entry" && showSatnam ? (
                         <Field
-                            label="Satnaam"
+                            label="Satnam"
                             value={userData?.satnam_date}
                             enable={false}
                         >
@@ -654,6 +672,7 @@ const Profile = ({ route, navigation, ...props }) => {
                                                         ...FONTS.body5,
                                                         marginTop: 5,
                                                         borderRadius: 5,
+                                                        color: "black",
                                                     }}
                                                 />
                                             ) : null}
@@ -689,6 +708,7 @@ const Profile = ({ route, navigation, ...props }) => {
                                             <TextInput
                                                 value={reason}
                                                 placeholder="Enter the reason...."
+                                                placeholderTextColor={"black"}
                                                 multiline
                                                 editable={pass === false}
                                                 autoFocus
@@ -711,21 +731,21 @@ const Profile = ({ route, navigation, ...props }) => {
                             </View>
                         </Field>
                     ) : null}
-                    {entryType !== "Sarnaam Entry" &&
+                    {entryType !== "Sarnam Entry" &&
                         userData?.sarnam_date !== "" &&
                         userData?.sarnam_date !== null && (
                             <Field
-                                label="Sarnaam"
+                                label="Sarnam"
                                 enable={false}
                                 value={userData?.sarnam_date}
                                 minDate={null}
                                 onDateChange={(e) => {}}
                             />
                         )}
-                    {entryType === "Sarnaam Entry" ? (
+                    {entryType === "Sarnam Entry" ? (
                         enableSarnam ? (
                             <Field
-                                label={"Sarnaam"}
+                                label={"Sarnam"}
                                 enable={enableSarnam}
                                 value={selectedDate}
                                 minDate={moment(
@@ -737,7 +757,7 @@ const Profile = ({ route, navigation, ...props }) => {
                         ) : userData?.sarnam_date !== "" &&
                           userData?.sarnam_date !== null ? (
                             <Field
-                                label="Sarnaam"
+                                label="Sarnam"
                                 enable={false}
                                 value={userData?.sarnam_date}
                                 minDate={null}

@@ -15,6 +15,16 @@ export default StyleSheet.create({
         // marginTop: StatusBar.currentHeight,
         // paddingTop: height * 0.08,
     },
+    row: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    term: {
+        marginLeft: 10,
+        ...FONTS.body3,
+        color: theme.colors.white,
+    },
     image: {
         flex: 1,
         marginTop: 30,

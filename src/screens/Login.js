@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import {
     Image,
     SafeAreaView,
@@ -6,6 +6,7 @@ import {
     StatusBar,
     Text,
     TextInput,
+    Linking,
     View,
 } from "react-native";
 import { loginUrl } from "../constants/routes";
@@ -14,15 +15,23 @@ import RoundButton from "../components/RoundButton";
 import theme from "../constants/theme";
 import { postJsonData } from "../httpClient/apiRequest";
 import styles from "../styles/Login";
+import Checkbox from "../components/Checkbox";
+
+const URL = "https://namdan.jagatgururampalji.org/v1/static/terms.html";
 
 const Login = ({ navigation }) => {
     const [userName, setUserName] = useState("");
+    const [checked, setChecked] = useState(false);
     const [showAlert, setShowAlert] = useState({
         show: false,
         title: "",
         message: "",
         confirm: "Ok",
     });
+
+    const onPressCheck = useCallback(() => {
+        setChecked((pre) => !pre);
+    }, []);
     const handleLogin = async () => {
         // TODO: If I uncomment the following line, it's giving No identifiers allowed directly after numeric literal
         const deviceToken = Math.floor(Math.random() * 10000000);
@@ -89,11 +98,10 @@ const Login = ({ navigation }) => {
                     }}
                 />
                 <View>
-
-                <Image
-                    style={styles.image}
-                    source={require("../../assets/guruji22.png")}
-                />
+                    <Image
+                        style={styles.image}
+                        source={require("../../assets/guruji22.png")}
+                    />
                     <View style={styles.inputContainer}>
                         <View style={styles.iconContainer}>
                             <TextInput
@@ -105,12 +113,35 @@ const Login = ({ navigation }) => {
                                 placeholder="Enter mobile number"
                             />
                         </View>
+                        <View style={[styles.row, { marginTop: 10 }]}>
+                            <Checkbox
+                                checked={checked}
+                                setChecked={onPressCheck}
+                            />
+                            <Text style={styles.term}>
+                                I accept the{" "}
+                                <Text
+                                    style={{ textDecorationLine: "underline" }}
+                                    onPress={async () =>
+                                        await Linking.openURL(URL)
+                                    }
+                                >
+                                    {"Term & Conditions"}{" "}
+                                </Text>
+                            </Text>
+                        </View>
                         <View style={{ marginTop: 30 }}>
                             <RoundButton
                                 label={"Get OTP"}
                                 handlePress={() => {
                                     if (userName.length === 10) {
-                                        handleLogin();
+                                        if (checked) {
+                                            handleLogin();
+                                        } else {
+                                            alert(
+                                                "Please accept Term & Condition before proceeding."
+                                            );
+                                        }
                                     } else {
                                         alert("Enter a valid mobile number.");
                                     }

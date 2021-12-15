@@ -1,4 +1,4 @@
-import React, { useState, memo } from "react";
+import React, { useState, memo, useCallback } from "react";
 import {
     Text,
     TextInput,
@@ -19,6 +19,7 @@ const SearchableFlatlist = ({
     setEnableSearch,
     defaultValue,
     wrapperStyle,
+    disabled,
 }) => {
     const defaultOption = data.filter((item) => {
         if (typeof item === "string") {
@@ -34,6 +35,11 @@ const SearchableFlatlist = ({
             typeof item === "string" ? item : item?.name
         )
     );
+
+    const openOnPress = useCallback(() => {
+        if (disabled) return;
+        setOpen(true);
+    }, []);
 
     const onItemSelected = (item) => {
         setSelectedItem(item);
@@ -73,7 +79,7 @@ const SearchableFlatlist = ({
                     />
                 ) : (
                     <TouchableOpacity
-                        onPress={() => setOpen(true)}
+                        onPress={openOnPress}
                         style={{
                             width: "100%",
                             height: 40,

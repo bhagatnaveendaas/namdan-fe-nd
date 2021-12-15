@@ -1,10 +1,12 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import {
     View,
     Text,
-    Image,
+    ScrollView,
     AsyncStorage,
-    TouchableOpacity,
+    Keyboard,
+    KeyboardAvoidingView,
+    TouchableWithoutFeedback,
 } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import RoundButton from "../components/RoundButton";
@@ -95,65 +97,82 @@ const VerifyOtp = ({ route, navigation }) => {
         }
     };
     return (
-        <View
-            style={{
-                backgroundColor: theme.colors.primary,
-                flex: 1,
-                padding: 15,
-                paddingTop: "10%",
-            }}
-        >
-            <Image
-                style={styles.image}
-                source={require("../../assets/guruji22.png")}
-            />
-            <Text allowFontScaling={false} style={styles.label}>
-                Enter OTP
-            </Text>
-            <View
-                style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                }}
+        <KeyboardAvoidingView style={{ flex: 1 }}>
+            <TouchableWithoutFeedback
+                style={{ flex: 1 }}
+                onPress={() => Keyboard.dismiss()}
             >
-                {otp.map((_, index) => {
-                    return (
-                        <TextInput
-                            ref={ref[index]}
-                            keyboardType="numeric"
-                            autoFocus={index === 0 ? true : undefined}
-                            value={otp[index]}
-                            onTouchCancel={() => console.log("hello")}
-                            key={index}
-                            style={styles.otp}
-                            maxLength={1}
-                            onKeyPress={(e) => onKeyPress(e, index)}
-                            onChangeText={(e) => handleChange(e, index)}
-                        />
-                    );
-                })}
-            </View>
-            <View style={{ marginTop: 10 }}>
-                <Timer
-                    color={"white"}
-                    onPress={requestOtp}
-                    start={true}
-                    time={60}
-                />
-            </View>
-            <View style={{ paddingTop: "20%", alignItems: "center" }}>
-                <RoundButton
-                    label="Verify OTP"
-                    handlePress={() => {
-                        if (otp.join("").length >= 6) {
-                            verifyOtp();
-                        } else {
-                            alert("Please fill OTP correctly.");
-                        }
+                <View
+                    style={{
+                        backgroundColor: theme.colors.primary,
+                        flex: 1,
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        padding: 15,
                     }}
-                />
-            </View>
-        </View>
+                >
+                    <View style={{ backgroundColor: theme.colors.primary }}>
+                        <Text allowFontScaling={false} style={styles.label}>
+                            Enter OTP
+                        </Text>
+                        <View
+                            style={{
+                                flexDirection: "row",
+                                justifyContent: "space-between",
+                            }}
+                        >
+                            {otp.map((_, index) => {
+                                return (
+                                    <TextInput
+                                        ref={ref[index]}
+                                        keyboardType="numeric"
+                                        autoFocus={
+                                            index === 0 ? true : undefined
+                                        }
+                                        value={otp[index]}
+                                        onTouchCancel={() =>
+                                            console.log("hello")
+                                        }
+                                        key={index}
+                                        style={styles.otp}
+                                        maxLength={1}
+                                        onKeyPress={(e) => onKeyPress(e, index)}
+                                        onChangeText={(e) =>
+                                            handleChange(e, index)
+                                        }
+                                    />
+                                );
+                            })}
+                        </View>
+                        <View style={{ marginTop: 10 }}>
+                            <Timer
+                                color={"white"}
+                                onPress={requestOtp}
+                                start={true}
+                                time={60}
+                            />
+                        </View>
+                        <View
+                            style={{
+                                paddingTop: "20%",
+                                alignItems: "center",
+                            }}
+                        >
+                            <RoundButton
+                                label="Verify OTP"
+                                handlePress={() => {
+                                    if (otp.join("").length >= 6) {
+                                        verifyOtp();
+                                    } else {
+                                        alert("Please fill OTP correctly.");
+                                    }
+                                }}
+                            />
+                        </View>
+                    </View>
+                </View>
+            </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
     );
 };
 

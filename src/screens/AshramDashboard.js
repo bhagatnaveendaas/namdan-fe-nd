@@ -35,6 +35,7 @@ const Home = ({ navigation }) => {
             setKpiCounts(data?.data);
         } catch (error) {
             if (error && error.response) {
+                console.log(error);
                 console.error(`KPI Error: ${error.response.data.error}`);
             } else {
                 console.log(`KPI: ${error}`);
@@ -87,7 +88,7 @@ const Home = ({ navigation }) => {
                             fontSize: 20,
                         }}
                     >
-                        {user?.district_name.toUpperCase()}
+                        {user?.namdan_center_name.toUpperCase()}
                     </Text>
                     <Text
                         allowFontScaling={false}
@@ -110,6 +111,7 @@ const Home = ({ navigation }) => {
                 }}
             >
                 <ScoreBoard
+                    total={kpiCounts.total ?? 0}
                     prathams={kpiCounts.prathams ?? 0}
                     satnams={kpiCounts.satnams ?? 0}
                     sarnams={kpiCounts.sarnams ?? 0}
@@ -119,7 +121,7 @@ const Home = ({ navigation }) => {
                 />
                 {roleId === 8 && (
                     <View>
-                        <Text allowFontScaling={false} style={styles.label}>
+                        <Text allowFontScaling={false} style={styles.label2}>
                             Entries
                         </Text>
                         <View
@@ -131,10 +133,10 @@ const Home = ({ navigation }) => {
                         >
                             {permissions.includes("pratham_mantra") && (
                                 <VerticalIconButton
-                                    label={`Pratham Naam`}
+                                    label={`Pratham Nam`}
                                     icon={require("../../assets/icons/pratham_naam.png")}
                                     pressHandler={() =>
-                                        navigation.navigate("Pratham Naam")
+                                        navigation.navigate("Pratham Nam")
                                     }
                                 />
                             )}
@@ -151,22 +153,22 @@ const Home = ({ navigation }) => {
                             )}
                             {permissions.includes("satnam") && (
                                 <VerticalIconButton
-                                    label="Satnaam"
+                                    label="Satnam"
                                     icon={require("../../assets/icons/satnaam.png")}
                                     pressHandler={() => {
                                         navigation.navigate("Search", {
-                                            entryType: "Satnaam Entry",
+                                            entryType: "Satnam Entry",
                                         });
                                     }}
                                 />
                             )}
                             {permissions.includes("sarnam") && (
                                 <VerticalIconButton
-                                    label="Sarnaam"
+                                    label="Sarnam"
                                     icon={require("../../assets/icons/sarnaam.png")}
                                     pressHandler={() => {
                                         navigation.navigate("Search", {
-                                            entryType: "Sarnaam Entry",
+                                            entryType: "Sarnam Entry",
                                         });
                                     }}
                                 />
@@ -218,7 +220,7 @@ const Home = ({ navigation }) => {
                         }}
                     >
                         <Button
-                            onPress={() => navigation.navigate("Message")}
+                            // onPress={() => navigation.navigate("Message")}
                             buttonStyle={{
                                 padding: 12,
                                 backgroundColor: theme.colors.primary,
