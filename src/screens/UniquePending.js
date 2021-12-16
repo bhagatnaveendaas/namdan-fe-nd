@@ -252,6 +252,7 @@ export class UniquePending extends Component {
                         dataProvider={this.state.dataProvider}
                         layoutProvider={this.layoutProvider}
                         rowRenderer={this.rowRenderer}
+                        showsVerticalScrollIndicator={false}
                         renderFooter={() => {
                             return (
                                 this.state.loading && (

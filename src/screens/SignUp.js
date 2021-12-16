@@ -993,6 +993,7 @@ const SignUp = ({ navigation }) => {
                 value={userData.pincode}
                 placeholder="Enter Pincode"
                 required={true}
+                maxLength={6}
                 containerStyle={styles.textFieldContainer}
                 onChangeText={(text) => onChange(text, "pincode")}
                 keyboardType={
