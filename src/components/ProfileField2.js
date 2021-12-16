@@ -11,7 +11,8 @@ import {
 import moment from "moment";
 import theme from "../constants/theme";
 import { FONTS } from "../constants/fonts";
-
+import { useNavigation } from "@react-navigation/native";
+const userImage = require("../../assets/icons/userFilled.png");
 const calenderImage = require("../../assets/icons/calendar.png");
 
 const Field = ({
@@ -21,10 +22,12 @@ const Field = ({
     value,
     minDate,
     reason,
+    createdByID,
     onReasonChange,
 }) => {
     const [dateText, setDateText] = useState(value);
     const [date, setDate] = useState(new Date());
+    const navigation = useNavigation();
     const [show, setShow] = useState(false);
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate || date;
@@ -59,15 +62,39 @@ const Field = ({
                         alignItems: "center",
                     }}
                 >
-                    <Text
-                        allowFontScaling={false}
-                        style={{
-                            color: theme.colors.primary,
-                            ...FONTS.h5,
-                        }}
+                    <View
+                        style={{ flexDirection: "row", alignItems: "center" }}
                     >
-                        {label}
-                    </Text>
+                        {!enable && (
+                            <TouchableOpacity
+                                onPress={() =>
+                                    navigation.push("Profile", {
+                                        user: { id: createdByID },
+                                        entryType: "User",
+                                    })
+                                }
+                            >
+                                <Image
+                                    style={{
+                                        width: 15,
+                                        height: 15,
+                                        marginRight: 10,
+                                        tintColor: theme.colors.primary,
+                                    }}
+                                    source={userImage}
+                                />
+                            </TouchableOpacity>
+                        )}
+                        <Text
+                            allowFontScaling={false}
+                            style={{
+                                color: theme.colors.primary,
+                                ...FONTS.h5,
+                            }}
+                        >
+                            {label}
+                        </Text>
+                    </View>
                     <View style={{ flexDirection: "row" }}>
                         {!enable && (
                             <Text

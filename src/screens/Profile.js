@@ -110,6 +110,35 @@ const Profile = ({ route, navigation, ...props }) => {
         },
         [user?.id]
     );
+    const fetchUserDetails = useCallback(
+        async (id) => {
+            setLoading(true);
+            try {
+                const { data } = await getData(
+                    `/disciple/2/show?user_id=${id}`
+                );
+                if (data?.data) {
+                    setUserData({
+                        ...user,
+                        ...data?.data,
+                    });
+                    detailDispatch({
+                        type: "LOAD_DETAILS",
+                        payload: { detail: { ...user, ...data.data } },
+                    });
+                }
+            } catch (error) {
+                if (error && error.response) {
+                    console.error(error.response.data.error);
+                    alert(error.response.data.error);
+                } else {
+                    console.error(`Error which searching disciple.`, error);
+                }
+            }
+            setLoading(false);
+        },
+        [user?.id]
+    );
 
     let update_at = userData?.updated_at?.split("T")[0] ?? userData?.form_date;
     const createEntry = async () => {
@@ -216,6 +245,7 @@ const Profile = ({ route, navigation, ...props }) => {
                 value: userData?.satnam_attendance[i]?.attendance_date,
                 enable: false,
                 minDate: null,
+                created_by: userData?.satnam_attendance[i]?.created_by,
             };
             arr[i] = c;
         } else {
@@ -240,6 +270,7 @@ const Profile = ({ route, navigation, ...props }) => {
             arr[i] = c;
         }
     }
+
     let showSubmitButton = false;
     if (entryType === "Attendance Entry") {
         if (
@@ -297,18 +328,31 @@ const Profile = ({ route, navigation, ...props }) => {
     ) {
         showSubmitButton = true;
     }
+
     useEffect(() => {
         const unsubscribe = navigation.addListener("focus", () => {
-            fetchDiscipleDetails(user?.id);
+            if (entryType === "User") {
+                fetchUserDetails(user?.id);
+            } else {
+                fetchDiscipleDetails(user?.id);
+            }
         });
         return unsubscribe;
     }, [navigation]);
 
     useEffect(() => {
         navigation.setOptions({
-            title: `${entryType ?? "Disciple's Detail"}`,
+            title: `${
+                entryType === "User"
+                    ? "Entry Sevadar Detail "
+                    : entryType ?? "Disciple's Detail"
+            }`,
         });
-        fetchDiscipleDetails(user?.id);
+        if (entryType === "User") {
+            fetchUserDetails(user?.id);
+        } else {
+            fetchDiscipleDetails(user?.id);
+        }
     }, [fetchDiscipleDetails, user?.id]);
     if (loading)
         return (
@@ -544,6 +588,8 @@ const Profile = ({ route, navigation, ...props }) => {
                 )}
                 <View style={{ marginVertical: 15 }}>
                     <Field
+                        createdByID={userData?.created_by}
+                        userId={userData?.id}
                         label={
                             userData?.history.length > 0
                                 ? `Punar Updesh ${userData?.history.length}`
@@ -552,41 +598,46 @@ const Profile = ({ route, navigation, ...props }) => {
                         value={userData?.form_date}
                         enable={false}
                     />
-                    {arr.map(({ label, value, minDate, enable }, i) => {
-                        if (entryType === null && value !== "" && !enable) {
-                            return (
-                                <Field
-                                    key={i}
-                                    label={label}
-                                    enable={enable}
-                                    value={value}
-                                    minDate={minDate}
-                                    onDateChange={(e) => {}}
-                                />
-                            );
+                    {arr.map(
+                        ({ label, value, minDate, enable, created_by }, i) => {
+                            if (entryType === null && value !== "" && !enable) {
+                                return (
+                                    <Field
+                                        key={i}
+                                        createdByID={created_by}
+                                        label={label}
+                                        enable={enable}
+                                        value={value}
+                                        minDate={minDate}
+                                        onDateChange={(e) => {}}
+                                    />
+                                );
+                            }
+                            if (
+                                (entryType === "Attendance Entry" &&
+                                    value == "" &&
+                                    enable) ||
+                                (value !== "" && !enable)
+                            ) {
+                                return (
+                                    <Field
+                                        key={i}
+                                        label={label}
+                                        enable={enable}
+                                        createdByID={created_by}
+                                        value={enable ? selectedDate : value}
+                                        minDate={enable ? minDate : null}
+                                        onDateChange={setSelectedDate}
+                                    />
+                                );
+                            }
                         }
-                        if (
-                            (entryType === "Attendance Entry" &&
-                                value == "" &&
-                                enable) ||
-                            (value !== "" && !enable)
-                        ) {
-                            return (
-                                <Field
-                                    key={i}
-                                    label={label}
-                                    enable={enable}
-                                    value={enable ? selectedDate : value}
-                                    minDate={enable ? minDate : null}
-                                    onDateChange={setSelectedDate}
-                                />
-                            );
-                        }
-                    })}
+                    )}
                     {entryType !== "Satnam Entry" &&
                         userData?.satnam_exam.length > 0 && (
                             <Field
                                 label="Satnam"
+                                createdByID={userData?.satnam_created_by}
                                 value={userData?.satnam_date}
                                 enable={false}
                             >
@@ -600,6 +651,9 @@ const Profile = ({ route, navigation, ...props }) => {
                                         (item, index) => {
                                             return (
                                                 <Field3
+                                                    createdByID={
+                                                        item?.created_by
+                                                    }
                                                     key={index}
                                                     label={`Exam ${index + 1}`}
                                                     value={item.exam_date}
@@ -650,6 +704,7 @@ const Profile = ({ route, navigation, ...props }) => {
                                     return (
                                         <Field3
                                             key={index}
+                                            createdByID={item?.created_by}
                                             label={`Exam ${index + 1}`}
                                             value={item.exam_date}
                                             enable={false}
@@ -735,6 +790,7 @@ const Profile = ({ route, navigation, ...props }) => {
                         userData?.sarnam_date !== "" &&
                         userData?.sarnam_date !== null && (
                             <Field
+                                createdByID={userData?.sarnam_created_by}
                                 label="Sarnam"
                                 enable={false}
                                 value={userData?.sarnam_date}
@@ -759,6 +815,7 @@ const Profile = ({ route, navigation, ...props }) => {
                             <Field
                                 label="Sarnam"
                                 enable={false}
+                                createdByID={userData?.sarnam_created_by}
                                 value={userData?.sarnam_date}
                                 minDate={null}
                                 onDateChange={(e) => {}}
@@ -772,6 +829,7 @@ const Profile = ({ route, navigation, ...props }) => {
                                 label="Sarshabd"
                                 enable={false}
                                 value={userData?.sarshabd_date}
+                                createdByID={userData?.sarshabd_created_by}
                                 minDate={null}
                                 onDateChange={(e) => {}}
                             />
@@ -793,6 +851,7 @@ const Profile = ({ route, navigation, ...props }) => {
                             <Field
                                 label="Sarshabd"
                                 enable={false}
+                                createdByID={userData?.sarshabd_created_by}
                                 value={userData?.sarshabd_date}
                                 minDate={null}
                                 onDateChange={(e) => {}}
@@ -811,6 +870,7 @@ const Profile = ({ route, navigation, ...props }) => {
                             {userData?.shuddhikaran.map((item, index) => (
                                 <Field2
                                     key={index}
+                                    createdByID={item?.created_by}
                                     label={`Shuddhikaran ${index + 1}`}
                                     value={item.date}
                                     enable={false}

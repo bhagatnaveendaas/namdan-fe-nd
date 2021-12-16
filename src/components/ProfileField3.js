@@ -1,10 +1,12 @@
 import React, { useState, memo } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { Platform, Text, View, TouchableOpacity } from "react-native";
+import { Platform, Text, View, Image, TouchableOpacity } from "react-native";
 import moment from "moment";
 import theme from "../constants/theme";
 import { FONTS } from "../constants/fonts";
+import { useNavigation } from "@react-navigation/native";
 import RadioButton from "../components/RadioButton";
+const userImage = require("../../assets/icons/userFilled.png");
 
 const Field = ({
     label,
@@ -14,8 +16,10 @@ const Field = ({
     onOptionChange,
     value,
     minDate,
+    createdByID,
     children,
 }) => {
+    const navigation = useNavigation();
     const [dateText, setDateText] = useState(value);
     const [date, setDate] = useState(new Date());
     const [show, setShow] = useState(false);
@@ -52,19 +56,44 @@ const Field = ({
                         alignItems: "center",
                     }}
                 >
-                    <Text
-                        allowFontScaling={false}
-                        style={{
-                            color: enable
-                                ? theme.colors.primary
-                                : optionValue
-                                ? theme.colors.green
-                                : theme.colors.red,
-                            ...FONTS.h5,
-                        }}
+                    <View
+                        style={{ flexDirection: "row", alignItems: "center" }}
                     >
-                        {label}
-                    </Text>
+                        {!enable && (
+                            <TouchableOpacity
+                                onPress={() =>
+                                    navigation.push("Profile", {
+                                        user: { id: createdByID },
+                                        entryType: "User",
+                                    })
+                                }
+                            >
+                                <Image
+                                    style={{
+                                        width: 15,
+                                        height: 15,
+                                        marginRight: 10,
+                                        tintColor: theme.colors.primary,
+                                    }}
+                                    source={userImage}
+                                />
+                            </TouchableOpacity>
+                        )}
+                        <Text
+                            allowFontScaling={false}
+                            style={{
+                                color: enable
+                                    ? theme.colors.primary
+                                    : optionValue
+                                    ? theme.colors.green
+                                    : theme.colors.red,
+                                ...FONTS.h5,
+                            }}
+                        >
+                            {label}
+                        </Text>
+                    </View>
+
                     <View style={{ flexDirection: "row" }}>
                         {!enable && (
                             <Text
