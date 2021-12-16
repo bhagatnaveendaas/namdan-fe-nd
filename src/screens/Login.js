@@ -17,8 +17,6 @@ import { postJsonData } from "../httpClient/apiRequest";
 import styles from "../styles/Login";
 import Checkbox from "../components/Checkbox";
 
-const URL = "https://namdan.jagatgururampalji.org/v1/static/terms.html";
-
 const Login = ({ navigation }) => {
     const [userName, setUserName] = useState("");
     const [checked, setChecked] = useState(false);
@@ -75,7 +73,7 @@ const Login = ({ navigation }) => {
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar backgroundColor={theme.colors.primary} />
-            <ScrollView style={{ paddingTop: "10%" }}>
+            <ScrollView>
                 <AwesomeAlert
                     show={showAlert.show}
                     showProgress={false}
@@ -122,11 +120,9 @@ const Login = ({ navigation }) => {
                                 I accept the{" "}
                                 <Text
                                     style={{ textDecorationLine: "underline" }}
-                                    onPress={async () =>
-                                        await Linking.openURL(URL)
-                                    }
+                                    onPress={() => navigation.navigate("Terms")}
                                 >
-                                    {"Term & Conditions"}{" "}
+                                    {"Term & Conditions"}
                                 </Text>
                             </Text>
                         </View>

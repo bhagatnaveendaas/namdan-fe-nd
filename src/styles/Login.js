@@ -27,10 +27,9 @@ export default StyleSheet.create({
     },
     image: {
         flex: 1,
-        marginTop: 30,
-        marginBottom: 25,
-        height: width * 0.8,
-        width: width * 0.8,
+        marginBottom: 15,
+        height: width,
+        width: width,
         alignSelf: "center",
     },
     textCenter: {
