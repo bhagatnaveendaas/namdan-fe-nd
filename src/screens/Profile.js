@@ -25,7 +25,7 @@ import {
     createSarshabdUrl,
     createSatnamExamUrl,
     createShuddhikaranUrl,
-    editHajriUrl,
+    createSadasyataUrl,
     getUniqueDispleUrl,
 } from "../constants/routes";
 import { useEffect } from "react";
@@ -161,6 +161,17 @@ const Profile = ({ route, navigation, ...props }) => {
             }
         }
 
+        if (
+            entryType === "Sarshabd Entry" &&
+            userData?.sarnam_date !== null &&
+            userData?.sarnam_date !== ""
+        ) {
+            if (reason === "") {
+                alert(`Please Enter Sadayata Number`);
+                return;
+            }
+        }
+
         setButtonDisable(true);
         let entryData = {
             disciple_id: userData?.id,
@@ -210,6 +221,20 @@ const Profile = ({ route, navigation, ...props }) => {
             entryData = {
                 disciple_id: userData?.id,
                 sarshabd_date: selectedDate,
+                remark: "ok",
+            };
+        }
+        if (
+            entryType === "Sarshabd Entry" &&
+            userData?.sarnam_date !== null &&
+            userData?.sarnam_date !== "" &&
+            userData?.sadasyata_no == null
+        ) {
+            entryUrl = createSadasyataUrl;
+            entryData = {
+                disciple_id: userData?.id,
+                sadasyata_date: selectedDate,
+                sadasyata_no: reason,
                 remark: "ok",
             };
         }
@@ -270,7 +295,7 @@ const Profile = ({ route, navigation, ...props }) => {
             arr[i] = c;
         }
     }
-
+    // console.log(userData);
     let showSubmitButton = false;
     if (entryType === "Attendance Entry") {
         if (
@@ -319,6 +344,14 @@ const Profile = ({ route, navigation, ...props }) => {
 
     if (enableSarnam) showSubmitButton = true;
     if (entryType === "Sarshabd Entry" && enableSarshabd) {
+        showSubmitButton = true;
+    }
+    if (
+        entryType === "Sarshabd Entry" &&
+        userData?.sarnam_date !== null &&
+        userData?.sarnam_date !== "" &&
+        userData?.sadasyata_no == null
+    ) {
         showSubmitButton = true;
     }
 
@@ -481,6 +514,20 @@ const Profile = ({ route, navigation, ...props }) => {
                                 {userData?.form_no}
                             </Text>
                         </Text>
+                        {userData?.sadasyata_no !== null && (
+                            <Text
+                                allowFontScaling={false}
+                                style={{
+                                    color: theme.colors.primary,
+                                    ...FONTS.body5,
+                                }}
+                            >
+                                Sadasyata No:{" "}
+                                <Text style={{ ...FONTS.body5 }}>
+                                    {userData?.sadasyata_no}
+                                </Text>
+                            </Text>
+                        )}
                         <Text
                             allowFontScaling={false}
                             style={{
@@ -858,6 +905,24 @@ const Profile = ({ route, navigation, ...props }) => {
                             />
                         ) : null
                     ) : null}
+                    {entryType === "Sarshabd Entry" &&
+                        userData?.sarnam_date !== "" &&
+                        userData?.sarnam_date !== null &&
+                        userData?.sadasyata_no == null && (
+                            <Field2
+                                label={"Sadasyata No."}
+                                value={selectedDate}
+                                enable={true}
+                                reason={reason}
+                                placeholderText={"Enter Sadasyata Number"}
+                                minDate={moment(
+                                    userData?.sarnam_date,
+                                    "YYYY-MM_DD"
+                                ).add(0, "d")}
+                                onReasonChange={(text) => setReason(text)}
+                                onDateChange={setSelectedDate}
+                            />
+                        )}
                     {userData?.shuddhikaran.length > 0 && (
                         <>
                             <View

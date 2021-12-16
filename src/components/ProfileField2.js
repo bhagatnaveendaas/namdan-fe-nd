@@ -23,6 +23,7 @@ const Field = ({
     minDate,
     reason,
     createdByID,
+    placeholderText,
     onReasonChange,
 }) => {
     const [dateText, setDateText] = useState(value);
@@ -145,7 +146,7 @@ const Field = ({
                 <TextInput
                     allowFontScaling={false}
                     value={reason}
-                    placeholder="Enter the reason...."
+                    placeholder={placeholderText ?? "Enter the reason...."}
                     multiline
                     editable={enable}
                     autoFocus

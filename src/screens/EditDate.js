@@ -11,6 +11,8 @@ import {
     editShuddhikaranUrl,
     deleteHajriUrl,
     deletePunarUpdeshUrl,
+    editSadasyataUrl,
+    deleteSadasyataUrl,
     deleteSarnamUrl,
     deleteSarshabdUrl,
     deleteSatnamExamUrl,
@@ -77,6 +79,17 @@ const EditDate = ({ route, navigation, ...props }) => {
         // compare = userData.sarshabd_date === detail.sarshabd_date;
         key = "sarshabd_date";
         _setDate = (date) => onChange(date, "sarshabd_date");
+    } else if (dateType === "Sadasyata") {
+        date = userData.sadasyata_date;
+        remark = userData.sadasyata_no.toString();
+        _update = () => updateSadasyata();
+        _delete = () => deleteSadasyata();
+        _setDate = (date) => onChange(date, "sadasyata_date");
+        _onTextChange = (text) =>
+            setUserData({
+                ...userData,
+                sadasyata_no: text,
+            });
     } else if (dateType === "Hajri") {
         date = userData?.satnam_attendance[id].attendance_date;
         _update = () => updateHajri(userData?.satnam_attendance[id].id, id);
@@ -345,6 +358,28 @@ const EditDate = ({ route, navigation, ...props }) => {
             })
             .finally(() => setDisableScreen(false));
     };
+    const deleteSadasyata = async () => {
+        setDisableScreen(true);
+        deleteData(deleteSadasyataUrl(userData?.id))
+            .then(({ data }) => {
+                if (data?.success) {
+                    detailDispatch({
+                        type: "EDIT_DETAILS",
+                        payload: { ...userData, sadasyata_date: null },
+                    });
+                    navigation.pop();
+                }
+            })
+            .catch((error) => {
+                if (error && error.response) {
+                    console.error(error.response.data.error);
+                    alert(error.response.data.error);
+                } else {
+                    console.error(`Error.`, error);
+                }
+            })
+            .finally(() => setDisableScreen(false));
+    };
     const deleteSarshabd = async () => {
         setDisableScreen(true);
         deleteData(deleteSarshabdUrl(userData?.id))
@@ -569,6 +604,29 @@ const EditDate = ({ route, navigation, ...props }) => {
                 setDisableScreen(false);
             });
     };
+    const updateSadasyata = async () => {
+        putJsonData(editSadasyataUrl(userData?.id), {
+            disciple_id: userData?.id,
+            sadasyata_date: userData?.sadasyata_date,
+            sadasyata_no: remark,
+            remark: "ok",
+        })
+            .then(({ data }) => {
+                if (data.success) {
+                    detailDispatch({
+                        type: "EDIT_DETAILS",
+                        payload: { ...userData },
+                    });
+                    navigation.pop();
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+            .finally(() => {
+                setDisableScreen(false);
+            });
+    };
 
     return (
         <View
@@ -638,7 +696,8 @@ const EditDate = ({ route, navigation, ...props }) => {
                 ) : null}
                 {(dateType === "Shuddhikaran" ||
                     dateType === "Reupdesh" ||
-                    dateType === "Satnam Exam") && (
+                    dateType === "Satnam Exam" ||
+                    dateType === "Sadasyata") && (
                     <View
                         style={{
                             marginTop: 30,

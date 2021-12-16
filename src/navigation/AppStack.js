@@ -10,7 +10,7 @@ import PendingSatnaam from "../screens/PendingSatnaam";
 import EligibilityForPunarUpdesh from "../screens/EligiblityForPunarUpdesh";
 import AddNaamdanCenter from "../screens/AddNaamdanCenter";
 import Approvals from "../screens/Approvals";
-import Messages from "../screens/Messages";
+import Pdf from "../screens/Pdf";
 import CreateMessage from "../screens/CreateMessage";
 import MessageDetails from "../screens/MessageDetails";
 import Entry from "../screens/entry/index";
@@ -22,6 +22,7 @@ import Profile from "../screens/Profile";
 import UniquePending from "../screens/UniquePending";
 import History from "../screens/History";
 import Message from "../screens/Message";
+
 import { useAuth } from "../context/AuthContext";
 import { DetailProvider } from "../context/DetailContex";
 
@@ -69,6 +70,8 @@ const AppStack = () => {
                 options={{ title: "Punar Updesh History" }}
             />
             <Stack.Screen name="Message" component={Message} />
+            <Stack.Screen name="Pdf" component={Pdf} />
+
             <Stack.Screen name="Pratham Nam" component={SignUp} />
             <Stack.Screen
                 name="CountryDashboard"

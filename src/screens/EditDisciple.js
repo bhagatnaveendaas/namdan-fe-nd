@@ -1226,6 +1226,17 @@ const EditDisciple = ({ navigation, route, ...props }) => {
                             label={"Sarnam"}
                         />
                     )}
+                    {detail?.sadasyata_date !== null && (
+                        <EditDateButton
+                            value={detail?.sadasyata_date}
+                            onPress={() => {
+                                navigation.navigate("EditDate", {
+                                    dateType: "Sadasyata",
+                                });
+                            }}
+                            label={`Sadasyata No.: ${detail?.sadasyata_no}`}
+                        />
+                    )}
                     {detail?.sarshabd_date !== null && (
                         <EditDateButton
                             value={detail?.sarshabd_date}
