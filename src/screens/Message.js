@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, ScrollView } from "react-native";
+import { useAuth } from "../context/AuthContext";
 import MessageCard from "../components/MessageCard";
+import { getData } from "../httpClient/apiRequest";
 
-const messages = [
+const messages1 = [
     {
         subject: "Message Subject 1",
         content:
@@ -16,13 +18,34 @@ const messages = [
 ];
 
 const Message = ({ navigation }) => {
+    const {
+        state: { user },
+    } = useAuth();
+    const [messages, setMessages] = useState([]);
+
+    const getMessages = async () => {
+        try {
+            const { data } = await getData(
+                `/message/list?role_id=${user.role_id}&status=approved`
+            );
+            if (data?.success) {
+                setMessages(data?.data);
+                // console.log(data?.data);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    useEffect(() => {
+        getMessages();
+    }, []);
     return (
         <ScrollView style={{ flex: 1, backgroundColor: "white", padding: 15 }}>
             {messages.map((item, index) => {
                 return (
                     <MessageCard
                         key={index}
-                        message={item}
+                        item={item}
                         onPress={() =>
                             navigation.navigate("MessageDetail", {
                                 message: item,

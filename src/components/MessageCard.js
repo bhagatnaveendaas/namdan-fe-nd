@@ -5,8 +5,8 @@ import Avatar from "../components/Avatar";
 import { FONTS } from "../constants/fonts";
 const userDefaultImage = require("../../assets/icons/user.png");
 
-const MessageCard = ({ message, onPress }) => {
-    const { subject, content } = message;
+const MessageCard = ({ item, onPress }) => {
+    const { subject, message = "" } = item;
     return (
         <TouchableHighlight
             activeOpacity={1}
@@ -25,8 +25,12 @@ const MessageCard = ({ message, onPress }) => {
                     <Text style={styles.name}>{subject}</Text>
 
                     <Text style={styles.address}>
-                        {content.substring(0, 90)}
-                        <Text style={styles.more}>...more</Text>
+                        {message.length > 95
+                            ? message.substring(0, 90)
+                            : message}
+                        {message.length > 95 && (
+                            <Text style={styles.more}>...more</Text>
+                        )}
                     </Text>
                 </View>
             </View>

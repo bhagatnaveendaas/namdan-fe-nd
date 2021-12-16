@@ -220,7 +220,7 @@ const Home = ({ navigation }) => {
                         }}
                     >
                         <Button
-                            // onPress={() => navigation.navigate("Message")}
+                            onPress={() => navigation.navigate("Message")}
                             buttonStyle={{
                                 padding: 12,
                                 backgroundColor: theme.colors.primary,
