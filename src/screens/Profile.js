@@ -295,7 +295,7 @@ const Profile = ({ route, navigation, ...props }) => {
             arr[i] = c;
         }
     }
-    // console.log(userData);
+
     let showSubmitButton = false;
     if (entryType === "Attendance Entry") {
         if (
@@ -361,7 +361,6 @@ const Profile = ({ route, navigation, ...props }) => {
     ) {
         showSubmitButton = true;
     }
-
     useEffect(() => {
         const unsubscribe = navigation.addListener("focus", () => {
             if (entryType === "User") {
@@ -387,6 +386,10 @@ const Profile = ({ route, navigation, ...props }) => {
             fetchDiscipleDetails(user?.id);
         }
     }, [fetchDiscipleDetails, user?.id]);
+    const editable =
+        userData?.district_id === AuthUser.district ||
+        userData?.namdan_center === AuthUser.namdan_center_id;
+
     if (loading)
         return (
             <ActivityIndicator
@@ -433,17 +436,14 @@ const Profile = ({ route, navigation, ...props }) => {
                                 flexDirection: "row",
                                 alignItems: "center",
                                 paddingVertical: 2,
-                                backgroundColor:
-                                    userData?.district_id !== AuthUser.district
-                                        ? "lightgray"
-                                        : theme.colors.primaryLight,
+                                backgroundColor: editable
+                                    ? theme.colors.primaryLight
+                                    : "lightgray",
                             }}
                             onPress={() =>
                                 navigation.navigate("Edit", { user: detail })
                             }
-                            disabled={
-                                userData?.district_id !== AuthUser.district
-                            }
+                            disabled={!editable}
                         >
                             <Image
                                 source={clockImage}
@@ -451,20 +451,16 @@ const Profile = ({ route, navigation, ...props }) => {
                                     marginRight: 4,
                                     width: 10,
                                     height: 10,
-                                    tintColor:
-                                        userData?.district_id !==
-                                        AuthUser.district
-                                            ? "gray"
-                                            : theme.colors.primary,
+                                    tintColor: editable
+                                        ? theme.colors.primary
+                                        : "gray",
                                 }}
                             />
                             <Text
                                 style={{
-                                    color:
-                                        userData?.district_id !==
-                                        AuthUser.district
-                                            ? "gray"
-                                            : theme.colors.primary,
+                                    color: editable
+                                        ? theme.colors.primary
+                                        : "gray",
                                     ...FONTS.h6,
                                 }}
                             >
