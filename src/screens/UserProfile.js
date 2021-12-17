@@ -59,7 +59,6 @@ const UserProfile = () => {
     const { state } = useAuth();
     const AuthUser = state?.user;
     const permissions = AuthUser?.permissions;
-    console.log(permissions);
     const getProfileData = async () => {
         try {
             const { data } = await getData("/user/profile");

@@ -355,7 +355,9 @@ const SignUp = ({ navigation }) => {
         } else {
             formData.append("city_id", userData.city_id);
         }
-        formData.append("pincode", userData.pincode);
+        if (userData?.pincode !== "") {
+            formData.append("pincode", userData.pincode);
+        }
         formData.append(
             "mobile_no",
             userData.country_code + userData.mobile_no
@@ -992,7 +994,6 @@ const SignUp = ({ navigation }) => {
                 label="Pincode / पिन कोड"
                 value={userData.pincode}
                 placeholder="Enter Pincode"
-                required={true}
                 maxLength={6}
                 containerStyle={styles.textFieldContainer}
                 onChangeText={(text) => onChange(text, "pincode")}

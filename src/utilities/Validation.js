@@ -66,9 +66,15 @@ export const NewNonIndianDiscipleSchema = Yup.object().shape({
     address: Yup.string()
         .required("Please fill Address.")
         .min(3, "Address must be atleast 3 characters long"),
-    pincode: Yup.string()
-        .required("Please fill Pincode")
-        .min(6, "Enter valid pin code, it must be 6 characters long"),
+    pincode: Yup.lazy((value) => {
+        if (value !== "") {
+            return Yup.string().min(
+                6,
+                "Enter valid pin code, it must be 6 characters long"
+            );
+        }
+        return Yup.string().nullable().notRequired();
+    }),
     email: Yup.string().email("Enter a valid email address."),
 });
 export const NewIndianDiscipleSchema = Yup.object().shape(
@@ -149,9 +155,15 @@ export const NewIndianDiscipleSchema = Yup.object().shape(
         address: Yup.string()
             .required("Please fill Address.")
             .min(3, "Address must be atleast 3 characters long"),
-        pincode: Yup.string()
-            .required("Please fill Pincode")
-            .min(6, "Enter valid pin code, it must be 6 characters long"),
+        pincode: Yup.lazy((value) => {
+            if (value !== "") {
+                return Yup.string().min(
+                    6,
+                    "Enter valid pin code, it must be 6 characters long"
+                );
+            }
+            return Yup.string().nullable().notRequired();
+        }),
         email: Yup.string().email("Enter a valid email address."),
     },
     ["tehsil_id", "tehsil_id"]
