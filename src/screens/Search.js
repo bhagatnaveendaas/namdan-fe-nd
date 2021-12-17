@@ -100,6 +100,8 @@ const Search = ({ navigation, route }) => {
                     placeholder={
                         searchBy === "mobile_no"
                             ? "Enter your mobile number"
+                            : searchBy === "form_no"
+                            ? "Enter form number"
                             : "Enter your unique id number"
                     }
                     autoFocus={true}
@@ -168,8 +170,10 @@ const Search = ({ navigation, route }) => {
             <View
                 style={{
                     flexDirection: "row",
-                    justifyContent: "center",
+                    justifyContent: "space-between",
                     marginTop: 10,
+                    marginHorizontal: 15,
+                    flexWrap: "wrap",
                 }}
             >
                 <RadioButton
@@ -193,6 +197,17 @@ const Search = ({ navigation, route }) => {
                     size={20}
                     id="uno"
                     onPress={() => onOptionChange("unique_id")}
+                />
+                <RadioButton
+                    selected={searchBy === "form_no"}
+                    color={theme.colors.primary}
+                    label="Form Number"
+                    labelStyle={{
+                        ...FONTS.h5,
+                    }}
+                    size={20}
+                    id="fno"
+                    onPress={() => onOptionChange("form_no")}
                 />
             </View>
             {users.length > 0 && users && (
