@@ -9,6 +9,7 @@ import theme from "../constants/theme";
 import { postJsonData } from "../httpClient/apiRequest";
 import { useAuth } from "../context/AuthContext";
 import styles from "../styles/AshramDashboard";
+import { checkPermission } from "../utilities/checkPermission";
 
 const Home = ({ navigation }) => {
     const [kpiCounts, setKpiCounts] = useState({});
@@ -131,7 +132,7 @@ const Home = ({ navigation }) => {
                                 justifyContent: "space-evenly",
                             }}
                         >
-                            {permissions.includes("pratham_mantra") && (
+                            {checkPermission("add_disciple") && (
                                 <VerticalIconButton
                                     label={`Pratham Nam`}
                                     icon={require("../../assets/icons/pratham_naam.png")}
@@ -140,7 +141,7 @@ const Home = ({ navigation }) => {
                                     }
                                 />
                             )}
-                            {permissions.includes("attendance") && (
+                            {checkPermission("add_attendance") && (
                                 <VerticalIconButton
                                     label="Attendance"
                                     icon={require("../../assets/icons/attendance.png")}
@@ -151,7 +152,7 @@ const Home = ({ navigation }) => {
                                     }}
                                 />
                             )}
-                            {permissions.includes("satnam") && (
+                            {checkPermission("add_satnam") && (
                                 <VerticalIconButton
                                     label="Satnam"
                                     icon={require("../../assets/icons/satnaam.png")}
@@ -162,7 +163,7 @@ const Home = ({ navigation }) => {
                                     }}
                                 />
                             )}
-                            {permissions.includes("sarnam") && (
+                            {checkPermission("add_sarnam") && (
                                 <VerticalIconButton
                                     label="Sarnam"
                                     icon={require("../../assets/icons/sarnaam.png")}
@@ -173,7 +174,7 @@ const Home = ({ navigation }) => {
                                     }}
                                 />
                             )}
-                            {permissions.includes("sarshabd") && (
+                            {checkPermission("add_sarshabd") && (
                                 <VerticalIconButton
                                     label={`Sarshabd`}
                                     icon={require("../../assets/icons/sr2.png")}
@@ -184,7 +185,7 @@ const Home = ({ navigation }) => {
                                     }}
                                 />
                             )}
-                            {permissions.includes("shudhikaran") && (
+                            {checkPermission("pratham_mantra_shuddhikaran") && (
                                 <VerticalIconButton
                                     label="Shudhikaran"
                                     icon={require("../../assets/icons/sk.png")}
@@ -195,7 +196,7 @@ const Home = ({ navigation }) => {
                                     }}
                                 />
                             )}
-                            {permissions.includes("punar_updesh") && (
+                            {checkPermission("add_reupdesh") && (
                                 <VerticalIconButton
                                     label={`Punar Updesh`}
                                     icon={require("../../assets/icons/punar_updesh.png")}

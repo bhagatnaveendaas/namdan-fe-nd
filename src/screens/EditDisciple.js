@@ -52,6 +52,7 @@ const userIcon = require("../../assets/icons/userFilled.png");
 import { useAuth } from "../context/AuthContext";
 import { withDetailContext } from "../context/DetailContex";
 import { FONTS } from "../constants/fonts";
+import { checkPermission } from "../utilities/checkPermission";
 
 const EditDateButton = ({ label, value, onPress }) => {
     let date = moment(value, "YYYY-MM-DD").format("DD-MM-YYYY");
@@ -1174,58 +1175,66 @@ const EditDisciple = ({ navigation, route, ...props }) => {
                 />
 
                 <View style={{ marginTop: 10 }}>
-                    {detail?.satnam_attendance.map((item, index) => {
-                        return (
+                    {checkPermission("edit_attendance") &&
+                        detail?.satnam_attendance.map((item, index) => {
+                            return (
+                                <EditDateButton
+                                    key={index}
+                                    value={item.attendance_date}
+                                    onPress={() => {
+                                        navigation.navigate("EditDate", {
+                                            dateType: "Hajri",
+                                            index,
+                                            key: "attendance",
+                                        });
+                                    }}
+                                    label={`Hajri ${index + 1}`}
+                                />
+                            );
+                        })}
+                    {checkPermission("edit_satnam") &&
+                        detail?.satnam_date !== null && (
                             <EditDateButton
-                                key={index}
-                                value={item.attendance_date}
+                                value={detail?.satnam_date}
                                 onPress={() => {
                                     navigation.navigate("EditDate", {
-                                        dateType: "Hajri",
-                                        index,
+                                        dateType: "Satnam",
+                                        key: "satnam",
                                     });
                                 }}
-                                label={`Hajri ${index + 1}`}
+                                label={"Satnam"}
                             />
-                        );
-                    })}
-                    {detail?.satnam_date !== null && (
-                        <EditDateButton
-                            value={detail?.satnam_date}
-                            onPress={() => {
-                                navigation.navigate("EditDate", {
-                                    dateType: "Satnam",
-                                });
-                            }}
-                            label={"Satnam"}
-                        />
-                    )}
-                    {detail?.satnam_exam.map((item, index) => {
-                        return (
+                        )}
+                    {checkPermission("edit_satnam_exam") &&
+                        detail?.satnam_exam.map((item, index) => {
+                            return (
+                                <EditDateButton
+                                    key={index}
+                                    value={item.exam_date}
+                                    onPress={() => {
+                                        navigation.navigate("EditDate", {
+                                            dateType: "Satnam Exam",
+                                            index,
+                                            key: "satnam_exam",
+                                        });
+                                    }}
+                                    label={`Satnam Exam ${index + 1}`}
+                                />
+                            );
+                        })}
+                    {checkPermission("edit_sarnam") &&
+                        detail?.sarnam_date !== null && (
                             <EditDateButton
-                                key={index}
-                                value={item.exam_date}
+                                value={detail?.sarnam_date}
                                 onPress={() => {
                                     navigation.navigate("EditDate", {
-                                        dateType: "Satnam Exam",
-                                        index,
+                                        dateType: "Sarnam",
+                                        key: "sarnam",
                                     });
                                 }}
-                                label={`Satnam Exam ${index + 1}`}
+                                label={"Sarnam"}
                             />
-                        );
-                    })}
-                    {detail?.sarnam_date !== null && (
-                        <EditDateButton
-                            value={detail?.sarnam_date}
-                            onPress={() => {
-                                navigation.navigate("EditDate", {
-                                    dateType: "Sarnam",
-                                });
-                            }}
-                            label={"Sarnam"}
-                        />
-                    )}
+                        )}
                     {detail?.sadasyata_date !== null && (
                         <EditDateButton
                             value={detail?.sadasyata_date}
@@ -1237,44 +1246,71 @@ const EditDisciple = ({ navigation, route, ...props }) => {
                             label={`Sadasyata No.: ${detail?.sadasyata_no}`}
                         />
                     )}
-                    {detail?.sarshabd_date !== null && (
-                        <EditDateButton
-                            value={detail?.sarshabd_date}
-                            onPress={() => {
-                                navigation.navigate("EditDate", {
-                                    dateType: "Sarshabd",
-                                });
-                            }}
-                            label={"Sarshabd"}
-                        />
-                    )}
-                    {detail?.shuddhikaran.map((item, index) => {
-                        return (
+                    {checkPermission("edit_sarshabd") &&
+                        detail?.sarshabd_date !== null && (
                             <EditDateButton
-                                key={index}
-                                value={item.date}
+                                value={detail?.sarshabd_date}
                                 onPress={() => {
                                     navigation.navigate("EditDate", {
-                                        dateType: "Shuddhikaran",
-                                        index,
+                                        dateType: "Sarshabd",
+                                        key: "sarshabd",
                                     });
                                 }}
-                                label={`Shuddhikaran ${index + 1}`}
+                                label={"Sarshabd"}
                             />
-                        );
+                        )}
+                    {detail?.shuddhikaran.map((item, index) => {
+                        if (
+                            item.level === "first" &&
+                            checkPermission("pratham_mantra_shuddhikaran")
+                        ) {
+                            return (
+                                <EditDateButton
+                                    key={index}
+                                    value={item.date}
+                                    onPress={() => {
+                                        navigation.navigate("EditDate", {
+                                            dateType: "Shuddhikaran",
+                                            index,
+                                            sKey: "pratham_mantra_shuddhikaran",
+                                        });
+                                    }}
+                                    label={`Shuddhikaran ${index + 1}`}
+                                />
+                            );
+                        }
+                        if (checkPermission(`${item.level}_shuddhikaran`)) {
+                            return (
+                                <EditDateButton
+                                    key={index}
+                                    value={item.date}
+                                    onPress={() => {
+                                        navigation.navigate("EditDate", {
+                                            dateType: "Shuddhikaran",
+                                            index,
+                                            sKey: `${item.level}_shuddhikaran`,
+                                        });
+                                    }}
+                                    label={`Shuddhikaran ${index + 1}`}
+                                />
+                            );
+                        }
                     })}
-                    {detail?.reupdesh.length > 0 && (
-                        <EditDateButton
-                            value={detail?.reupdesh.slice(-1)[0].reupdesh_date}
-                            onPress={() => {
-                                navigation.navigate("EditDate", {
-                                    dateType: "Reupdesh",
-                                    index: detail?.reupdesh.length - 1,
-                                });
-                            }}
-                            label={`Punar Updesh ${detail?.reupdesh.length}`}
-                        />
-                    )}
+                    {checkPermission("edit_reupdesh") &&
+                        detail?.reupdesh.length > 0 && (
+                            <EditDateButton
+                                value={
+                                    detail?.reupdesh.slice(-1)[0].reupdesh_date
+                                }
+                                onPress={() => {
+                                    navigation.navigate("EditDate", {
+                                        dateType: "Reupdesh",
+                                        index: detail?.reupdesh.length - 1,
+                                    });
+                                }}
+                                label={`Punar Updesh ${detail?.reupdesh.length}`}
+                            />
+                        )}
                 </View>
                 <TouchableOpacity
                     onPress={handleSubmit}

@@ -28,10 +28,14 @@ import DatePicker from "../components/DatePicker";
 const calendarIcon = require("../../assets/icons/calenderFilled.png");
 import { withDetailContext } from "../context/DetailContex";
 import { FONTS } from "../constants/fonts";
+import { useAuth } from "../context/AuthContext";
+import { checkPermission } from "../utilities/checkPermission";
 
 const EditDate = ({ route, navigation, ...props }) => {
     const { dateType } = route.params;
     const index = route.params.index ?? 0;
+    const pKey = route.params.key ?? "";
+    const sKey = route.params.sKey ?? "";
 
     const {
         state: { detail },
@@ -465,7 +469,7 @@ const EditDate = ({ route, navigation, ...props }) => {
             disciple_id: userData?.id,
             result: userData.satnam_exam[index].result,
             exam_date: userData.satnam_exam[index].exam_date,
-            reason: userData.satnam_exam[index].reason,
+            reason: pass === "Pass" ? userData.satnam_exam[index].reason : "",
         })
             .then(({ data }) => {
                 if (data.success) {
@@ -696,7 +700,7 @@ const EditDate = ({ route, navigation, ...props }) => {
                 ) : null}
                 {(dateType === "Shuddhikaran" ||
                     dateType === "Reupdesh" ||
-                    dateType === "Satnam Exam" ||
+                    (dateType === "Satnam Exam" && pass === "Fail") ||
                     dateType === "Sadasyata") && (
                     <View
                         style={{
@@ -719,27 +723,31 @@ const EditDate = ({ route, navigation, ...props }) => {
                         />
                     </View>
                 )}
-                {!compare && (
-                    <Button
-                        onPress={_update}
-                        buttonStyle={{
-                            padding: 12,
-                            marginVertical: 5,
-                            backgroundColor: theme.colors.yellow,
-                            elevation: 3,
-                            borderRadius: 50,
-                            alignItems: "center",
-                            marginTop: 30,
-                        }}
-                        textStyle={{
-                            color: theme.colors.white,
-                            ...FONTS.h3,
-                            fontSize: 18,
-                        }}
-                        text={`Update ${dateType}`}
-                    />
-                )}
-                {dateType === "Reupdesh" ? null : (
+                {!compare &&
+                    (checkPermission(`edit_${pKey}`) ||
+                        checkPermission(sKey)) && (
+                        <Button
+                            onPress={_update}
+                            buttonStyle={{
+                                padding: 12,
+                                marginVertical: 5,
+                                backgroundColor: theme.colors.yellow,
+                                elevation: 3,
+                                borderRadius: 50,
+                                alignItems: "center",
+                                marginTop: 30,
+                            }}
+                            textStyle={{
+                                color: theme.colors.white,
+                                ...FONTS.h3,
+                                fontSize: 18,
+                            }}
+                            text={`Update ${dateType}`}
+                        />
+                    )}
+
+                {(checkPermission(`delete_${pKey}`) ||
+                    checkPermission(sKey)) && (
                     <Button
                         onPress={_delete}
                         buttonStyle={{

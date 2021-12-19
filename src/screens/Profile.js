@@ -36,6 +36,7 @@ const clockImage = require("../../assets/icons/clock.png");
 import styles from "../styles/Profile";
 import { withDetailContext } from "../context/DetailContex";
 import { TextInput } from "react-native-gesture-handler";
+import { checkPermission } from "../utilities/checkPermission";
 
 const FieldLine = ({ label, value }) => {
     return (
@@ -355,10 +356,22 @@ const Profile = ({ route, navigation, ...props }) => {
         showSubmitButton = true;
     }
 
-    if (
-        entryType === "Shuddhikaran Entry" ||
-        entryType === "Punar Updesh Entry"
-    ) {
+    let enableShuddhikaran;
+    if (entryType === "Shuddhikaran Entry") {
+        if (userData?.last_mantra === "pratham") {
+            showSubmitButton = checkPermission(`pratham_mantra_shuddhikaran`);
+            enableShuddhikaran = checkPermission(`pratham_mantra_shuddhikaran`);
+        } else {
+            showSubmitButton = checkPermission(
+                `${userData?.last_mantra}_shuddhikaran`
+            );
+            enableShuddhikaran = checkPermission(
+                `${userData?.last_mantra}_shuddhikaran`
+            );
+        }
+    }
+
+    if (entryType === "Punar Updesh Entry") {
         showSubmitButton = true;
     }
     useEffect(() => {
@@ -388,8 +401,8 @@ const Profile = ({ route, navigation, ...props }) => {
     }, [fetchDiscipleDetails, user?.id]);
     const editable =
         userData?.district_id === AuthUser.district ||
-        userData?.namdan_center === AuthUser.namdan_center_id;
-
+        userData?.namdan_center === AuthUser.namdan_center_id ||
+        checkPermission("edit_disciple");
     if (loading)
         return (
             <ActivityIndicator
@@ -942,29 +955,30 @@ const Profile = ({ route, navigation, ...props }) => {
                             ))}
                         </>
                     )}
-                    {entryType === "Shuddhikaran Entry" && (
-                        <Field2
-                            label={`Shuddhikaran ${
-                                userData?.shuddhikaran.length + 1
-                            }`}
-                            value={selectedDate}
-                            enable={true}
-                            reason={reason}
-                            minDate={
-                                userData?.shuddhikaran.length === 0
-                                    ? moment(update_at, "YYYY-MM-DD").add(
-                                          1,
-                                          "d"
-                                      )
-                                    : moment(update_at, "YYYY-MM_DD").add(
-                                          1,
-                                          "d"
-                                      )
-                            }
-                            onReasonChange={(text) => setReason(text)}
-                            onDateChange={setSelectedDate}
-                        />
-                    )}
+                    {entryType === "Shuddhikaran Entry" &&
+                        enableShuddhikaran && (
+                            <Field2
+                                label={`Shuddhikaran ${
+                                    userData?.shuddhikaran.length + 1
+                                }`}
+                                value={selectedDate}
+                                enable={true}
+                                reason={reason}
+                                minDate={
+                                    userData?.shuddhikaran.length === 0
+                                        ? moment(update_at, "YYYY-MM-DD").add(
+                                              1,
+                                              "d"
+                                          )
+                                        : moment(update_at, "YYYY-MM_DD").add(
+                                              1,
+                                              "d"
+                                          )
+                                }
+                                onReasonChange={(text) => setReason(text)}
+                                onDateChange={setSelectedDate}
+                            />
+                        )}
                     {entryType === "Punar Updesh Entry" && (
                         <Field2
                             label={`Punar Updesh ${

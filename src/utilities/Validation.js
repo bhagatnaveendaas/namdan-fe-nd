@@ -40,17 +40,10 @@ export const NewNonIndianDiscipleSchema = Yup.object().shape({
         .required("Please fill Gaurdian Name.")
         .matches(/^[a-zA-Z ]*$/, "Name must contain alphabets only.")
         .min(3),
-    occupation: Yup.string()
-        .required("Please fill Occupation.")
-        .matches(/^[a-zA-Z ]*$/, "Occupation must contain alphabets only."),
+    occupation: Yup.string().required("Please fill Occupation."),
     otherOccupation: Yup.string().when("occupation", (occupation) => {
         if (occupation === "Other" || occupation === "other") {
-            return Yup.string()
-                .required("Please fill Occupation.")
-                .matches(
-                    /^[a-zA-Z ]*$/,
-                    "Occupation must contain alphabets only."
-                );
+            return Yup.string().required("Please fill Occupation.");
         }
     }),
     dob: Yup.string().required("Date of birth is required."),
@@ -114,17 +107,10 @@ export const NewIndianDiscipleSchema = Yup.object().shape(
             .required("Please fill Gaurdian Name.")
             .matches(/^[a-zA-Z ]*$/, "Name must contain alphabets only.")
             .min(3),
-        occupation: Yup.string()
-            .required("Please fill Occupation.")
-            .matches(/^[a-zA-Z ]*$/, "Occupation must contain alphabets only."),
+        occupation: Yup.string().required("Please fill Occupation."),
         otherOccupation: Yup.string().when("occupation", (occupation) => {
             if (occupation === "Other" || occupation === "other") {
-                return Yup.string()
-                    .required("Please fill Occupation.")
-                    .matches(
-                        /^[a-zA-Z ]*$/,
-                        "Occupation must contain alphabets only."
-                    );
+                return Yup.string().required("Please fill Occupation.");
             }
         }),
         dob: Yup.string().required("Date of birth is required."),
