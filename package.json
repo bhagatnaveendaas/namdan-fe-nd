@@ -44,7 +44,7 @@
     "object-to-formdata": "^4.1.0",
     "react": "16.13.1",
     "react-dom": "16.13.1",
-    "react-native": "~0.63.4",
+    "react-native": "~0.64.1",
     "react-native-awesome-alerts": "^1.5.1",
     "react-native-blob-util": "^0.13.18",
     "react-native-elements": "^3.4.2",
